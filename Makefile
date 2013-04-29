@@ -6,31 +6,27 @@ JS_HINT = $(NODE_PATH)/jshint/bin/hint
 
 all: \
 	node_modules \
-	component.json \
-	LICENSE \
     review \
 	test \
+    build \
+    install
 
 node_modules: Makefile
 	npm install
 
 build:
-	@rm -f $@
-	cat $^ | node src/build.js | $(JS_BEAUTIFIER) > $@
-	@chmod a-w $@
+	cd ./Android/Besiktning && ant debug
+	cd -
 
-component.json: Makefile
-	@rm -f $@
-	cat ./src/component.js | node src/build.js > $@
-	@chmod a-w $@
+install:
+	cd ./Android/Besiktning && ant installd
+	cd -
 
 review:
 	$(JS_HINT) ./tests/*.js
+	$(JS_HINT) ./Android/Besiktning/assets/www/js/app/*.js
 
 test:
-	$(JS_TEST) ./test
+	$(JS_TEST) ./tests/*.js
 
-clean:
-	rm -rf ./component.json ./ZeroClipboard* ./LICENSE
-
-.PHONY: all test clean
+.PHONY: all test review install build

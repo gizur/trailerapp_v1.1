@@ -1,0 +1,23 @@
+/home/adminess/TrailerApp/Android/Besiktning/gen/com/gizur/besiktning/R.java \
+ : /home/adminess/TrailerApp/Android/Besiktning/res/drawable-hdpi/ic_launcher.png \
+/home/adminess/TrailerApp/Android/Besiktning/res/drawable-hdpi/icon.png \
+/home/adminess/TrailerApp/Android/Besiktning/res/xml/config.xml \
+/home/adminess/TrailerApp/Android/Besiktning/res/values/strings.xml \
+/home/adminess/TrailerApp/Android/Besiktning/res/drawable-mdpi/ic_launcher.png \
+/home/adminess/TrailerApp/Android/Besiktning/res/drawable-mdpi/icon.png \
+/home/adminess/TrailerApp/Android/Besiktning/res/layout/main.xml \
+/home/adminess/TrailerApp/Android/Besiktning/res/drawable-xhdpi/ic_launcher.png \
+/home/adminess/TrailerApp/Android/Besiktning/res/drawable-xhdpi/icon.png \
+/home/adminess/TrailerApp/Android/Besiktning/res/drawable/icon.png \
+/home/adminess/TrailerApp/Android/Besiktning/res/drawable-ldpi/ic_launcher.png \
+/home/adminess/TrailerApp/Android/Besiktning/res/drawable-ldpi/icon.png \
+/home/adminess/TrailerApp/Android/Besiktning/bin/res/drawable-hdpi/ic_launcher.png \
+/home/adminess/TrailerApp/Android/Besiktning/bin/res/drawable-hdpi/icon.png \
+/home/adminess/TrailerApp/Android/Besiktning/bin/res/drawable-mdpi/ic_launcher.png \
+/home/adminess/TrailerApp/Android/Besiktning/bin/res/drawable-mdpi/icon.png \
+/home/adminess/TrailerApp/Android/Besiktning/bin/res/drawable-xhdpi/ic_launcher.png \
+/home/adminess/TrailerApp/Android/Besiktning/bin/res/drawable-xhdpi/icon.png \
+/home/adminess/TrailerApp/Android/Besiktning/bin/res/drawable/icon.png \
+/home/adminess/TrailerApp/Android/Besiktning/bin/res/drawable-ldpi/ic_launcher.png \
+/home/adminess/TrailerApp/Android/Besiktning/bin/res/drawable-ldpi/icon.png \
+/home/adminess/TrailerApp/Android/Besiktning/bin/AndroidManifest.xml \

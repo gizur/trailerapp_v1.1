@@ -1,0 +1,444 @@
+<!DOCTYPE html> 
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1"> 
+	<title>Besiktning</title> 
+	<link rel="stylesheet" href="js/lib/jquery.mobile-1.2.1/jquery.mobile-1.2.1.min.css" />
+	<link href="css/jquery.bxslider.css" rel="stylesheet" />	
+	
+	<script src="js/lib/jquery.mobile-1.2.1/jquery-1.8.3.min.js"></script>
+	<script src="js/lib/jquery.mobile-1.2.1/jquery.mobile-1.2.1.min.js"></script>
+	<script src="js/lib/jquery.bxslider.js"></script>	
+</head>
+<body> 
+<!-- Start of first page: #one -->
+<div data-role="page" id="one">
+	<div data-role="content" >	
+        <div data-role="navbar">
+            <ul>
+                <li>
+                    <a href="#contact" data-transition="fade" data-theme="a">
+                        Kontakt
+                    </a>
+                </li>
+                <li>
+                    <a href="#one" data-transition="fade" data-theme="a">
+                        Besiktning
+                    </a>
+                </li>
+                <li>
+                    <a href="#settings" data-transition="fade" data-theme="a">
+                        Inställningar
+                    </a>
+                </li>
+            </ul>
+        </div>
+		<h2>Kontrollbesiktning</h2>
+		<div data-role="fieldcontain">
+            <label for="selectmenu3-one">
+                Typ av trailer:
+            </label>
+            <select id="selectmenu3-one" name="typavtrailer">
+                <option value="Coop">
+                    Coop
+                </option>
+                <option value="Hyrtrailer">
+                    Hyrtrailer
+                </option>
+            </select>
+        </div>
+        <div data-role="fieldcontain">
+            <label for="selectmenu2-one">
+                Trailer ID:
+            </label>
+            <select id="selectmenu2-one" name="trailerid">
+                <option value="BBB2312">
+                    AAA1234
+                </option>
+                <option value="SSS34564">
+                    SSS34564
+                </option>
+                <option value="BBB3455">
+                    BBB3455
+                </option>
+            </select>
+        </div>
+        <div data-role="fieldcontain">
+            <label for="selectmenu5-one">
+                Plats
+            </label>
+            <select id="selectmenu5-one" name="plats">
+                <option value="Bro">
+                    Bro
+                </option>
+                <option value="Helsingborg">
+                    Helsingborg
+                </option>
+                <option value="Malmö">
+                    Malmö
+                </option>
+            </select>
+        </div>
+		
+		<h3>Befintliga Skador</h3>
+		<div data-role="fieldcontain">	
+	        <ul class="bxslider-one">
+	          <li><center><div style='height:60px;width:120px;'><a href="#two">Trailersidor Vänster 1</a></div></center></li>
+	          <li><center><div style='height:60px;width:120px;'><a href="#two">Trailersidor Vänster 2</a></div></center></li>
+	          <li><center><div style='height:60px;width:120px;'><a href="#two">Trailersidor Vänster 3</a></div></center></li>
+	        </ul>
+	        <p id='pager-one' style='text-align: right;'></p>
+        </div>
+        <div data-role="fieldcontain">
+            <fieldset data-role="controlgroup" data-type="vertical">
+                <legend>
+                    Plomerad
+                </legend>
+                <input id="radio1" name="plomerad" value="Ja" type="radio">
+                <label for="radio1">
+                    Ja
+                </label>
+                <input id="radio2" name="plomerad" value="Nej" type="radio">
+                <label for="radio2">
+                    Nej
+                </label>
+            </fieldset>
+        </div>
+		<p><a href="#four" data-role="button">Rapportera ny skada</a></p>	
+		<p><a href="#damagesent" data-role="button" data-rel="dialog" data-transition="pop">Inga nya skador</a></p>
+	</div><!-- /content -->
+</div><!-- /page one -->
+<!-- Start of second page: #two -->
+<div data-role="page" id="two">
+	<div data-role="content">
+        <div data-role="navbar">
+            <ul>
+                <li>
+                    <a href="#contact" data-transition="fade" data-theme="a">
+                        Kontakt
+                    </a>
+                </li>
+                <li>
+                    <a href="#one" data-transition="fade" data-theme="a">
+                        Besiktning
+                    </a>
+                </li>
+                <li>
+                    <a href="#settings" data-transition="fade" data-theme="a">
+                        Inställningar
+                    </a>
+                </li>
+            </ul>
+        </div>
+		<p><a href="#one" data-rel="back" data-role="button" data-inline="true" data-icon="back">Tillbaka</a></p>
+        <h3>Information om skada</h3>
+        <div data-role="fieldcontain">
+            <label for="selectmenu1">
+                Typ av skada
+            </label>
+            <input name="" id="textinput1" placeholder="" value="Trailersida/aggregatkåpa" type="text" readonly="readonly">
+        </div>
+        <div data-role="fieldcontain">
+            <label for="selectmenu2">
+                Position
+            </label>
+            <input name="" id="textinput2" placeholder="" value="Vänster sida (Left side)" type="text" readonly="readonly">
+        </div>
+		<h4>Foton</h4>
+		<div data-role="fieldcontain">
+        <ul class="bxslider-two">
+          <li><center><a href="#three"><img src="img/d1-f.jpg" /></a></center></li>
+          <li><center><a href="#three"><img src="img/d2-f.jpg" /></a></center></li>
+          <li><center><a href="#three"><img src="img/d3-f.jpg" /></a></center></li>
+        </ul>	
+        <p id='pager-two' style='text-align: right;'></p>
+        </div>
+	</div><!-- /content -->
+</div><!-- /page two -->
+<!-- Start of third page: #three -->
+<div data-role="page" id="three">
+	<div data-role="content">
+        <div data-role="navbar">
+            <ul>
+                <li>
+                    <a href="#contact" data-transition="fade" data-theme="a">
+                        Kontakt
+                    </a>
+                </li>
+                <li>
+                    <a href="#one" data-transition="fade" data-theme="a">
+                        Besiktning
+                    </a>
+                </li>
+                <li>
+                    <a href="#settings" data-transition="fade" data-theme="a">
+                        Inställningar
+                    </a>
+                </li>
+            </ul>
+        </div>
+		<p><a href="#one" data-rel="back" data-role="button" data-inline="true" data-icon="back">Tillbaka</a></p>
+        <h3>Foton</h3>
+        <img src="img/d3.jpg"/>
+	</div><!-- /content -->
+</div><!-- /page three -->
+<!-- Start of fourth page: #four -->
+<div data-role="page" id="four">
+	<div data-role="content">
+	    <div data-role="navbar">
+            <ul>
+                <li>
+                    <a href="#contact" data-transition="fade" data-theme="a">
+                        Kontakt
+                    </a>
+                </li>
+                <li>
+                    <a href="#one" data-transition="fade" data-theme="a">
+                        Besiktning
+                    </a>
+                </li>
+                <li>
+                    <a href="#settings" data-transition="fade" data-theme="a">
+                        Inställningar
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <h3>
+            Skadeuppgifter
+        </h3>
+        <div data-role="fieldcontain">
+            <label for="selectmenu1-two">
+                Typ av skada
+            </label>
+            <select id="selectmenu1-two" name="typeavskada">
+                <option value="Trailersida/aggregatkåpa">
+                    Trailersida/aggregatkåpa
+                </option>
+                <option value="Skyddsplåtar">
+                    Skyddsplåtar
+                </option>
+                <option value="Belysning">
+                    Belysning
+                </option>
+                <option value="Påbackningsfendrar">
+                    Påbackningsfendrar
+                </option>
+                <option value="Dörrar">
+                    Dörrar
+                </option>
+                <option value="Underkörningsskydd">
+                    Underkörningsskydd
+                </option>
+                <option value="Stödben">
+                    Stödben
+                </option>
+                <option value="El/Luft/Bromskopplingar">
+                    El/Luft/Bromskopplingar
+                </option>
+            </select>
+        </div>
+        <div data-role="fieldcontain">
+            <label for="selectmenu2-two">
+                Position
+            </label>
+            <select id="selectmenu2-two" name="position">
+                <option value="Vänster sida (Left side)">
+                    Vänster sida (Left side)
+                </option>
+                <option value="Höger sida (Right side)">
+                    Höger sida (Right side)
+                </option>
+                <option value="Framsida (Front side)">
+                    Framsida (Front side)
+                </option>
+                <option value="Aggregatkåpa (Device hood)">
+                    Aggregatkåpa (Device hood)
+                </option>
+            </select>
+        </div>
+        <h3>
+            Foton
+        </h3>
+		<p><a href="" data-role="button">Lägg till en bild</a></p>
+		<div data-role="fieldcontain">
+        <ul class="bxslider-four">
+          <li><center><a href="#three"><img src="img/d1-f.jpg" /></a></center></li>
+          <li><center><a href="#three"><img src="img/d2-f.jpg" /></a></center></li>
+          <li><center><a href="#three"><img src="img/d3-f.jpg" /></a></center></li>
+        </ul>	
+        <p id='pager-four' style='text-align: right;'></p>
+        </div>
+        <div data-role="fieldcontain">
+            <label for="selectmenu3-two">
+                Orsaka av:
+            </label>
+            <select id="selectmenu3-two" name="position">
+                <option value="">
+                    
+                </option>
+                <option value="Chaufför">
+                    Chaufför
+                </option>
+            </select>
+        </div>
+        <p><a href="#five" data-role="button">Spara</a></p>			
+	</div><!-- /content -->
+</div><!-- /page four -->
+<!-- Start of fifth page: #five -->
+<div data-role="page" id="five">
+	<div data-role="content">
+        <div data-role="navbar">
+            <ul>
+                <li>
+                    <a href="#contact" data-transition="fade" data-theme="a">
+                        Kontakt
+                    </a>
+                </li>
+                <li>
+                    <a href="#one" data-transition="fade" data-theme="a">
+                        Besiktning
+                    </a>
+                </li>
+                <li>
+                    <a href="#settings" data-transition="fade" data-theme="a">
+                        Inställningar
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <h3>Tidigare rapporterade skador</h3>
+        <div data-role="fieldcontain">
+        <ul class="bxslider-five-a">
+          <li><center><div style='height:60px;width:120px;'><a href="#two">Trailersidor Vänster 3</a></div></center></li>
+          <li><center><div style='height:60px;width:120px;'><a href="#two">Trailersidor Vänster 2</a></div></center></li>
+          <li><center><div style='height:60px;width:120px;'><a href="#two">Trailersidor Vänster 1</a></div></center></li>
+        </ul>	
+        <p id='pager-five-a' style='text-align: right;'></p>
+        </div>
+        <h3>Nyfunna skador</h3>
+        <p><a href="#four" data-role="button">Lägg fler skador</a></p>	
+        <div data-role="fieldcontain">
+        <ul class="bxslider-five-b">
+          <li><center><div style='height:60px;width:120px;'><a href="#two">Trailersidor Vänster 1</a></div></center></li>
+          <li><center><div style='height:60px;width:120px;'><a href="#two">Trailersidor Vänster 2</a></div></center></li>
+          <li><center><div style='height:60px;width:120px;'><a href="#two">Trailersidor Vänster 3</a></div></center></li>
+        </ul>	
+        <p id='pager-five-b' style='text-align: right;'></p>
+        </div>
+		<p><a href="#damagesent" data-role="button" data-rel="dialog" data-transition="pop">Skicka skaderapport</a></p>
+	</div><!-- /content -->
+</div><!-- /page five -->
+<!-- Start of fifth page: #settings -->
+<div data-role="page" id="settings">
+	<div data-role="content">
+        <div data-role="navbar">
+            <ul>
+                <li>
+                    <a href="#contact" data-transition="fade" data-theme="a">
+                        Kontakt
+                    </a>
+                </li>
+                <li>
+                    <a href="#one" data-transition="fade" data-theme="a">
+                        Besiktning
+                    </a>
+                </li>
+                <li>
+                    <a href="#settings" data-transition="fade" data-theme="a">
+                        Inställningar
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div data-role="fieldcontain">
+            <label for="textinput1">
+                E-mail:
+            </label>
+            <input name="email" id="textinput1" placeholder="" value="" type="text">
+        </div>
+        <div data-role="fieldcontain">
+            <label for="textinput2">
+                Lösen
+            </label>
+            <input name="password" id="textinput2" placeholder="" value="" type="text">
+        </div>
+        <a data-role="button" href="#one">
+            Ändra Lösen
+        </a>
+        <a data-role="button" href="#one">
+            Glömt Lösen
+        </a>
+        <div data-role="fieldcontain">
+            <label for="textinput3">
+                Gizur Saas konto:
+            </label>
+            <input name="" id="textinput3" placeholder="" value="" type="text">
+        </div>
+        <a data-role="button" href="#one">
+            Spara
+        </a>
+	</div><!-- /content -->
+</div><!-- /page setting -->
+<!-- Start of fifth page: #contact -->
+<div data-role="page" id="contact">
+	<div data-role="content">
+        <div data-role="navbar">
+            <ul>
+                <li>
+                    <a href="#contact" data-transition="fade" data-theme="a">
+                        Kontakt
+                    </a>
+                </li>
+                <li>
+                    <a href="#one" data-transition="fade" data-theme="a">
+                        Besiktning
+                    </a>
+                </li>
+                <li>
+                    <a href="#settings" data-transition="fade" data-theme="a">
+                        Inställningar
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <h2>
+            Ring tagstyrning
+        </h2>
+        <h5>
+            <a href="tel:+919899845108">010-XXXXX</a>
+        </h5>
+        <hr/>
+        <h2>
+            Maila tagstarningen
+        </h2>
+        <h5>
+            <a href="mailto:anshuk.kumar@essindia.co.in">xxx@coop.se</a>
+        </h5>
+        <hr/>
+        <h2>
+            Ring Journummer
+        </h2>
+        <h5>
+            <a href="tel:+919899845108">010-XXXXX</a>
+        </h5>
+        <hr/>
+	</div><!-- /content -->
+</div><!-- /page contact -->
+<!-- Start of page: #damagesent -->
+<div data-role="page" id="damagesent">
+
+	<div data-role="header" data-theme="e">
+		<h1>Besiktningsrapport inskickad...</h1>
+	</div><!-- /header -->
+
+	<div data-role="content" data-theme="d">
+		<p>DENNA TEXT BEHOVER SPECAS</p>		
+		<p><a href="#one" data-role="button" data-inline="true" data-icon="back">Ok</a></p>	
+	</div><!-- /content -->
+</div><!-- /page damagesent -->
+<script src="js/index.js"></script>
+</body>
+</html>
