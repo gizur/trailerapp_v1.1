@@ -1,5 +1,8 @@
 var sandbox = require('nodeunit').utils.sandbox;
-var tt = sandbox('Android/Besiktning/assets/www/js/app/models/troubleticket.js');
+var tt = sandbox(
+    'Android/Besiktning/assets/www/js/app/lib/stapes.js',
+    'Android/Besiktning/assets/www/js/app/models/troubleticket_stapes.js'
+);
 var dmg = sandbox(
     'Android/Besiktning/assets/www/js/app/lib/stapes.js',
     'Android/Besiktning/assets/www/js/app/models/damage.js'
