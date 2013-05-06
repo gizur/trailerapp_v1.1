@@ -1,55 +1,23 @@
-//Class definition troubleticket
-var TroubleTicket = function() {
- 
-    "use strict";
-    
-    //Private variables
-    var _type_of_trailer = '';
-    var _trailer_id = '';
-    var _place = '';
-    var _sealed = '';
-    var _damages = [];
-
-    //Getters
-    this.getTypeOfTrailer = function(){
-        return _type_of_trailer;
+var TroubleTicket = Stapes.subclass({
+    constructor : function() {
+        this.set({
+            'asset' : new Asset(),
+            'sealed' : '',
+            'damage' : false,
+            'place' : ''
+        });
+    },
+    clone :  function() {
+        var tt = new TroubleTicket;    
+        tt.set(this.getAll());
+        return tt;
     }
+});
 
-    this.getTrailerId = function(){
-        return _trailer_id;
-    }
 
-    this.getPlace = function(){
-        return _place;
-    }
-
-    this.getSealed = function(){
-        return _sealed;
-    }
-
-    this.getDamages = function(){
-        return _damages;
-    }
-
-    //Setters
-    this.setTypeOfTrailer = function(t){
-        _type_of_trailer = t;
-    }
-
-    this.setTrailerId = function(tid){
-        _trailer_id = tid;
-    }
-
-    this.setPlace = function(p){
-        _place = p;
-    }
-
-    this.setSealed = function(s){
-        _sealed = s;
-    }
-
-    this.setDamages = function(d){
-        _damages = d;
-    }
-
-};
+/**
+ * For node-unit test
+ */
+if (node_unit==true) {
+    exports.TroubleTicket = TroubleTicket;
+}
