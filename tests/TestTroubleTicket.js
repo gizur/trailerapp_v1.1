@@ -1,10 +1,30 @@
+/* jshint undef: true, unused: true, strict: true, vars: true */
+
+/**
+ * Node Unit Test file for TroubleTicket
+ * 
+ * @fileoverview Class definition of a collection of TroubleTickets
+ * @author anshuk.kumar@essindia.co.in (Anshuk Kumar)
+ * @license Commercial - Copyright 2013 Gizur AB
+ * @see http://google-styleguide.googlecode.com/svn/trunk/javascriptguide.xml
+ */
 
 node_unit = true;
 
+//Lib
 Stapes = require('../Android/Besiktning/assets/www/js/lib/stapes.js').Stapes;
+$ = require('jquery');
+
+//Models
 Asset = require('../Android/Besiktning/assets/www/js/app/models/asset.js').Asset;
 Damage = require('../Android/Besiktning/assets/www/js/app/models/damage.js').Damage;
 TroubleTicket = require('../Android/Besiktning/assets/www/js/app/models/troubleticket.js').TroubleTicket;
+User = require('../Android/Besiktning/assets/www/js/app/models/user.js').User;
+
+//SetUp User
+usr = new User();
+usr.set('username', 'mobile_user@gizur.com');
+usr.set('password', 'ivry34aq');
 
 exports.troubleticket = {
     "has properties" : function(test){
@@ -31,5 +51,35 @@ exports.troubleticket = {
         test.deepEqual(snd_tt_values, snd_tt_clone_values, "Cloning not working properly");
 
         test.done();
-    }
+    },
+    "got picklist sealed" : function(test) {
+        var tt = new TroubleTicket();
+
+        var success = function(data){
+            test.ok(true);
+            test.done();
+        };
+
+        var error = function(jqxhr, status, er){
+            test.ok(false, "Unable to fetch picklist sealed : " + data.error.trace_id + " : " + data.error.message);
+            test.done();
+        };
+
+        tt.getEnumSealed(success, error);
+    },
+    "got picklist place" : function(test) {
+        var tt = new TroubleTicket();
+
+        var success = function(data){
+            test.ok(true);
+            test.done();
+        };
+
+        var error = function(jqxhr, status, er){
+            test.ok(false, "Unable to fetch picklist place : " + data.error.trace_id + " : " + data.error.message);
+            test.done();
+        };
+
+        tt.getEnumPlace(success, error);
+    }    
 };

@@ -24,7 +24,7 @@ install:
 
 review:
 	$(JS_HINT) ./tests/*.js
-	$(JS_HINT) ./Android/Besiktning/assets/www/js/app/*.js
+	$(JS_HINT) ./Android/Besiktning/assets/www/js/app/models/*.js
 
 test:
 	$(JS_TEST) ./tests/*.js
