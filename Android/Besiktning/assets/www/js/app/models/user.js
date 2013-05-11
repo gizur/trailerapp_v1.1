@@ -8,49 +8,113 @@
  * @license Commercial - Copyright 2013 Gizur AB
  * @see http://google-styleguide.googlecode.com/svn/trunk/javascriptguide.xml
  */
-
-var User = Stapes.subclass({
-
-    /**
-     * @constructor
-     */ 
-    constructor : function() {
-        this.set({
-            'id' : '',
-            'email' : '',
-            'password' : '',
-            'client_id' : 'clab',
-            'authenticated' : false,
-            '_url' : 'https://c2.gizur.com/api/',//http://freegeoip.net/json/115.184.41.74',
-        });
-    },
+var User = (function(){
 
     /**
-     * Authenticates the current user
-     */       
-    authenticate : function(success, error) {
-        var that = this;
+     * Private Variables
+     */
+    var req; //request object
+    var storage;  //cache object
+    var lg; //Logger object
 
-        $.ajax({
-            type: 'POST',
-            url: this.get('_url') + 'Authenticate/login',
-            beforeSend: function(xhr){
-                xhr.setRequestHeader('X_USERNAME', that.get('username'));
-                xhr.setRequestHeader('X_PASSWORD', that.get('password'));
-                xhr.setRequestHeader('X_CLIENTID', that.get('client_id'));
-            },          
-            success: success,
-            error: error
-        });  
-    },
+    var User = Stapes.subclass({
 
-    /**
-     * Changes the password
-     */       
-    setNewPassword : function() {
+        /**
+         * @constructor
+         */ 
+        constructor : function(aReq) {
 
-    },
-});
+            lg = new Logger('DEBUG','js/model/user'); 
+
+            req = aReq;
+
+            storage = window.localStorage;
+
+            var attrs = storage.getItem('user');
+
+            lg.log('DEBUG', 'stored attrs: ' + attrs);
+
+            if (attrs) {
+
+                attrs = JSON.parse(attrs);
+
+                this.set({
+                    'id' : '',
+                    'username' : attrs.username,
+                    'password' : attrs.password,
+                    'authenticated' : attrs.authenticated,
+                }); 
+            } else {
+                this.set({
+                    'id' : '',
+                    'username' : '',
+                    'password' : '',
+                    'authenticated' : '',
+                }); 
+            }
+
+            lg.log('DEBUG', 'effective attrs: ' + JSON.stringify(this.getAll()));
+        },
+
+        /**
+         *  Send the request
+         */ 
+        send : function(method, url, headers, body, successCb, errorCb) {
+            req.send(method, url, headers, body, successCb, errorCb);
+        },
+
+        /**
+         * Authenticates the current user
+         */       
+        authenticate : function(success, error) {
+            var that = this;
+
+            var successWrapper = function(data){
+
+                lg.log('TRACE', 'authenticate#successWrapper# enter');                                
+
+                // Set flag authenticated to true
+                that.set('authenticated', true);
+
+                //Saving user attr to cache
+                storage.setItem('user', JSON.stringify(that.getAll()));            
+
+                lg.log('DEBUG', 'authenticate#successWrapper#attributes saved to cache: ' + JSON.stringify(this.getAll()));                
+
+                success(data);
+
+                lg.log('TRACE', 'authenticate#successWrapper# exit');
+            };
+
+            //Saving user attr to cache
+            storage.setItem('user', JSON.stringify(that.getAll()));            
+
+            lg.log('DEBUG', 'authenticate#attributes saved to cache: ' + JSON.stringify(this.getAll()));
+
+            req.send(
+                'POST',
+                'Authenticate/login',
+                {
+                    'X_USERNAME': that.get('username'),
+                    'X_PASSWORD': that.get('password')
+                },
+                '',
+                successWrapper,
+                error
+            );  
+        },
+
+        /**
+         * Changes the password
+         */       
+        setNewPassword : function() {
+
+        },
+    });
+
+return User;
+
+})();
 
 /**
  * For node-unit test

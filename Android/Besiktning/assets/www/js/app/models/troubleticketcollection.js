@@ -9,52 +9,66 @@
  * @license Commercial - Copyright 2013 Gizur AB
  * @see http://google-styleguide.googlecode.com/svn/trunk/javascriptguide.xml
  */
-
-var TroubleTicketCollection = Stapes.subclass({ 
-
-    /**
-     * @constructor
-     */ 
-    constructor : function() {
-
-    }, 
+ 
+var TroubleTicketCollection = (function(){
 
     /**
-     * Fetches troubletickets from server and populates 'this' object
-     * with all the received troubletickets
-     *
-     * @param {asset} ast filter for fetching trouble tickets
-     * @return {object} key value pairs of lists
-     */       
-    getDamagedTroubleTicketsByAsset : function(ast, successCb, errorCb) {
-        var that = this;
+     * Private Variables
+     */
+    var usr; //instance of User Class
 
-        var successCbWrapper = function(data){
-            $.each(data.result, function(index, item){
-                var tt = new TroubleTicket();
-                tt.set(item);
-                that.push(tt);
-            });
-            successCb(data);
-        };
+    /**
+     * Class Definition
+     */
+    var TroubleTicketCollection = Stapes.subclass({ 
 
-        var errorCbWrapper = function(jqxhr, status, er){
-            errorCb(jqxhr, status, er);
-        };
+        /**
+         * @constructor
+         */ 
+        constructor : function(aUsr) {
+            usr = aUsr;
+        }, 
 
-        $.ajax({
-            type: 'GET',
-            url: usr.get('_url') + 'HelpDesk/damaged/0000/00/' + ast.get('assetname') + '/all',
-            beforeSend: function(xhr){
-                xhr.setRequestHeader('X_USERNAME', usr.get('username'));
-                xhr.setRequestHeader('X_PASSWORD', usr.get('password'));
-                xhr.setRequestHeader('X_CLIENTID', usr.get('client_id'));
-            },          
-            success: successCbWrapper,
-            error: errorCbWrapper
-        });        
-    }
-});
+        /**
+         * Fetches troubletickets from server and populates 'this' object
+         * with all the received troubletickets
+         *
+         * @param {asset} ast filter for fetching trouble tickets
+         * @return {object} key value pairs of lists
+         */       
+        getDamagedTroubleTicketsByAsset : function(ast, successCb, errorCb) {
+            var that = this;
+
+            var successCbWrapper = function(data){
+                $.each(data.result, function(index, item){
+                    var tt = new TroubleTicket();
+                    tt.set(item);
+                    that.push(tt);
+                });
+                successCb(data);
+            };
+
+            var errorCbWrapper = function(jqxhr, status, er){
+                errorCb(jqxhr, status, er);
+            };
+
+            usr.send(
+                'GET', 
+                'HelpDesk/damaged/0000/00/' + ast.get('assetname') + '/all',
+                {
+                    'X_USERNAME': usr.get('username'),
+                    'X_PASSWORD': usr.get('password')
+                },
+                '',
+                successCbWrapper,
+                errorCbWrapper
+            );        
+        }
+    });
+
+    return TroubleTicketCollection;
+
+})();
 
 /**
  * For node-unit test

@@ -15,6 +15,12 @@ node_unit = true;
 Stapes = require('../Android/Besiktning/assets/www/js/lib/stapes.js').Stapes;
 $ = require('jquery');
 
+//Config
+Config = require('../Android/Besiktning/assets/www/js/app/config.js').Config;
+
+//Util
+Request = require('../Android/Besiktning/assets/www/js/app/util/request.js').Request;
+
 //Models
 Asset = require('../Android/Besiktning/assets/www/js/app/models/asset.js').Asset;
 AssetCollection = require('../Android/Besiktning/assets/www/js/app/models/assetcollection.js').AssetCollection;
@@ -22,8 +28,10 @@ TroubleTicket = require('../Android/Besiktning/assets/www/js/app/models/troublet
 TroubleTicketCollection = require('../Android/Besiktning/assets/www/js/app/models/troubleticketcollection.js').TroubleTicketCollection;
 User = require('../Android/Besiktning/assets/www/js/app/models/user.js').User;
 
-//SetUp User
-usr = new User();
+//Environment SetUp
+req = new Request(Config.url, Config.client_id);
+
+usr = new User(req);
 usr.set('username', 'mobile_user@gizur.com');
 usr.set('password', 'ivry34aq');
 
@@ -56,8 +64,8 @@ exports.troubleticketcollection = {
         test.done();
     },
     "got Trouble Ticket by Asset" : function(test) {
-        var ac = new AssetCollection();
-        var ttc = new TroubleTicketCollection();
+        var ac = new AssetCollection(usr);
+        var ttc = new TroubleTicketCollection(usr);
 
         test.expect(1);
 

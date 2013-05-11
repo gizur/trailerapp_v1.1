@@ -15,13 +15,21 @@ node_unit = true;
 Stapes = require('../Android/Besiktning/assets/www/js/lib/stapes.js').Stapes;
 $ = require('jquery');
 
+//Config
+Config = require('../Android/Besiktning/assets/www/js/app/config.js').Config;
+
+//Util
+Request = require('../Android/Besiktning/assets/www/js/app/util/request.js').Request;
+
 //Models
 DocCollection = require('../Android/Besiktning/assets/www/js/app/models/doccollection.js').DocCollection;
 Damage = require('../Android/Besiktning/assets/www/js/app/models/damage.js').Damage;
 User = require('../Android/Besiktning/assets/www/js/app/models/user.js').User;
 
-//SetUp User
-usr = new User();
+//Environment SetUp
+req = new Request(Config.url, Config.client_id);
+
+usr = new User(req);
 usr.set('username', 'mobile_user@gizur.com');
 usr.set('password', 'ivry34aq');
 
@@ -50,7 +58,7 @@ exports.Damage = {
         test.done();
     },
     "got enum damage type" : function(test) {
-        var dmg = new Damage();
+        var dmg = new Damage(usr);
 
         var success = function(data){
 
@@ -67,7 +75,7 @@ exports.Damage = {
         dmg.getEnumDamageType(success, error);
     },
     "got enum damage position" : function(test) {
-        var dmg = new Damage();
+        var dmg = new Damage(usr);
 
         var success = function(data){
 
@@ -84,7 +92,7 @@ exports.Damage = {
         dmg.getEnumDamagePosition(success, error);
     }, 
     "got enum drivercauseddamage" : function(test) {
-        var dmg = new Damage();
+        var dmg = new Damage(usr);
 
         var success = function(data){
 

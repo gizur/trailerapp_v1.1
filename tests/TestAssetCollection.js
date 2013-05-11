@@ -15,13 +15,21 @@ node_unit = true;
 Stapes = require('../Android/Besiktning/assets/www/js/lib/stapes.js').Stapes;
 $ = require('jquery');
 
+//Config
+Config = require('../Android/Besiktning/assets/www/js/app/config.js').Config;
+
+//Util
+Request = require('../Android/Besiktning/assets/www/js/app/util/request.js').Request;
+
 //Models
 Asset = require('../Android/Besiktning/assets/www/js/app/models/asset.js').Asset;
 AssetCollection = require('../Android/Besiktning/assets/www/js/app/models/assetcollection.js').AssetCollection;
 User = require('../Android/Besiktning/assets/www/js/app/models/user.js').User;
 
-//SetUp User
-usr = new User();
+//Environment SetUp
+req = new Request(Config.url, Config.client_id);
+
+usr = new User(req);
 usr.set('username', 'mobile_user@gizur.com');
 usr.set('password', 'ivry34aq');
 
@@ -54,7 +62,7 @@ exports.assetcollection = {
         test.done();
     },
     "got assets list" : function(test){
-        var ac = new AssetCollection();
+        var ac = new AssetCollection(usr);
         var trailertype = 'Hyrtrailer';
 
         var success = function(data){

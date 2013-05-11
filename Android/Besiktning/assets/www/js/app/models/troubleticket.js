@@ -9,99 +9,132 @@
  * @see http://google-styleguide.googlecode.com/svn/trunk/javascriptguide.xml
  */
 
-var TroubleTicket = Stapes.subclass({
-    constructor : function() {
-        this.set({
-            'asset' : new Asset(),
-            'sealed' : '',
-            'damage' : false,
-            'place' : '',
-            'enum_place' : {},
-            'enum_damage' : {}
-        });
-    },
+/**
+ * 
+ * Dependency (should be globally available)
+ *  |
+ *  |-Asset Class
+ *  |-TroubleTicket Class
+ *  |-Object usr (instanceof User Class)
+ *  |-Object req (instanceof Request Class)
+ */
+
+var TroubleTicket = (function() {
 
     /**
-     * Clones 'this' object and returns a new one
-     * @return {TroubleTicket} new object similar to this one
-     */    
-    clone : function() {
-        var tt = new TroubleTicket();
-        var tt_attrs = this.getAll();
-        tt_attrs.damage = false;  
-        tt.set(tt_attrs);
-        return tt;
-    },
-
-    /**
-     * Fetches data picklist of Place also caches it in 
-     * local storage.
-     * @return {object} key value pairs of lists
+     * Private Variables
      */
-    getEnumPlace: function(successCb, errorCb) {
-        var that = this;
-
-        var successCbWrapper = function(data){
-            that.set('enum_place', data.result);
-            successCb(data);
-        };
-
-        var errorCbWrapper = function(jqxhr, status, er){
-            errorCb(jqxhr, status, er);
-        };
-
-        $.ajax({
-            type: 'GET',
-            url: usr.get('_url') + 'HelpDesk/damagereportlocation',
-            beforeSend: function(xhr){
-                xhr.setRequestHeader('X_USERNAME', usr.get('username'));
-                xhr.setRequestHeader('X_PASSWORD', usr.get('password'));
-                xhr.setRequestHeader('X_CLIENTID', usr.get('client_id'));
-            },          
-            success: successCbWrapper,
-            error: errorCbWrapper
-        }); 
-    },
+    var usr; //instance of User Class
 
     /**
-     * Fetches data picklist of Sealed also caches it in 
-     * local storage.
-     * @return {object} key value pairs of lists
+     * Class Definition
      */
-    getEnumSealed: function(successCb, errorCb) {
-        var that = this;
+    var TroubleTicket = Stapes.subclass({
+        /**
+         * Creates Object of TroubleTicket Class
+         *
+         * @param aReq Request Class instance, the API and client to make request to
+         * @param aUsr User Class instance, the user who is making the request
+         *
+         * @return {TroubleTicket} new object
+         */         
+        constructor : function(aUsr) {
 
-        var successCbWrapper = function(data){
-            that.set('enum_sealed', data.result);
-            successCb(data);
-        };
+            usr = aUsr;
 
-        var errorCbWrapper = function(jqxhr, status, er){
-            errorCb(jqxhr, status, er);
-        };
+            this.set({
+                'asset' : new Asset(),
+                'sealed' : '',
+                'damage' : false,
+                'place' : '',
+                'enum_place' : {},
+                'enum_damage' : {}
+            });
+        },
 
-        $.ajax({
-            type: 'GET',
-            url: usr.get('_url') + 'HelpDesk/sealed',
-            beforeSend: function(xhr){
-                xhr.setRequestHeader('X_USERNAME', usr.get('username'));
-                xhr.setRequestHeader('X_PASSWORD', usr.get('password'));
-                xhr.setRequestHeader('X_CLIENTID', usr.get('client_id'));
-            },          
-            success: successCbWrapper,
-            error: errorCbWrapper
-        });
-    },
+        /**
+         * Clones 'this' object and returns a new one
+         * @return {TroubleTicket} new object similar to this one
+         */    
+        clone : function() {
+            var tt = new TroubleTicket();
+            var tt_attrs = this.getAll();
+            tt_attrs.damage = false;  
+            tt.set(tt_attrs);
+            return tt;
+        },
 
-    /**
-     * Saves 'this' object to server
-     * @return {object} key value pairs of lists
-     */
-    save: function() {
+        /**
+         * Fetches data picklist of Place also caches it in 
+         * local storage.
+         * @return {object} key value pairs of lists
+         */
+        getEnumPlace: function(successCb, errorCb) {
+            var that = this;
 
-    }   
-});
+            var successCbWrapper = function(data){
+                that.set('enum_place', data.result);
+                successCb(data);
+            };
 
+            var errorCbWrapper = function(jqxhr, status, er){
+                errorCb(jqxhr, status, er);
+            };
+
+            usr.send(
+                'GET', 
+                'HelpDesk/damagereportlocation',
+                {
+                    'X_USERNAME': usr.get('username'),
+                    'X_PASSWORD': usr.get('password')
+                },
+                '',
+                successCbWrapper,
+                errorCbWrapper
+            );
+        },
+
+        /**
+         * Fetches data picklist of Sealed also caches it in 
+         * local storage.
+         * @return {object} key value pairs of lists
+         */
+        getEnumSealed: function(successCb, errorCb) {
+            var that = this;
+
+            var successCbWrapper = function(data){
+                that.set('enum_sealed', data.result);
+                successCb(data);
+            };
+
+            var errorCbWrapper = function(jqxhr, status, er){
+                errorCb(jqxhr, status, er);
+            };
+
+            usr.send(
+                'GET', 
+                'HelpDesk/sealed',
+                {
+                    'X_USERNAME': usr.get('username'),
+                    'X_PASSWORD': usr.get('password')
+                },
+                '',
+                successCbWrapper,
+                errorCbWrapper
+            );
+        },
+
+        /**
+         * Saves 'this' object to server
+         * @return {object} key value pairs of lists
+         */
+        save: function() {
+
+        }   
+    });
+
+    return TroubleTicket;
+})();
 
 /**
  * For node-unit test

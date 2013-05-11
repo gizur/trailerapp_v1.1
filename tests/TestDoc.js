@@ -14,7 +14,7 @@ node_unit = true;
 Stapes = require('../Android/Besiktning/assets/www/js/lib/stapes.js').Stapes;
 Doc = require('../Android/Besiktning/assets/www/js/app/models/doc.js').Doc;
 
-exports.Asset = {
+exports.Doc = {
     "has properties" : function(test){
         var d = new Doc();
 

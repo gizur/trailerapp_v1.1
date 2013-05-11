@@ -15,14 +15,22 @@ node_unit = true;
 Stapes = require('../Android/Besiktning/assets/www/js/lib/stapes.js').Stapes;
 $ = require('jquery');
 
+//Config
+Config = require('../Android/Besiktning/assets/www/js/app/config.js').Config;
+
+//Util
+Request = require('../Android/Besiktning/assets/www/js/app/util/request.js').Request;
+
 //Models
 Asset = require('../Android/Besiktning/assets/www/js/app/models/asset.js').Asset;
 Damage = require('../Android/Besiktning/assets/www/js/app/models/damage.js').Damage;
 TroubleTicket = require('../Android/Besiktning/assets/www/js/app/models/troubleticket.js').TroubleTicket;
 User = require('../Android/Besiktning/assets/www/js/app/models/user.js').User;
 
-//SetUp User
-usr = new User();
+//Environment SetUp
+req = new Request(Config.url, Config.client_id);
+
+usr = new User(req);
 usr.set('username', 'mobile_user@gizur.com');
 usr.set('password', 'ivry34aq');
 
@@ -53,7 +61,7 @@ exports.troubleticket = {
         test.done();
     },
     "got picklist sealed" : function(test) {
-        var tt = new TroubleTicket();
+        var tt = new TroubleTicket(usr);
 
         var success = function(data){
             test.ok(true);
@@ -68,7 +76,7 @@ exports.troubleticket = {
         tt.getEnumSealed(success, error);
     },
     "got picklist place" : function(test) {
-        var tt = new TroubleTicket();
+        var tt = new TroubleTicket(usr);
 
         var success = function(data){
             test.ok(true);

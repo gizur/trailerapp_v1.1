@@ -10,51 +10,65 @@
  * @see http://google-styleguide.googlecode.com/svn/trunk/javascriptguide.xml
  */
 
-var AssetCollection = Stapes.subclass({
+var AssetCollection = (function() {
 
     /**
-     * @constructor
-     */ 
-    constructor : function() {
-
-    },
+     * Private Variables
+     */
+    var usr; //instance of User Class
 
     /**
-     * Fetches troubletickets from server and populates 'this' object
-     * with all the received troubletickets
-     *
-     * @param {string} asset_type filter for fetching trouble tickets
-     * @return {object} key value pairs of lists
-     */       
-    getAssets : function(successCb, errorCb) {
-        var that = this;
+     * Class Definition
+     */
+    var AssetCollection = Stapes.subclass({
 
-        var successCbWrapper = function(data){
-            $.each(data.result, function(index, item){
-                var ast = new Asset();
-                ast.set(item);
-                that.push(ast);
-            });
-            successCb(data);
-        };
+        /**
+         * @constructor
+         */ 
+        constructor : function(aUsr) {
+            usr = aUsr;
+        },
 
-        var errorCbWrapper = function(jqxhr, status, er){
-            errorCb(jqxhr, status, er);
-        };
+        /**
+         * Fetches troubletickets from server and populates 'this' object
+         * with all the received troubletickets
+         *
+         * @param {string} asset_type filter for fetching trouble tickets
+         * @return {object} key value pairs of lists
+         */       
+        getAssets : function(successCb, errorCb) {
+            var that = this;
 
-        $.ajax({
-            type: 'GET',
-            url: usr.get('_url') + 'Assets',
-            beforeSend: function(xhr){
-                xhr.setRequestHeader('X_USERNAME', usr.get('username'));
-                xhr.setRequestHeader('X_PASSWORD', usr.get('password'));
-                xhr.setRequestHeader('X_CLIENTID', usr.get('client_id'));
-            },          
-            success: successCbWrapper,
-            error: errorCbWrapper
-        });
-    }
-});
+            var successCbWrapper = function(data){
+                $.each(data.result, function(index, item){
+                    var ast = new Asset();
+                    ast.set(item);
+                    that.push(ast);
+                });
+                successCb(data);
+            };
+
+            var errorCbWrapper = function(jqxhr, status, er){
+                errorCb(jqxhr, status, er);
+            };
+
+
+            usr.send(
+                'GET', 
+                'Assets',
+                {
+                    'X_USERNAME': usr.get('username'),
+                    'X_PASSWORD': usr.get('password')
+                },
+                '',
+                successCbWrapper,
+                errorCbWrapper
+            );
+        }
+    });
+
+    return AssetCollection;
+})();
 
 /**
  * For node-unit test
