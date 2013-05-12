@@ -16,6 +16,8 @@ var AssetCollection = (function() {
      * Private Variables
      */
     var usr; //instance of User Class
+    var storage;
+    var lg;
 
     /**
      * Class Definition
@@ -26,7 +28,29 @@ var AssetCollection = (function() {
          * @constructor
          */ 
         constructor : function(aUsr) {
+
+            lg = new Logger('DEBUG', 'AssetCollection');
+            lg.log('TRACE', '#constructor start');
+
             usr = aUsr;
+
+            storage  = window.localStorage;
+
+            var assets = storage.getItem('assets');
+
+            if (assets != false && assets !=null) {
+
+                lg.log('DEBUG', 'assets from cache ' + assets);
+
+                var assets = JSON.parse(assets);
+
+                $.each(assets, function(index, item){
+                    var ast = new Asset();
+                    ast.set(item);
+                    that.push(ast);
+                });                
+            }
+            lg.log('TRACE', '#constructor end');
         },
 
         /**
@@ -37,21 +61,28 @@ var AssetCollection = (function() {
          * @return {object} key value pairs of lists
          */       
         getAssets : function(successCb, errorCb) {
+            lg.log('TRACE', '#getAssets');
+
             var that = this;
 
             var successCbWrapper = function(data){
+
+                storage.setItem('assets', JSON.stringify(data.result));
+
                 $.each(data.result, function(index, item){
                     var ast = new Asset();
                     ast.set(item);
                     that.push(ast);
                 });
-                successCb(data);
+
+                if (successCb != undefined && typeof successCb == 'function')
+                    successCb(data);
             };
 
             var errorCbWrapper = function(jqxhr, status, er){
-                errorCb(jqxhr, status, er);
+                if (errorCb != undefined && typeof errorCb == 'function')
+                    errorCb(jqxhr, status, er);
             };
-
 
             usr.send(
                 'GET', 

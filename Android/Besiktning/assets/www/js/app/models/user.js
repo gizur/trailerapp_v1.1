@@ -79,18 +79,38 @@ var User = (function(){
                 //Saving user attr to cache
                 storage.setItem('user', JSON.stringify(that.getAll()));            
 
-                lg.log('DEBUG', 'authenticate#successWrapper#attributes saved to cache: ' + JSON.stringify(this.getAll()));                
+                lg.log('DEBUG', 'authenticate#successWrapper#attributes saved to cache: ' + JSON.stringify(that.getAll()));                
 
+                //execute caller's callback
                 success(data);
 
                 lg.log('TRACE', 'authenticate#successWrapper# exit');
             };
+
+            var errorWrapper = function(jqxhr, status, er){
+
+                lg.log('TRACE', 'authenticate#errorWrapper# enter');                                
+
+                // Set flag authenticated to true
+                that.set('authenticated', false);
+
+                //Saving user attr to cache
+                storage.setItem('user', JSON.stringify(that.getAll()));            
+
+                lg.log('DEBUG', 'authenticate#errorWrapper#attributes saved to cache: ' + JSON.stringify(that.getAll()));                
+
+                //execute caller's callback
+                error(jqxhr, status, er);
+
+                lg.log('TRACE', 'authenticate#errorWrapper# exit');
+            };            
 
             //Saving user attr to cache
             storage.setItem('user', JSON.stringify(that.getAll()));            
 
             lg.log('DEBUG', 'authenticate#attributes saved to cache: ' + JSON.stringify(this.getAll()));
 
+            //Send the request to authenticate
             req.send(
                 'POST',
                 'Authenticate/login',
@@ -100,7 +120,7 @@ var User = (function(){
                 },
                 '',
                 successWrapper,
-                error
+                errorWrapper
             );  
         },
 

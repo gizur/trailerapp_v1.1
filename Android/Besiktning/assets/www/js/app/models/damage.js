@@ -15,6 +15,7 @@ var Damage = (function() {
      * Private Variables
      */
     var usr; //instance of User Class
+    var storage;
 
     /**
      * Class Definition
@@ -28,15 +29,29 @@ var Damage = (function() {
       
             usr = aUsr;
 
+            storage = window.localStorage;
+
             this.set({
                 'damagetype' : '',
                 'damageposition' : '',
                 'drivercauseddamage' : '',
-                'enum_damagetype' : '',
-                'enum_damageposition' : '',
-                'enum_drivercauseddamage' : '',
+                'enum_damagetype' : {},
+                'enum_damageposition' : {},
+                'enum_drivercauseddamage' : {},
                 'docs' : new DocCollection()
             });
+
+            if (storage.getItem('enum_damagetype') !=  false) {
+                this.set('enum_damagetype', JSON.parse(storage.getItem('enum_damagetype')));
+            }
+
+            if (storage.getItem('enum_damageposition') !=  false) {
+                this.set('enum_damageposition', JSON.parse(storage.getItem('enum_damageposition')));
+            }   
+            
+            if (storage.getItem('enum_drivercauseddamage') !=  false) {
+                this.set('enum_drivercauseddamage', JSON.parse(storage.getItem('enum_drivercauseddamage')));
+            }                       
         },
 
         /**
@@ -48,11 +63,15 @@ var Damage = (function() {
 
             var successCbWrapper = function(data){
                 that.set('enum_damagetype', data.result);
-                successCb(data);
+                storage.setItem('enum_damagetype', JSON.stringify(data.result));
+
+                if (successCb != undefined && typeof successCb == 'function')                
+                    successCb(data);
             };
 
             var errorCbWrapper = function(jqxhr, status, er){
-                errorCb(jqxhr, status, er);
+                if (errorCb != undefined && typeof errorCb == 'function')
+                    errorCb(jqxhr, status, er);
             };
 
             usr.send(
@@ -76,11 +95,15 @@ var Damage = (function() {
 
             var successCbWrapper = function(data){
                 that.set('enum_damageposition', data.result);
-                successCb(data);
+                storage.setItem('enum_damageposition', JSON.stringify(data.result));
+
+                if (successCb != undefined && typeof successCb == 'function')                  
+                    successCb(data);
             };
 
             var errorCbWrapper = function(jqxhr, status, er){
-                errorCb(jqxhr, status, er);
+                if (errorCb != undefined && typeof errorCb == 'function')
+                    errorCb(jqxhr, status, er);
             };
 
             usr.send(
@@ -103,12 +126,16 @@ var Damage = (function() {
             var that = this;
 
             var successCbWrapper = function(data){
-                that.set('enum_drivercauseddamage', data.result);          
-                successCb(data);
+                that.set('enum_drivercauseddamage', data.result);  
+                storage.setItem('enum_drivercauseddamage', JSON.stringify(data.result));
+
+                if (successCb != undefined && typeof successCb == 'function')                          
+                    successCb(data);
             };
 
             var errorCbWrapper = function(jqxhr, status, er){
-                errorCb(jqxhr, status, er);
+                if (errorCb != undefined && typeof errorCb == 'function')
+                    errorCb(jqxhr, status, er);
             };
 
             usr.send(

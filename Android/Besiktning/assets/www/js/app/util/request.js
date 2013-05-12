@@ -18,11 +18,15 @@ var Request = (function() {
     var client_id;
     var storage;
 
+    var lg;
+
     /**
      * Class Definition
      */
     var Request = Stapes.subclass({
         constructor : function(aBaseUrl, aClientId) {
+
+            lg = new Logger('DEBUG', 'request');
 
             storage = window.localStorage;
 
@@ -54,6 +58,7 @@ var Request = (function() {
             var successCbWrapper = function(data){
                 //Login to handle special cases should be here
                 //...
+                lg.log('DEBUG', 'Request#send#successCbWrapper : ' + JSON.stringify(data));
 
                 $.mobile.loading( 'hide' );
 
@@ -63,9 +68,10 @@ var Request = (function() {
             var errorCbWrapper = function(jqxhr, status, er){
                 //Login to handle special cases should be here
                 //...
+                lg.log('DEBUG', 'Request#send#errorCbWrapper : ' + jqxhr.responseText);
 
                 if (jqxhr.status == 0) {
-                    $('#dialog div[data-role=header]').html('<h1>Error</h1>');
+                    $('#dialog div[data-role=header]').html('<h3>Error</h3>');
                     $('#dialog div[data-role=content]').children().first().html('Please check your internet connection and try again.');
                     $('#a_dialog').click();
                 }

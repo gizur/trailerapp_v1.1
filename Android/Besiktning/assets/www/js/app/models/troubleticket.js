@@ -25,6 +25,7 @@ var TroubleTicket = (function() {
      * Private Variables
      */
     var usr; //instance of User Class
+    var storage; 
 
     /**
      * Class Definition
@@ -40,6 +41,8 @@ var TroubleTicket = (function() {
          */         
         constructor : function(aUsr) {
 
+            storage = window.localStorage;
+
             usr = aUsr;
 
             this.set({
@@ -48,8 +51,17 @@ var TroubleTicket = (function() {
                 'damage' : false,
                 'place' : '',
                 'enum_place' : {},
-                'enum_damage' : {}
+                'enum_sealed' : {}
             });
+
+            if (storage.getItem('enum_place') !=  false) {
+                this.set('enum_place', JSON.parse(storage.getItem('enum_place')));
+            }
+
+            if (storage.getItem('enum_sealed') !=  false) {
+                this.set('enum_sealed', JSON.parse(storage.getItem('enum_damage')));
+            }            
+
         },
 
         /**
@@ -74,11 +86,15 @@ var TroubleTicket = (function() {
 
             var successCbWrapper = function(data){
                 that.set('enum_place', data.result);
-                successCb(data);
+                storage.setItem('enum_place', JSON.stringify(data.result));
+
+                if (successCb != undefined && typeof successCb == 'function')
+                    successCb(data);
             };
 
             var errorCbWrapper = function(jqxhr, status, er){
-                errorCb(jqxhr, status, er);
+                if (errorCb != undefined && typeof errorCb == 'function')
+                    errorCb(jqxhr, status, er);              
             };
 
             usr.send(
@@ -104,11 +120,15 @@ var TroubleTicket = (function() {
 
             var successCbWrapper = function(data){
                 that.set('enum_sealed', data.result);
-                successCb(data);
+                storage.setItem('enum_sealed', JSON.stringify(data.result));
+
+                if (successCb != undefined && typeof successCb == 'function')
+                    successCb(data);
             };
 
             var errorCbWrapper = function(jqxhr, status, er){
-                errorCb(jqxhr, status, er);
+                if (errorCb != undefined && typeof errorCb == 'function')
+                    errorCb(jqxhr, status, er);
             };
 
             usr.send(
