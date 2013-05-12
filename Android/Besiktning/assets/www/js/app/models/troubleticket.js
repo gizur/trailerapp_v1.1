@@ -46,7 +46,7 @@ var TroubleTicket = (function() {
             usr = aUsr;
 
             this.set({
-                'asset' : new Asset(),
+                'asset' : new Asset(usr),
                 'sealed' : '',
                 'damage' : false,
                 'place' : '',
@@ -54,12 +54,12 @@ var TroubleTicket = (function() {
                 'enum_sealed' : {}
             });
 
-            if (storage.getItem('enum_place') !=  false) {
+            if (storage.getItem('enum_place') !=  false && storage.getItem('enum_place')!=null) {
                 this.set('enum_place', JSON.parse(storage.getItem('enum_place')));
             }
 
-            if (storage.getItem('enum_sealed') !=  false) {
-                this.set('enum_sealed', JSON.parse(storage.getItem('enum_damage')));
+            if (storage.getItem('enum_sealed') !=  false && storage.getItem('enum_sealed')!=null) {
+                this.set('enum_sealed', JSON.parse(storage.getItem('enum_sealed')));
             }            
 
         },

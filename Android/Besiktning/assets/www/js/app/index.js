@@ -35,10 +35,21 @@
     */
     $(document).delegate('#one', 'pageshow', function () {
         //Environment SetUp
-        var lg = new Logger('DEBUG', 'gta-page#five$pageshow'); 
-        lg.log('TRACE', 'page loaded');
+        var lg_one = new Logger('DEBUG', 'gta-page#one$pageshow'); 
+        lg_one.log('TRACE', 'page loaded');
 
-        //Your code for each page load here
+        var usr = new User();
+
+        /**
+         * ------------------
+         * Event Bindings
+         * ------------------
+         */
+
+        /**
+         * Slider widget
+         */
+
         $('.bxslider-one').bxSlider({
               infiniteLoop: false,
               hideControlOnEnd: true,
@@ -47,6 +58,111 @@
               pagerType: 'short',         
               useCSS:false
         });
+
+        /**
+         * OnChange Event for trailer type
+         * load matching assets into trailerid select menu
+         */
+
+        $('#one select#trailertype').unbind('change').change(function(){
+            lg_one.log('TRACE', 'trailertype change event start');
+
+            /**
+             * Create the assetcollection object
+             * this object automatically loads the cached
+             * list of assets
+             */
+            var ac = new AssetCollection(usr);
+
+            lg_one.log('TRACE', 'assets filtered START');
+
+            /**
+             * Use stapes method to filter out related trailer ids
+             */
+            var assets = ac.filter(function(item, key) {
+                return item.get('trailertype') === $('#one select#trailertype option:selected').text();
+            });
+
+            lg_one.log('DEBUG', 'assets filtered list : ' + JSON.stringify(assets));
+            
+            lg_one.log('TRACE', 'assets filtered END');
+
+            /**
+             * Load the filtered trailer ids into the select menu
+             * and refresh both trailer id and trailer type select menu
+             * as jquery mobile needs this, else it does not reflect 
+             * on the UI.
+             */
+            $('#one select#trailerid').html('');
+            for (var index in assets) {
+                    $('#trailerid').append('<option value="' + assets[index].get('assetname') + '">' + assets[index].get('assetname') + '</option>');
+            }
+            $('#one select#trailerid').selectmenu('refresh');
+            $('#one select#trailertype').selectmenu('refresh');
+
+            lg_one.log('trailertype change event end');
+        });        
+
+        /**
+         * -------------------
+         * Initialize the page
+         * -------------------
+         */
+
+        /**
+         * Create a new Asset object this object should have a cached
+         * enum list of trailer types
+         */
+        var ast = new Asset(usr);
+        var enum_trailertype = ast.get('enum_trailertype');
+
+        lg_one.log('DEBUG', 'enum_trailertype : ' + JSON.stringify(enum_trailertype));
+
+        /**
+         * Load the trailer types into the select menu
+         * and refresh UI.
+         */
+        $('#one select#trailertype').html('');
+        for (var index in enum_trailertype) {
+            $('#one select#trailertype').append('<option value="' + enum_trailertype[index].value + '">' + enum_trailertype[index].label + '</option>');
+        }
+        $('#one select#trailertype').selectmenu('refresh');
+
+        /**
+         * Create a new TroubleTicekt object this object should have a cached
+         * enum sealed
+         */
+        var tt = new TroubleTicket(usr);
+        var enum_sealed = tt.get('enum_sealed');
+        var enum_place = tt.get('enum_place');
+
+        lg_one.log('DEBUG', 'enum_sealed : ' + JSON.stringify(enum_sealed));
+
+        /**
+         * Load the trailer types into the select menu
+         * and refresh UI.
+         */
+        $('#one #sealed').html('');
+        $('#one #sealed').append('<legend>Plomerad</legend>');
+        for (var index in enum_sealed) {           
+            $('#one #sealed').append('<input id="radio' + index + '" name="sealed" value="' + enum_sealed[index].value + '" type="radio">');
+            $('#one #sealed').append('<label for="radio' + index + '">' +  enum_sealed[index].label + '</label>');
+        }
+        $('#one #sealed').trigger('create');
+        $('#one #sealed').controlgroup();   
+
+        lg_one.log('DEBUG', 'enum_place : ' + JSON.stringify(enum_place));
+
+        /**
+         * Load the trailer types into the select menu
+         * and refresh UI.
+         */
+        $('#one select#place').html('');
+        for (var index in enum_place) {
+            $('#one select#place').append('<option value="' + enum_place[index].value + '">' + enum_place[index].label + '</option>');
+        }
+        $('#one select#place').selectmenu('refresh');                    
+
     });
 
     $(document).delegate('#four', 'pageshow', function () {
@@ -106,11 +222,11 @@
 
     $(document).delegate('#settings', 'pageshow', function () {
         //Environment SetUp
-        var lg = new Logger('TRACE','gta-page#settings$pageshow'); 
+        var lg_settings = new Logger('TRACE','gta-page#settings$pageshow'); 
         var req = new Request(Config.url, Config.client_id);
         var usr = new User(req);
 
-        lg.log('TRACE', 'page loaded');
+        lg_settings.log('TRACE', 'page loaded');
 
         //Load values 
         $('#settings_username').val(usr.get('username'));
@@ -118,19 +234,20 @@
         $('#settings_client_id').val(req.getClientId());
 
         $('#settings_save').unbind('click').bind('click', function(){
-            lg.log('TRACE', ' username: ' + $('#settings_username').val());
-            lg.log('TRACE', ' password: ' + $('#settings_password').val());
-            lg.log('TRACE', ' client_id: ' + $('#settings_client_id').val());
+
+            lg_settings.log('TRACE', ' username: ' + $('#settings_username').val());
+            lg_settings.log('TRACE', ' password: ' + $('#settings_password').val());
+            lg_settings.log('TRACE', ' client_id: ' + $('#settings_client_id').val());
 
             var success = function(data){
-                lg.log('TRACE', ' successfully authenticated');
+                lg_settings.log('TRACE', ' successfully authenticated');
 
                 var tt = new TroubleTicket(usr);
                 var dmg = new Damage(usr);
                 var ast = new Asset(usr);
                 var ac = new AssetCollection(usr);
 
-                lg.log('TRACE', ' starting to cache');
+                lg_settings.log('TRACE', ' starting to cache');
 
                 //start caching picklists
                 tt.getEnumPlace();
@@ -140,6 +257,9 @@
                 dmg.getEnumDamagePosition();
                 dmg.getEnumDriverCausedDamage();
 
+                lg_settings.log('TRACE', ' type of ast ' + (typeof ast));
+
+                ast.getEnumTrailerType();
                 ac.getAssets();
 
                 //Show success message
@@ -149,7 +269,7 @@
             };
 
             var error = function(jqxhr, status, er){
-                lg.log('TRACE', ' error ');
+                lg_settings.log('TRACE', ' error ');
 
                 var data = JSON.parse(jqxhr.responseText);
                 var message;
@@ -165,7 +285,7 @@
                 $('#a_dialog').click();
 
             };
-            
+
             //Saving the client id to cache
             req.setClientId($('#settings_client_id').val());
 
@@ -175,11 +295,10 @@
 
             //This caches both the username, password and 
             //authenticated flag before and after authenticating
-            //
             usr.authenticate(success, error);
         });
 
-        lg.log('TRACE', '#settings_save click binding done.');
+        lg_settings.log('TRACE', '#settings_save click binding done.');
 
     });
 

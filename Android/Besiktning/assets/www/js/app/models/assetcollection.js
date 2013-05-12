@@ -37,6 +37,7 @@ var AssetCollection = (function() {
             storage  = window.localStorage;
 
             var assets = storage.getItem('assets');
+            var that = this;
 
             if (assets != false && assets !=null) {
 
@@ -45,7 +46,7 @@ var AssetCollection = (function() {
                 var assets = JSON.parse(assets);
 
                 $.each(assets, function(index, item){
-                    var ast = new Asset();
+                    var ast = new Asset(usr);
                     ast.set(item);
                     that.push(ast);
                 });                

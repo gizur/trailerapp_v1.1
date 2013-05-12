@@ -15,7 +15,7 @@ var User = (function(){
      */
     var req; //request object
     var storage;  //cache object
-    var lg; //Logger object
+    var lg_user; //Logger object
 
     var User = Stapes.subclass({
 
@@ -24,7 +24,7 @@ var User = (function(){
          */ 
         constructor : function(aReq) {
 
-            lg = new Logger('DEBUG','js/model/user'); 
+            lg_user = new Logger('DEBUG','js/models/user'); 
 
             req = aReq;
 
@@ -32,7 +32,7 @@ var User = (function(){
 
             var attrs = storage.getItem('user');
 
-            lg.log('DEBUG', 'stored attrs: ' + attrs);
+            lg_user.log('DEBUG', 'stored attrs: ' + attrs);
 
             if (attrs) {
 
@@ -53,7 +53,7 @@ var User = (function(){
                 }); 
             }
 
-            lg.log('DEBUG', 'effective attrs: ' + JSON.stringify(this.getAll()));
+            lg_user.log('DEBUG', 'effective attrs: ' + JSON.stringify(this.getAll()));
         },
 
         /**
@@ -71,7 +71,7 @@ var User = (function(){
 
             var successWrapper = function(data){
 
-                lg.log('TRACE', 'authenticate#successWrapper# enter');                                
+                lg_user.log('TRACE', 'authenticate#successWrapper# enter');                                
 
                 // Set flag authenticated to true
                 that.set('authenticated', true);
@@ -79,17 +79,17 @@ var User = (function(){
                 //Saving user attr to cache
                 storage.setItem('user', JSON.stringify(that.getAll()));            
 
-                lg.log('DEBUG', 'authenticate#successWrapper#attributes saved to cache: ' + JSON.stringify(that.getAll()));                
+                lg_user.log('DEBUG', 'authenticate#successWrapper#attributes saved to cache: ' + JSON.stringify(that.getAll()));                
 
                 //execute caller's callback
                 success(data);
 
-                lg.log('TRACE', 'authenticate#successWrapper# exit');
+                lg_user.log('TRACE', 'authenticate#successWrapper# exit');
             };
 
             var errorWrapper = function(jqxhr, status, er){
 
-                lg.log('TRACE', 'authenticate#errorWrapper# enter');                                
+                lg_user.log('TRACE', 'authenticate#errorWrapper# enter');                                
 
                 // Set flag authenticated to true
                 that.set('authenticated', false);
@@ -97,18 +97,18 @@ var User = (function(){
                 //Saving user attr to cache
                 storage.setItem('user', JSON.stringify(that.getAll()));            
 
-                lg.log('DEBUG', 'authenticate#errorWrapper#attributes saved to cache: ' + JSON.stringify(that.getAll()));                
+                lg_user.log('DEBUG', 'authenticate#errorWrapper#attributes saved to cache: ' + JSON.stringify(that.getAll()));                
 
                 //execute caller's callback
                 error(jqxhr, status, er);
 
-                lg.log('TRACE', 'authenticate#errorWrapper# exit');
+                lg_user.log('TRACE', 'authenticate#errorWrapper# exit');
             };            
 
             //Saving user attr to cache
             storage.setItem('user', JSON.stringify(that.getAll()));            
 
-            lg.log('DEBUG', 'authenticate#attributes saved to cache: ' + JSON.stringify(this.getAll()));
+            lg_user.log('DEBUG', 'authenticate#attributes saved to cache: ' + JSON.stringify(this.getAll()));
 
             //Send the request to authenticate
             req.send(

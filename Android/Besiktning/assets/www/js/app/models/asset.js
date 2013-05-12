@@ -16,6 +16,7 @@ var Asset = (function() {
      */
     var usr; //instance of User Class
     var storage; 
+    var lg;
 
     /**
      * Class Definition
@@ -23,9 +24,13 @@ var Asset = (function() {
     var Asset = Stapes.subclass({
         constructor : function(aUsr) {
 
+            lg = new Logger('DEBUG','js/model/asset');
+
             storage = window.localStorage;
 
             usr = aUsr;
+
+            lg.log('DEBUG', 'typeof aUsr = ' + (typeof aUsr));
 
             this.set({
                 'id' : '',
@@ -34,7 +39,7 @@ var Asset = (function() {
                 'enum_trailertype' : {}
             });
 
-            if (storage.getItem('enum_trailertype') !=  false) {
+            if (storage.getItem('enum_trailertype') !=  false && storage.getItem('enum_trailertype') !=  null) {
                 this.set('enum_trailertype', JSON.parse(storage.getItem('enum_trailertype')));
             }            
         },
@@ -44,6 +49,9 @@ var Asset = (function() {
          * local storage.
          */       
         getEnumTrailerType : function(successCb, errorCb) {
+
+            lg.log('DEBUG', 'getEnumTrailerType start');  
+
             var that = this;
 
             var successCbWrapper = function(data){
@@ -59,6 +67,8 @@ var Asset = (function() {
                     errorCb(jqxhr, status, er);
             };
 
+            lg.log('DEBUG', 'typeof usr = ' + (typeof usr));
+
             usr.send(
                 'GET', 
                 'Assets/trailertype',
@@ -70,6 +80,8 @@ var Asset = (function() {
                 successCbWrapper,
                 errorCbWrapper
             );
+            
+            lg.log('DEBUG', 'getEnumTrailerType end'); 
         }
     });
 
