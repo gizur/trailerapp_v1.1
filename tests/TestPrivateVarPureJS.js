@@ -10,32 +10,22 @@
 
 node_unit = true;
 
-//Lib
-Stapes = require('../Android/Besiktning/assets/www/js/lib/stapes.js').Stapes;
-
-var ClassA = (function() {
+var ClassA = function( argA ) {
 
     /**
      * Private Variables
      */
     var _a;
 
+    _a = argA;
 
-    var ClassA = Stapes.subclass({
+    this.getA = function(){
 
-        constructor : function(argA) {
-            _a = new String();
-            _a = argA;
-        },
+        return (_a);
 
-        getA: function() {
-            return (_a);
-        }
+    };
 
-    });
-
-    return ClassA;
-})();
+};
 
 exports.PrivateVar = {
     "base test" : function(test){

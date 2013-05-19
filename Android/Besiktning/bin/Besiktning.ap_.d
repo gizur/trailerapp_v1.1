@@ -60,9 +60,9 @@
 /home/adminess/TrailerApp/Android/Besiktning/assets/www/js/app/util \
 /home/adminess/TrailerApp/Android/Besiktning/assets/www/js/app/models \
 /home/adminess/TrailerApp/Android/Besiktning/assets/www/js/app/index.js \
-/home/adminess/TrailerApp/Android/Besiktning/assets/www/js/app/util/cache.js \
 /home/adminess/TrailerApp/Android/Besiktning/assets/www/js/app/util/request.js \
 /home/adminess/TrailerApp/Android/Besiktning/assets/www/js/app/util/logger.js \
+/home/adminess/TrailerApp/Android/Besiktning/assets/www/js/app/util/encoding.js \
 /home/adminess/TrailerApp/Android/Besiktning/assets/www/js/app/models/doccollection.js \
 /home/adminess/TrailerApp/Android/Besiktning/assets/www/js/app/models/troubleticket.js \
 /home/adminess/TrailerApp/Android/Besiktning/assets/www/js/app/models/user.js \

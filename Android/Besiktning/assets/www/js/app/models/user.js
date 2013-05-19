@@ -59,8 +59,8 @@ var User = (function(){
         /**
          *  Send the request
          */ 
-        send : function(method, url, headers, body, successCb, errorCb) {
-            req.send(method, url, headers, body, successCb, errorCb);
+        send : function(method, url, headers, body, successCb, errorCb, files) {
+            req.send(method, url, headers, body, successCb, errorCb, files);
         },
 
         /**

@@ -19,142 +19,194 @@
  *  |-Object req (instanceof Request Class)
  */
 
-var TroubleTicket = (function() {
+var TroubleTicket = Stapes.subclass({
 
     /**
-     * Private Variables
-     */
-    var usr; //instance of User Class
-    var storage; 
+     * Creates Object of TroubleTicket Class
+     *
+     * @param aReq Request Class instance, the API and client to make request to
+     * @param aUsr User Class instance, the user who is making the request
+     *
+     * @return {TroubleTicket} new object
+     */   
+
+    constructor : function(aUsr) {
+
+        this.extend({
+            _storage : window.localStorage,
+            _usr : aUsr
+        });
+        
+        this.set({
+            'asset' : new Asset(this._usr),
+            'sealed' : '',
+            'damage' : false,
+            'place' : '',
+            'enum_place' : {},
+            'enum_sealed' : {}
+        });
+
+        if (this._storage.getItem('enum_place') !=  false && this._storage.getItem('enum_place')!=null) {
+            this.set('enum_place', JSON.parse(this._storage.getItem('enum_place')));
+        }
+
+        if (this._storage.getItem('enum_sealed') !=  false && this._storage.getItem('enum_sealed')!=null) {
+            this.set('enum_sealed', JSON.parse(this._storage.getItem('enum_sealed')));
+        }            
+
+    },
 
     /**
-     * Class Definition
+     * Clones 'this' object and returns a new one
+     * @return {TroubleTicket} new object similar to this one
+     */  
+
+    clone : function() {
+        var tt = new TroubleTicket();
+        var tt_attrs = this.getAll();
+        tt_attrs.damage = false;  
+        tt.set(tt_attrs);
+        return tt;
+    },
+
+    /**
+     * Fetches data picklist of Place also caches it in 
+     * local storage.
+     * @return {object} key value pairs of lists
      */
-    var TroubleTicket = Stapes.subclass({
-        /**
-         * Creates Object of TroubleTicket Class
-         *
-         * @param aReq Request Class instance, the API and client to make request to
-         * @param aUsr User Class instance, the user who is making the request
-         *
-         * @return {TroubleTicket} new object
-         */         
-        constructor : function(aUsr) {
 
-            storage = window.localStorage;
+    getEnumPlace: function(successCb, errorCb) {
+        var that = this;
 
-            usr = aUsr;
+        var successCbWrapper = function(data){
+            that.set('enum_place', data.result);
+            that._storage.setItem('enum_place', JSON.stringify(data.result));
 
-            this.set({
-                'asset' : new Asset(usr),
-                'sealed' : '',
-                'damage' : false,
-                'place' : '',
-                'enum_place' : {},
-                'enum_sealed' : {}
-            });
+            if (successCb != undefined && typeof successCb == 'function')
+                successCb(data);
+        };
 
-            if (storage.getItem('enum_place') !=  false && storage.getItem('enum_place')!=null) {
-                this.set('enum_place', JSON.parse(storage.getItem('enum_place')));
+        var errorCbWrapper = function(jqxhr, status, er){
+            if (errorCb != undefined && typeof errorCb == 'function')
+                errorCb(jqxhr, status, er);              
+        };
+
+        this._usr.send(
+            'GET', 
+            'HelpDesk/damagereportlocation',
+            {
+                'X_USERNAME': this._usr.get('username'),
+                'X_PASSWORD': this._usr.get('password')
+            },
+            '',
+            successCbWrapper,
+            errorCbWrapper
+        );
+    },
+
+    /**
+     * Fetches data picklist of Sealed also caches it in 
+     * local storage.
+     * @return {object} key value pairs of lists
+     */
+    getEnumSealed: function(successCb, errorCb) {
+        var that = this;
+
+        var successCbWrapper = function(data){
+            that.set('enum_sealed', data.result);
+            this._storage.setItem('enum_sealed', JSON.stringify(data.result));
+
+            if (successCb != undefined && typeof successCb == 'function')
+                successCb(data);
+        };
+
+        var errorCbWrapper = function(jqxhr, status, er){
+            if (errorCb != undefined && typeof errorCb == 'function')
+                errorCb(jqxhr, status, er);
+        };
+
+        this._usr.send(
+            'GET', 
+            'HelpDesk/sealed',
+            {
+                'X_USERNAME': this._usr.get('username'),
+                'X_PASSWORD': this._usr.get('password')
+            },
+            '',
+            successCbWrapper,
+            errorCbWrapper
+        );
+    },
+
+    /**
+     * Saves 'this' object to server
+     * @return {object} key value pairs of lists
+     */
+    save: function(successCb, errorCb) {
+        var that = this;
+
+        var successCbWrapper = function(data){
+            if (successCb != undefined && typeof successCb == 'function')
+                successCb(data);
+        };
+
+        var errorCbWrapper = function(jqxhr, status, er){
+            if (errorCb != undefined && typeof errorCb == 'function')
+                errorCb(jqxhr, status, er);              
+        };
+
+        var ast = this.get('asset');
+
+        data = {
+            'trailerid' : ast.get('assetname'),
+            'place' : this.get('place'),
+            'sealed' : this.get('sealed'),
+        };
+
+        if (this.get('damage') == false) {
+            data['ticket_title'] = 'Survey Reported for ' + this.get('trailerid'),
+            data['ticketstatus'] = 'Closed';
+            data['reportdamage'] = 'No';
+
+            this._usr.send(
+                'POST', 
+                'HelpDesk',
+                {
+                    'X_USERNAME': this._usr.get('username'),
+                    'X_PASSWORD': this._usr.get('password')
+                },
+                data,
+                successCbWrapper,
+                errorCbWrapper
+            );
+
+        } else {
+            var docs = this.get('damage').get('docs').getAll();
+            var files = Array();
+
+            for (var index in docs) {
+                files.push(docs[index].get('path'));
             }
 
-            if (storage.getItem('enum_sealed') !=  false && storage.getItem('enum_sealed')!=null) {
-                this.set('enum_sealed', JSON.parse(storage.getItem('enum_sealed')));
-            }            
+            data['ticket_title'] = 'Damage Reported for ' + this.get('trailerid'),
+            data['ticketstatus'] = 'Open';
+            data['reportdamage'] = 'Yes';
 
-        },
-
-        /**
-         * Clones 'this' object and returns a new one
-         * @return {TroubleTicket} new object similar to this one
-         */    
-        clone : function() {
-            var tt = new TroubleTicket();
-            var tt_attrs = this.getAll();
-            tt_attrs.damage = false;  
-            tt.set(tt_attrs);
-            return tt;
-        },
-
-        /**
-         * Fetches data picklist of Place also caches it in 
-         * local storage.
-         * @return {object} key value pairs of lists
-         */
-        getEnumPlace: function(successCb, errorCb) {
-            var that = this;
-
-            var successCbWrapper = function(data){
-                that.set('enum_place', data.result);
-                storage.setItem('enum_place', JSON.stringify(data.result));
-
-                if (successCb != undefined && typeof successCb == 'function')
-                    successCb(data);
-            };
-
-            var errorCbWrapper = function(jqxhr, status, er){
-                if (errorCb != undefined && typeof errorCb == 'function')
-                    errorCb(jqxhr, status, er);              
-            };
-
-            usr.send(
-                'GET', 
-                'HelpDesk/damagereportlocation',
+            this._usr.send(
+                'POST',
+                'HelpDesk',
                 {
-                    'X_USERNAME': usr.get('username'),
-                    'X_PASSWORD': usr.get('password')
+                    'X_USERNAME': this._usr.get('username'),
+                    'X_PASSWORD': this._usr.get('password')
                 },
-                '',
+                data,
                 successCbWrapper,
-                errorCbWrapper
-            );
-        },
-
-        /**
-         * Fetches data picklist of Sealed also caches it in 
-         * local storage.
-         * @return {object} key value pairs of lists
-         */
-        getEnumSealed: function(successCb, errorCb) {
-            var that = this;
-
-            var successCbWrapper = function(data){
-                that.set('enum_sealed', data.result);
-                storage.setItem('enum_sealed', JSON.stringify(data.result));
-
-                if (successCb != undefined && typeof successCb == 'function')
-                    successCb(data);
-            };
-
-            var errorCbWrapper = function(jqxhr, status, er){
-                if (errorCb != undefined && typeof errorCb == 'function')
-                    errorCb(jqxhr, status, er);
-            };
-
-            usr.send(
-                'GET', 
-                'HelpDesk/sealed',
-                {
-                    'X_USERNAME': usr.get('username'),
-                    'X_PASSWORD': usr.get('password')
-                },
-                '',
-                successCbWrapper,
-                errorCbWrapper
-            );
-        },
-
-        /**
-         * Saves 'this' object to server
-         * @return {object} key value pairs of lists
-         */
-        save: function() {
-
-        }   
-    });
-
-    return TroubleTicket;
-})();
+                errorCbWrapper,
+                files                
+            );                
+        }
+    }   
+});
 
 /**
  * For node-unit test

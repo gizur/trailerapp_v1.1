@@ -2,7 +2,7 @@
 <html>
 
 <head>
-	<meta charset="utf-8">
+	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1"> 
 	<title>Besiktning</title> 
 	<link rel="stylesheet" href="js/lib/jquery.mobile-1.2.1/jquery.mobile-1.2.1.min.css" />
@@ -21,6 +21,7 @@
     <!--util-->
     <script src="js/app/util/request.js"></script>     
     <script src="js/app/util/logger.js"></script> 
+    <script src="js/app/util/encoding.js"></script>
 
     <!--model-->
     <script src="js/app/models/asset.js"></script>
@@ -80,10 +81,8 @@
 		
 		<h3>Befintliga Skador</h3>
 		<div data-role="fieldcontain">	
-	        <ul class="bxslider-one">
-	          <li><center><div style='height:60px;width:120px;'><a href="#two">Trailersidor Vänster 1</a></div></center></li>
-	          <li><center><div style='height:60px;width:120px;'><a href="#two">Trailersidor Vänster 2</a></div></center></li>
-	          <li><center><div style='height:60px;width:120px;'><a href="#two">Trailersidor Vänster 3</a></div></center></li>
+	        <ul class="bxslider-one" id="troubleticketlist">
+	          <li><center><div style='height:60px;width:120px;'>No TroubleTickets</div></center></li>
 	        </ul>
 	        <p id='pager-one' style='text-align: right;'></p>
         </div>
@@ -102,8 +101,8 @@
                 </label>
             </fieldset>
         </div>
-		<p><a href="#four" data-role="button">Rapportera ny skada</a></p>	
-		<p><a href="#damagesent" data-role="button" data-rel="dialog" data-transition="pop">Inga nya skador</a></p>
+		<p><a data-theme="a" id="reportdamage" href="javascript:void(0);" data-role="button">Rapportera ny skada</a></p>	
+		<p><a data-theme="a" id="reportsurvey" href="javascript:void(0);" data-role="button" data-rel="dialog" data-transition="pop">Inga nya skador</a></p>
 	</div><!-- /content -->
 </div><!-- /page one -->
 <!-- Start of second page: #two -->
@@ -206,81 +205,47 @@
             Skadeuppgifter
         </h3>
         <div data-role="fieldcontain">
-            <label for="selectmenu1-two">
+            <label for="damagetype">
                 Typ av skada
             </label>
-            <select id="selectmenu1-two" name="typeavskada">
-                <option value="Trailersida/aggregatkåpa">
-                    Trailersida/aggregatkåpa
-                </option>
-                <option value="Skyddsplåtar">
-                    Skyddsplåtar
-                </option>
-                <option value="Belysning">
-                    Belysning
-                </option>
-                <option value="Påbackningsfendrar">
-                    Påbackningsfendrar
-                </option>
-                <option value="Dörrar">
-                    Dörrar
-                </option>
-                <option value="Underkörningsskydd">
-                    Underkörningsskydd
-                </option>
-                <option value="Stödben">
-                    Stödben
-                </option>
-                <option value="El/Luft/Bromskopplingar">
-                    El/Luft/Bromskopplingar
-                </option>
+            <select id="damagetype" name="damagetype">
             </select>
         </div>
         <div data-role="fieldcontain">
-            <label for="selectmenu2-two">
+            <label for="damageposition">
                 Position
             </label>
-            <select id="selectmenu2-two" name="position">
-                <option value="Vänster sida (Left side)">
-                    Vänster sida (Left side)
-                </option>
-                <option value="Höger sida (Right side)">
-                    Höger sida (Right side)
-                </option>
-                <option value="Framsida (Front side)">
-                    Framsida (Front side)
-                </option>
-                <option value="Aggregatkåpa (Device hood)">
-                    Aggregatkåpa (Device hood)
-                </option>
+            <select id="damageposition" name="damageposition">
             </select>
         </div>
         <h3>
             Foton
         </h3>
-		<p><a href="" data-role="button">Lägg till en bild</a></p>
+		<p><a id="takephoto" href="" data-role="button">Lägg till en bild</a></p>
 		<div data-role="fieldcontain">
-        <ul class="bxslider-four">
-          <li><center><a href="#three"><img src="img/d1-f.jpg" /></a></center></li>
-          <li><center><a href="#three"><img src="img/d2-f.jpg" /></a></center></li>
-          <li><center><a href="#three"><img src="img/d3-f.jpg" /></a></center></li>
-        </ul>	
-        <p id='pager-four' style='text-align: right;'></p>
+            <ul class="bxslider-four-picture">
+                <li>
+                    <center>
+                        <div style='height:60px;width:200px;'>No Picture(s) Attached</div>
+                    </center>
+                </li> 
+            </ul>
+            <p id='pager-four' style='text-align: right;'></p>
         </div>
         <div data-role="fieldcontain">
-            <label for="selectmenu3-two">
+            <label for="drivercauseddamage">
                 Orsaka av:
             </label>
-            <select id="selectmenu3-two" name="position">
-                <option value="">
+            <select id="drivercauseddamage" name="drivercauseddamage">
+                <option value="No">
                     
                 </option>
-                <option value="Chaufför">
+                <option value="Yes">
                     Chaufför
                 </option>
             </select>
         </div>
-        <p><a href="#five" data-role="button">Spara</a></p>			
+        <p><a id="savedamage" data-theme="a" href="#five" data-role="button">Spara</a></p>
 	</div><!-- /content -->
 </div><!-- /page four -->
 <!-- Start of fifth page: #five -->
@@ -307,24 +272,28 @@
         </div>
         <h3>Tidigare rapporterade skador</h3>
         <div data-role="fieldcontain">
-        <ul class="bxslider-five-a">
-          <li><center><div style='height:60px;width:120px;'><a href="#two">Trailersidor Vänster 3</a></div></center></li>
-          <li><center><div style='height:60px;width:120px;'><a href="#two">Trailersidor Vänster 2</a></div></center></li>
-          <li><center><div style='height:60px;width:120px;'><a href="#two">Trailersidor Vänster 1</a></div></center></li>
-        </ul>	
+            <ul class="bxslider-five-a">
+                <li>
+                    <center>
+                        <div style='height:60px;width:200px;'>No Troubleticket Reported</div>
+                    </center>
+                </li>                
+            </ul>	
         <p id='pager-five-a' style='text-align: right;'></p>
         </div>
         <h3>Nyfunna skador</h3>
-        <p><a href="#four" data-role="button">Lägg fler skador</a></p>	
+        <p><a id="reportanotherdamage" data-theme="a" href="javascript:void(0);" data-role="button">Lägg fler skador</a></p>	
         <div data-role="fieldcontain">
-        <ul class="bxslider-five-b">
-          <li><center><div style='height:60px;width:120px;'><a href="#two">Trailersidor Vänster 1</a></div></center></li>
-          <li><center><div style='height:60px;width:120px;'><a href="#two">Trailersidor Vänster 2</a></div></center></li>
-          <li><center><div style='height:60px;width:120px;'><a href="#two">Trailersidor Vänster 3</a></div></center></li>
-        </ul>	
+            <ul class="bxslider-five-b">
+                <li>
+                    <center>
+                        <div style='height:60px;width:200px;'>No Damages Reported</div>
+                    </center>
+                </li>
+            </ul>	
         <p id='pager-five-b' style='text-align: right;'></p>
         </div>
-		<p><a href="#damagesent" data-role="button" data-rel="dialog" data-transition="pop">Skicka skaderapport</a></p>
+		<p><a id="sendalldamages" data-theme="a" href="javascript:void(0);" data-role="button" data-rel="dialog" data-transition="pop">Skicka skaderapport</a></p>
 	</div><!-- /content -->
 </div><!-- /page five -->
 <!-- Start of fifth page: #settings -->
@@ -425,7 +394,6 @@
 </div><!-- /page contact -->
 <!-- Start of page: #damagesent -->
 <div data-role="page" id="damagesent">
-
 	<div data-role="header" data-theme="e">
 		<h1>Besiktningsrapport inskickad...</h1>
 	</div><!-- /header -->
@@ -438,7 +406,6 @@
 <!-- Start of page: #nointernet -->
 <a id="a_dialog" href="#dialog" data-rel="dialog" style="display: none;"></a> 
 <div data-role="page" id="dialog" data-transition="flip">
-
     <div data-role="header" data-theme="e">
         <h1>Error</h1>
     </div><!-- /header -->

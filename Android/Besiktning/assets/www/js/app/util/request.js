@@ -53,7 +53,7 @@ var Request = (function() {
         getClientId : function() {
             return client_id;
         },        
-        send : function(method, url, headers, body, successCb, errorCb) {
+        send : function(method, url, headers, body, successCb, errorCb, files) {
 
             var successCbWrapper = function(data){
                 //Login to handle special cases should be here
@@ -68,35 +68,79 @@ var Request = (function() {
             var errorCbWrapper = function(jqxhr, status, er){
                 //Login to handle special cases should be here
                 //...
-                lg.log('DEBUG', 'Request#send#errorCbWrapper : ' + jqxhr.responseText);
+                lg.log('DEBUG', 'Request#send#errorCbWrapper : ' + jqxhr.status + ' ' +  jqxhr.responseText + ' status ' + status + ' er ' + er);
+
+                $.mobile.loading( 'hide' );
 
                 if (jqxhr.status == 0) {
                     $('#dialog div[data-role=header]').html('<h3>Error</h3>');
                     $('#dialog div[data-role=content]').children().first().html('Please check your internet connection and try again.');
                     $('#a_dialog').click();
+                } else {
+                    errorCb(jqxhr, status, er);
                 }
-
-                $.mobile.loading( 'hide' );
-
-                errorCb(jqxhr, status, er);
+                
             };
 
             $.mobile.loading( 'show', { theme: "b", text: "Please wait...", textonly: false});
 
-            $.ajax({
-                type: method,
-                dataType: 'json',
-                url: base_url + url,
-                beforeSend: function(xhr){
-                    xhr.setRequestHeader('X_CLIENTID', client_id);
-                    for (key in headers) {
-                        xhr.setRequestHeader(key, headers[key]);
-                    }
-                },          
-                success: successCbWrapper,
-                error: errorCbWrapper
-            });
+            lg.log('DEBUG', 'Request#send : url ' + base_url +  url);
 
+            if (files == undefined || 
+                !(files instanceof Array) ||
+                files.length == 0) {
+
+                $.ajax({
+                    type: method,
+                    dataType: 'json',
+                    url: base_url + url,
+                    data: body,
+                    beforeSend: function(xhr){
+                        xhr.setRequestHeader('X_CLIENTID', client_id);
+                        for (key in headers) {
+                            xhr.setRequestHeader(key, headers[key]);
+                        }
+                    },          
+                    success: successCbWrapper,
+                    error: errorCbWrapper
+                });
+            } else {
+
+                var ft = new FileTransfer();
+                var options = new FileUploadOptions();
+
+                options.fileKey="file";
+                options.fileName=files[0].substr(files[0].lastIndexOf('/')+1);
+                options.mimeType="image/jpeg";                
+
+                options.params = data;
+
+                options.headers = {
+                    'X_CLIENTID' : client_id
+                };
+
+                var successCbWrapperF = function(r) {
+                    var data = JSON.stringify(r.response);
+                    successCbWrapper(data);
+                };
+
+                var errorCbWrapperF = function(r) {
+                    errorCbWrapper({'responseText':'{"success":"false"}'}, r.http_status, r.code);
+                };
+                
+                /**
+                 * Limitation in Apache Cordova allows sending only one file
+                 * so sending only the first one
+                 */
+                
+                ft.upload(
+                    files[0], 
+                    (base_url + url), 
+                    successCbWrapperF, 
+                    errorCbWrapperF, 
+                    options
+                );
+            }
         }
     });
 
