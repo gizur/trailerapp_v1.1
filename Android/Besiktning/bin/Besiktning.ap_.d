@@ -77,6 +77,7 @@
 /home/adminess/TrailerApp/Android/Besiktning/assets/www/js/lib/cordova-2.6.0.js \
 /home/adminess/TrailerApp/Android/Besiktning/assets/www/js/lib/stapes.min.js \
 /home/adminess/TrailerApp/Android/Besiktning/assets/www/js/lib/jquery.mobile-1.2.1 \
+/home/adminess/TrailerApp/Android/Besiktning/assets/www/js/lib/jquery.base64.js \
 /home/adminess/TrailerApp/Android/Besiktning/assets/www/js/lib/jquery.flexslider-min.js \
 /home/adminess/TrailerApp/Android/Besiktning/assets/www/js/lib/jquery.bxslider.js \
 /home/adminess/TrailerApp/Android/Besiktning/assets/www/js/lib/jquery.mobile-1.2.1/jquery.mobile.structure-1.2.1.css \

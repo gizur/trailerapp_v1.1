@@ -150,6 +150,25 @@ var Damage = (function() {
                 errorCbWrapper
             );
         },
+
+        /**
+         * Serialize the damage
+         */
+
+        serialize : function() {
+            var sdmg = this.getAll();
+            sdmg.docs = sdmg.docs.getAllAsArray();
+
+            for (var index in dmg.docs) {
+                sdmg.docs[index] = dmg.docs[index].getAll();
+            }
+
+            delete dmg.enum_drivercauseddamage;
+            delete dmg.enum_damageposition;
+            delete dmg.enum_damagetype;
+
+            return JSON.stringify(sdmg);
+        }
     });
 
     return Damage;

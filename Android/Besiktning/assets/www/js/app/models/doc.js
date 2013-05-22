@@ -14,11 +14,59 @@ var Doc = Stapes.subclass({
     /**
      * @constructor
      */ 
-    constructor : function() {
+    constructor : function(aUsr) {
+
+        this.extend({
+            _usr :  aUsr,
+            _lg : new Logger('DEBUG', 'js/models/doc')
+        });
+
         this.set({
             'id' : '',
             'path' : ''
         });
+    },
+
+    /**
+     * Download file from server
+     */ 
+    download : function(successCb, errorCb) {
+        var that = this;
+        var thatSuccessCb = successCb; 
+        var thatErrorCb = errorCb;
+        var fullpath;
+
+        that._lg.log('DEBUG', ' doc getAll ' + JSON.stringify(this.getAll()));
+
+
+        var successCbWrapper = function(data){
+            that._lg.log('TRACE', ' download successCbWrapper start');
+
+            window.localStorage.setItem(data.result.filename, data.result.filecontent); 
+            that._lg.log('TRACE', 'Finished downloading image');
+            that._lg.log('DEBUG', ' full path of file : ' + data.result.filename);
+            that.set('path', data.result.filename);
+
+            if (thatSuccessCb != undefined && typeof thatSuccessCb == 'function')
+                thatSuccessCb(data);          
+        };
+
+        var errorCbWrapper = function(jqxhr, status, er){
+            if (errorCb != undefined && typeof errorCb == 'function')
+                errorCb(jqxhr, status, er);              
+        };
+
+        this._usr.send(
+            'GET', 
+            'DocumentAttachments/' + this.get('id'),
+            {
+                'X_USERNAME': this._usr.get('username'),
+                'X_PASSWORD': this._usr.get('password')
+            },
+            '',
+            successCbWrapper,
+            errorCbWrapper
+        );        
     }
 });
 

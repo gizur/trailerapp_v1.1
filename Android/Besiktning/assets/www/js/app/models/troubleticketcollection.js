@@ -48,7 +48,8 @@ var TroubleTicketCollection = Stapes.subclass({
 
         var successCbWrapper = function(data){
 
-            lg.log('TRACE', 'received TroubleTickets' + data.result.length);
+            lg.log('DEBUG', 'received TroubleTickets ' + data.result.length);
+            lg.log('DEBUG', ' received TroubleTickets ' + JSON.stringify(data.result));
 
             $.each(data.result, function(index, item){
                 var tt = new TroubleTicket();
@@ -102,6 +103,7 @@ var TroubleTicketCollection = Stapes.subclass({
         var current_key = '';
         var attempt_count = aAttemptCount;
         var total_count = aTotalCount;
+        var that = this;
 
         if (total_count == undefined) {
             total_count = this.size();
@@ -129,7 +131,11 @@ var TroubleTicketCollection = Stapes.subclass({
          */
         if (attempt_count == total_count) {
 
-            if (keys.length != 0) {
+            lg.log('DEBUG', ' attempt_count : total_count -> ' + attempt_count + ' : ' + total_count);            
+
+            lg.log('DEBUG', ' attempt_count == total_count : keys.length ' + keys.length);
+
+            if (keys.length == 0) {
                 newSuccessCb();
             } else {
                 newErrorCb();
@@ -142,7 +148,7 @@ var TroubleTicketCollection = Stapes.subclass({
          * Callback called when damage is successfully reported.
          */
         var success = function() {
-            this.remove(current_key);
+            that.remove(current_key);
             ++attempt_count;
             newStatusCb(attempt_count, total_count);
             that.save(newSuccessCb, newErrorCb, newStatusCb, attempt_count, keys, total_count);
@@ -172,8 +178,6 @@ var TroubleTicketCollection = Stapes.subclass({
                 break;
             }
         }
-
-
     }
 
 });

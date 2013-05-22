@@ -9,84 +9,70 @@
  * @see http://google-styleguide.googlecode.com/svn/trunk/javascriptguide.xml
  */
 
-var Asset = (function() {
+var Asset = Stapes.subclass({
+    constructor : function(aUsr) {
+
+        this.extend({
+            _lg : new Logger('DEBUG','js/model/asset'),
+            _storage : window.localStorage,
+            _usr : aUsr
+        });
+
+        this._lg.log('DEBUG', 'typeof aUsr = ' + (typeof aUsr));
+
+        this.set({
+            'id' : '',
+            'assetname' : '',
+            'trailertype' : '',
+            'enum_trailertype' : {}
+        });
+
+        if (this._storage.getItem('enum_trailertype') !=  false && this._storage.getItem('enum_trailertype') !=  null) {
+            this.set('enum_trailertype', JSON.parse(this._storage.getItem('enum_trailertype')));
+        }            
+    },
 
     /**
-     * Private Variables
-     */
-    var usr; //instance of User Class
-    var storage; 
-    var lg;
+     * Fetches data picklist of Type Of Damage also caches it in 
+     * local storage.
+     */       
+    getEnumTrailerType : function(successCb, errorCb) {
+        var lg = this._lg;
 
-    /**
-     * Class Definition
-     */
-    var Asset = Stapes.subclass({
-        constructor : function(aUsr) {
+        lg.log('DEBUG', 'getEnumTrailerType start');  
 
-            lg = new Logger('DEBUG','js/model/asset');
+        var that = this;
 
-            storage = window.localStorage;
+        var successCbWrapper = function(data){
+            that.set('enum_trailertype', data.result);
+            that._storage.setItem('enum_trailertype', JSON.stringify(data.result));
 
-            usr = aUsr;
+            if (successCb != undefined && typeof successCb == 'function')                
+                successCb(data);
+        };
 
-            lg.log('DEBUG', 'typeof aUsr = ' + (typeof aUsr));
+        var errorCbWrapper = function(jqxhr, status, er){
+            if (errorCb != undefined && typeof errorCb == 'function')
+                errorCb(jqxhr, status, er);
+        };
 
-            this.set({
-                'id' : '',
-                'assetname' : '',
-                'trailertype' : '',
-                'enum_trailertype' : {}
-            });
+        lg.log('DEBUG', 'typeof usr = ' + (typeof this._usr));
 
-            if (storage.getItem('enum_trailertype') !=  false && storage.getItem('enum_trailertype') !=  null) {
-                this.set('enum_trailertype', JSON.parse(storage.getItem('enum_trailertype')));
-            }            
-        },
-
-        /**
-         * Fetches data picklist of Type Of Damage also caches it in 
-         * local storage.
-         */       
-        getEnumTrailerType : function(successCb, errorCb) {
-
-            lg.log('DEBUG', 'getEnumTrailerType start');  
-
-            var that = this;
-
-            var successCbWrapper = function(data){
-                that.set('enum_trailertype', data.result);
-                storage.setItem('enum_trailertype', JSON.stringify(data.result));
-
-                if (successCb != undefined && typeof successCb == 'function')                
-                    successCb(data);
-            };
-
-            var errorCbWrapper = function(jqxhr, status, er){
-                if (errorCb != undefined && typeof errorCb == 'function')
-                    errorCb(jqxhr, status, er);
-            };
-
-            lg.log('DEBUG', 'typeof usr = ' + (typeof usr));
-
-            usr.send(
-                'GET', 
-                'Assets/trailertype',
-                {
-                    'X_USERNAME': usr.get('username'),
-                    'X_PASSWORD': usr.get('password')
-                },
-                '',
-                successCbWrapper,
-                errorCbWrapper
-            );
-            
-            lg.log('DEBUG', 'getEnumTrailerType end'); 
-        }
-    });
-
-    return Asset;
-})();
+        this._usr.send(
+            'GET', 
+            'Assets/trailertype',
+            {
+                'X_USERNAME': this._usr.get('username'),
+                'X_PASSWORD': this._usr.get('password')
+            },
+            '',
+            successCbWrapper,
+            errorCbWrapper
+        );
+        
+        lg.log('DEBUG', 'getEnumTrailerType end'); 
+    }
+});
 
 /**
  * For node-unit test

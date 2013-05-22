@@ -14,6 +14,7 @@
 	<script src="js/lib/jquery.mobile-1.2.1/jquery.mobile-1.2.1.min.js"></script>
 	<script src="js/lib/jquery.bxslider.js"></script>
     <script src="js/lib/stapes.min.js"></script>
+    <script src="js/lib/jquery.base64.js"></script>
 
     <!--config-->
     <script src="js/app/config.js"></script>  
@@ -130,23 +131,25 @@
 		<p><a href="#one" data-rel="back" data-role="button" data-inline="true" data-icon="back">Tillbaka</a></p>
         <h3>Information om skada</h3>
         <div data-role="fieldcontain">
-            <label for="selectmenu1">
+            <label for="damagetype">
                 Typ av skada
             </label>
-            <input name="" id="textinput1" placeholder="" value="Trailersida/aggregatkåpa" type="text" readonly="readonly">
+            <input name="" id="damagetype" placeholder="" value="" type="text" readonly="readonly">
         </div>
         <div data-role="fieldcontain">
-            <label for="selectmenu2">
+            <label for="damageposition">
                 Position
             </label>
-            <input name="" id="textinput2" placeholder="" value="Vänster sida (Left side)" type="text" readonly="readonly">
+            <input name="" id="damageposition" placeholder="" value="" type="text" readonly="readonly">
         </div>
 		<h4>Foton</h4>
 		<div data-role="fieldcontain">
         <ul class="bxslider-two">
-          <li><center><a href="#three"><img src="img/d1-f.jpg" /></a></center></li>
-          <li><center><a href="#three"><img src="img/d2-f.jpg" /></a></center></li>
-          <li><center><a href="#three"><img src="img/d3-f.jpg" /></a></center></li>
+                <li>
+                    <center>
+                        <div style='height:60px;width:200px;'>No Picture(s) Attached</div>
+                    </center>
+                </li>
         </ul>	
         <p id='pager-two' style='text-align: right;'></p>
         </div>
@@ -176,7 +179,7 @@
         </div>
 		<p><a href="#one" data-rel="back" data-role="button" data-inline="true" data-icon="back">Tillbaka</a></p>
         <h3>Foton</h3>
-        <img src="img/d3.jpg"/>
+        <img src=""/>
 	</div><!-- /content -->
 </div><!-- /page three -->
 <!-- Start of fourth page: #four -->
@@ -392,17 +395,6 @@
         <hr/>
 	</div><!-- /content -->
 </div><!-- /page contact -->
-<!-- Start of page: #damagesent -->
-<div data-role="page" id="damagesent">
-	<div data-role="header" data-theme="e">
-		<h1>Besiktningsrapport inskickad...</h1>
-	</div><!-- /header -->
-
-	<div data-role="content" data-theme="d">
-		<p>DENNA TEXT BEHOVER SPECAS</p>		
-		<p><a href="#one" data-role="button" data-inline="true" data-icon="back">Ok</a></p>	
-	</div><!-- /content -->
-</div><!-- /page damagesent -->
 <!-- Start of page: #nointernet -->
 <a id="a_dialog" href="#dialog" data-rel="dialog" style="display: none;"></a> 
 <div data-role="page" id="dialog" data-transition="flip">

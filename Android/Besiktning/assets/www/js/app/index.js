@@ -9,6 +9,9 @@
  * @preserve  copyright 2013 Gizur AB 
  */
 
+$(document).delegate('#one', 'pageinit', function() {
+});
+
 $(document).delegate('#one', 'pageshow', function () {
     //Environment SetUp
     var lg_one = new Logger('DEBUG', 'gta-page#one$pageshow'); 
@@ -17,8 +20,7 @@ $(document).delegate('#one', 'pageshow', function () {
     var usr = new User(req);
 
     //For Debugging : The line below must be commented
-    //window.localStorage.removeItem('current_tt');
-
+    //window.localStorage.removeItem('17x519_tt');
 
     /**
      * ------------------
@@ -107,10 +109,44 @@ $(document).delegate('#one', 'pageshow', function () {
         var success = function(data){
             var tts = ttc.getAll();
 
+            //A memory issue is encountered when the following 
+            //line is uncommented
+            //lg_one.log('DEBUG', ' tts ' + JSON.stringify(tts));
+
             $('#one #troubleticketlist').html('');
+            tt_list = {};
+            var tt_list_html = '';
             for (index in tts) {
-                $('#one #troubleticketlist').html("<li><center><div style='height:60px;width:200px;'><a href=''#two'>" + tts[index].get('damageposition') + ' ' + tts[index].get('damagetype') + "</a></div></center></li>");
+
+                lg_one.log('DEBUG', ' tts[index].get(id) ' + tts[index].get('id'));
+
+                var clipped_tt = tts[index].getAll();
+
+                lg_one.log('DEBUG', ' tts[index].asset instanceof Asset ' + (tts[index].get('asset') instanceof Asset));
+                lg_one.log('DEBUG', "tts[index].get('damageposition') " + tts[index].get('damageposition'));
+                lg_one.log('DEBUG', "tts[index].get('damagetype') " + tts[index].get('damagetype'));
+
+                clipped_tt.trailerid =  tts[index].get('asset').get('assetname');
+
+                delete clipped_tt.asset;
+                delete clipped_tt.enum_place;
+                delete clipped_tt.enum_sealed;
+
+                var li_tt = "<li><center><div style='height:60px;width:200px;'><a id='" + clipped_tt.id + "' href='javascript:void(0);'>" + tts[index].get('damageposition') + ' ' + tts[index].get('damagetype') + "</a></div></center></li>";
+
+                tt_list_html += li_tt; 
+
+                $('#one #troubleticketlist').append(li_tt);
+                window.localStorage.setItem(tts[index].get('id') + '_tt', JSON.stringify(clipped_tt));                
             }
+
+            /**
+             * Save the downloaded trouble ticket collection
+             */
+            tt_list.html = tt_list_html;
+            tt_list.position = 0;
+            window.localStorage.setItem('tt_list', JSON.stringify(tt_list));
+
             slider.reloadSlider();
         }
 
@@ -138,6 +174,14 @@ $(document).delegate('#one', 'pageshow', function () {
             $('#a_dialog').click();             
             return;
         }
+
+        if ($('#one #place option:selected').length == 0) {
+            //Show success pop up
+            $('#dialog div[data-role=header]').html('<h2>Error</h2>');
+            $('#dialog div[data-role=content]').children().first().html('Please select a Place.');
+            $('#a_dialog').click();             
+            return;
+        }        
 
         if ($('#one input[name=sealed]:checked').length == 0) {
             //Show success pop up
@@ -183,7 +227,7 @@ $(document).delegate('#one', 'pageshow', function () {
     });                     
 
     /**
-     * OnChange Event for trailer id
+     * Report damage
      * get Damaged trouble tickets of the given trailer id
      */
 
@@ -208,7 +252,15 @@ $(document).delegate('#one', 'pageshow', function () {
             $('#dialog div[data-role=content]').children().first().html('Please select a Trailer.');
             $('#a_dialog').click();             
             return;
-        }        
+        }   
+
+        if ($('#one #place option:selected').attr('value') == '') {
+            //Show success pop up
+            $('#dialog div[data-role=header]').html('<h2>Error</h2>');
+            $('#dialog div[data-role=content]').children().first().html('Please select a Place.');
+            $('#a_dialog').click();             
+            return;
+        }
 
         if ($('#one input[name=sealed]:checked').length == 0) {
             //Show success pop up
@@ -237,6 +289,82 @@ $(document).delegate('#one', 'pageshow', function () {
 
         lg_one.log('TRACE', 'reportdamage click END');
     });          
+
+    /**
+     * OnClick of a trouble ticket in widget list
+     * 
+     */
+
+    $('.bxslider-one li a').unbind('click').live('click', function(e){
+        e.preventDefault();
+
+        var that = this;
+        var tt = new TroubleTicket(usr);
+
+        lg_one.log('TRACE', '.bxslider-one li a click start');
+        lg_one.log('DEBUG', " $(this).attr('id') " + $(this).attr('id'));   
+
+        // Save the position
+
+        tt_list = JSON.parse(window.localStorage.getItem('tt_list'));
+        tt_list.position = slider.getCurrentSlide();
+        window.localStorage.setItem('tt_list', JSON.stringify(tt_list));  
+
+        var success = function(data) {
+
+            lg_one.log('TRACE', '.bxslider-one li a click start');            
+
+            var doc = new Doc(usr);
+            doc.set(data.result.documents[0]);
+
+            //Download Images
+            var successCb = function(data) {
+                lg_one.log('TRACE', 'successCb Download Images start');
+
+                /**
+                 * Save the page state
+                 */
+
+                if (current_tt == null)   
+                    current_tt = {};
+
+                current_tt.trailertype = escapeHtmlEntities($('#one #trailertype option:selected').text());
+                current_tt.trailerid = escapeHtmlEntities($('#one #trailerid option:selected').text());
+                current_tt.place = escapeHtmlEntities($('#one #place option:selected').text());
+                current_tt.sealed = escapeHtmlEntities($('#one input[name=sealed]:checked').val());
+
+                window.localStorage.setItem('current_tt', JSON.stringify(current_tt));  
+                lg_one.log('TRACE', 'successCb saved current tt state');
+
+                /**
+                 * Set initial state for page two
+                 */                
+
+                var gas = tt.getAllSanitized();
+                gas.docs = Array();
+                gas.docs.push({'path': doc.get('path')});              
+
+                window.localStorage.setItem('details_tt_id', $(that).attr('id'));
+                window.localStorage.setItem($(that).attr('id') + '_tt', JSON.stringify(gas));
+
+                lg_one.log('TRACE', 'successCb saved initial state for page two');
+
+                $.mobile.changePage('#two');
+            };
+
+            var errorCb = function(jqxhr, status, er) {
+                lg_one.log('TRACE', 'errorCb Download Images start');
+            };
+
+            doc.download(successCb, errorCb);
+        };
+
+        var error = function() {
+
+        };
+
+        tt.getById($(this).attr('id'), success, error);
+    });
 
     /**
      * -------------------
@@ -301,9 +429,10 @@ $(document).delegate('#one', 'pageshow', function () {
 
         //Load value from cache
         selected = '';
-        lg_one.log('DEBUG', 'loop  prelaod trailer id : ' + assets[index].get('assetname'));
-        lg_one.log('DEBUG', 'loop  prelaod trailer id : ' + current_tt.trailerid);
-        lg_one.log('DEBUG', 'loop  prelaod are they equal : ' + (assets[index].get('assetname') == current_tt.trailerid));
+        lg_one.log('DEBUG', 'loop  preload trailer id : ' + assets[index].get('assetname'));
+        lg_one.log('DEBUG', 'loop  preload trailer id : ' + current_tt.trailerid);
+        lg_one.log('DEBUG', 'loop  preload are they equal : ' + (assets[index].get('assetname') == current_tt.trailerid));
+        
         if (current_tt != null && assets[index].get('assetname') == current_tt.trailerid) {
             selected = 'selected="selected"';
             lg_one.log('DEBUG', 'selected trailer id : ' + assets[index].get('assetname'));            
@@ -372,7 +501,25 @@ $(document).delegate('#one', 'pageshow', function () {
 
     lg_one.log('DEBUG', '#one select#place html : ' + $('#one select#place').html());
 
-    $('#one select#place').selectmenu('refresh');                    
+    $('#one select#place').selectmenu('refresh');    
+
+    /**
+     * Load the perviously fetched tt list from cache
+     * to slider
+     * 
+     */
+
+    var tt_list = JSON.parse(window.localStorage.getItem('tt_list'));
+    if (tt_list != null && current_tt != null) {
+        $('#one #troubleticketlist').html(tt_list.html);
+        slider.reloadSlider();
+        slider.goToSlide(tt_list.position);        
+    } else {
+        $('#one #troubleticketlist').html("<li><center><div style='height:60px;width:120px;'>No TroubleTickets</div></center></li>");
+        slider.reloadSlider();       
+    }
+
+    lg_one.log('DEBUG', '#one #troubleticketlist html : ' + $('#one #troubleticketlist').html());        
 });
 
 /**
@@ -423,7 +570,7 @@ $(document).delegate('#four', 'pageshow', function () {
      * Click event for saving damage report
      */    
 
-    $('#four #savedamage').unbind('click').click(function(){
+    $('#four #savedamage').unbind('click').click(function() {
 
         lg.log('TRACE', '#four #savedamage click start');
 
@@ -481,12 +628,11 @@ $(document).delegate('#four', 'pageshow', function () {
         lg.log('TRACE', '#four #savedamage click end');   
     });
 
-    $('#four #takephoto').unbind('click').click(function(){
+    $('#four #takephoto').unbind('click').click(function() {
 
         lg.log('TRACE', '#four #takephoto click start');
 
         lg.log('DEBUG', '#four #takephoto success $(.bxslider-four-picture).html()' + $('.bxslider-four-picture').html());
-
 
         if ($('.bxslider-four-picture img').length >= 3) {
             //Show success message
@@ -518,9 +664,44 @@ $(document).delegate('#four', 'pageshow', function () {
 
         };
         
-        navigator.camera.getPicture(success, fail, { quality: 50,
+        navigator.camera.getPicture(success, fail, { quality: 25,
             destinationType: Camera.DestinationType.FILE_URL
         }); 
+    });
+
+    $('#four select#damagetype').unbind('change').bind('change', function() {
+
+        lg.log('TRACE', ' start loading dependency');
+
+        var dmg = new Damage();       
+        var picklist = dmg.get('enum_damagetype');
+
+        for (var index in picklist) {
+
+            lg.log('DEBUG', ' picklist[index].value ' + picklist[index].value);
+
+            if (picklist[index].value == escapeHtmlEntities($('#four #damagetype option:selected').attr('value'))) {
+                $('#four select#damageposition').html('');
+                $('#four select#damageposition').append('<option value=""> - Select One - </option>');                                        
+
+                lg.log('DEBUG', ' MATCH ' + picklist[index].value);
+
+                if (typeof picklist[index].dependency != 'undefined') {
+
+                    lg.log('DEBUG', ' picklist[index].dependency ' + JSON.stringify(picklist[index].dependency));
+
+                    for (var depindex in picklist[index].dependency['damageposition']) {
+                        $('#four select#damageposition').append('<option value="' + picklist[index].dependency['damageposition'][depindex].value + '">' + picklist[index].dependency['damageposition'][depindex].label + '</option>');           
+                    }   
+                }
+                
+                $('#four select#damageposition').selectmenu('refresh'); 
+            }
+
+        }  
+
+        $('#four select#damagetype').selectmenu('refresh');
+        lg.log('TRACE', ' end loading dependency');      
     });
 
     /**
@@ -589,8 +770,13 @@ $(document).delegate('#four', 'pageshow', function () {
     }
     $('#four select#damageposition').selectmenu('refresh');
 
-    lg.log('DEBUG', '(current_tt.damages[latest_damage_index].documents instanceof Array) ' + (current_tt.damages[latest_damage_index].documents instanceof Array) );
-    lg.log('DEBUG', 'current_tt.damages[latest_damage_index].documents.length ' + current_tt.damages[latest_damage_index].documents.length );
+    if (latest_damage_index != -1) {
+        
+        lg.log('DEBUG', '(current_tt.damages[latest_damage_index].documents instanceof Array) ' + (current_tt.damages[latest_damage_index].documents instanceof Array) );
+        
+        if ((current_tt.damages[latest_damage_index].documents instanceof Array))
+            lg.log('DEBUG', 'current_tt.damages[latest_damage_index].documents.length ' + current_tt.damages[latest_damage_index].documents.length );
+    }
 
     //Document pictures enum loading
     if (latest_damage_index != -1 && 
@@ -609,9 +795,13 @@ $(document).delegate('#four', 'pageshow', function () {
 
     //Damge position enum loading to select menu
     lg.log('TRACE', 'damage caused damage start '); 
-    lg.log('DEBUG', 'drivercauseddamage ' + current_tt.damages[latest_damage_index].drivercauseddamage);
 
-    $("#four select#drivercauseddamage option[value='" + current_tt.damages[latest_damage_index].drivercauseddamage + "']").attr("selected","selected");
+    if (latest_damage_index != -1) {
+
+        lg.log('DEBUG', 'drivercauseddamage ' + current_tt.damages[latest_damage_index].drivercauseddamage);
+        $("#four select#drivercauseddamage option[value='" + current_tt.damages[latest_damage_index].drivercauseddamage + "']").attr("selected","selected");
+    
+    }
 
     $('#four select#drivercauseddamage').selectmenu('refresh');
 
@@ -625,8 +815,11 @@ $(document).delegate('#four', 'pageshow', function () {
  */
 
 $(document).delegate('#two', 'pageshow', function () {
+
+    var lg = new Logger('DEBUG', '#two$pageshow');
+
     //Your code for each page load here
-    $('.bxslider-two').bxSlider({
+    var slider_picture = $('.bxslider-two').bxSlider({
           infiniteLoop: false,
           hideControlOnEnd: true,
           pager: true,
@@ -634,6 +827,46 @@ $(document).delegate('#two', 'pageshow', function () {
           pagerType: 'short',
           useCSS:false
     });
+
+    /**
+     * Event Bindings
+     */
+
+    $('li center img').unbind('click').live('click', function(){
+        window.localStorage.setItem('details_doc_id', $(this).attr('id').replace('#','.'));
+        $.mobile.changePage('#three');
+    });
+
+    /**
+     * Initialize Page
+     */
+
+    lg.log('DEBUG', " tt details id " + window.localStorage.getItem('details_tt_id'));     
+
+    var tt = JSON.parse(window.localStorage.getItem(
+        window.localStorage.getItem('details_tt_id') + '_tt'
+    ));
+
+    lg.log('DEBUG', " tt details " + JSON.stringify(tt));
+
+    $('#two #damagetype').val(tt.damagetype);
+    $('#two #damageposition').val(tt.damageposition);
+
+    /**
+     * Load images
+     */
+
+    //if ($('.bxslider-two img').length==0)
+    $('.bxslider-two').html('');
+    $('.bxslider-two').append('<li><center><img id="' + tt.docs[0].path.replace('.','#') + '" style="width:200px;height:100px;" src="data:image/jpeg;base64,' + window.localStorage.getItem(tt.docs[0].path) + '"/></center></li>');
+    slider_picture.reloadSlider();    
+});
+
+$(document).delegate('#three', 'pageshow', function () {
+    var base64_image = window.localStorage.getItem(window.localStorage.getItem('details_doc_id'));
+    $('#three img').attr('src', 'data:image/jpeg;base64,' + base64_image);
+    $('#three img').css('width', ($(document).width()-20));
+    $('#three img').css('height', 'auto');
 });
 
 /**
@@ -643,14 +876,15 @@ $(document).delegate('#two', 'pageshow', function () {
  */
 
 $(document).delegate('#five', 'pageshow', function () {
+    
     //Environment SetUp
     var lg = new Logger('TRACE', 'gta-page#five$pageshow'); 
-    var req = new Request(Config.url, Config.client_id);
+    var req = new Request(Config.url);
     var usr = new User(req);
 
     var current_tt = JSON.parse(window.localStorage.getItem('current_tt'));
 
-    lg.log('TRACE', ' cached trouble ticket : ' +  JSON.stringify(current_tt));    
+    lg.log('DEBUG', ' cached trouble ticket : ' +  JSON.stringify(current_tt));    
 
     /**
      * ------------------
@@ -703,7 +937,7 @@ $(document).delegate('#five', 'pageshow', function () {
                 dc.push(doc);
             }
 
-            ast.set('assetname', current_tt.assetname)
+            ast.set('assetname', current_tt.trailerid)
 
             dmg.set('damageposition', current_tt.damages[index].damageposition);
             dmg.set('damagetype', current_tt.damages[index].damagetype);
@@ -722,12 +956,52 @@ $(document).delegate('#five', 'pageshow', function () {
         }
 
         //success callback
+
         var success = function(){
 
+            //Clear the cached current trouble ticket as the
+            $.mobile.urlHistory.stack = [];
+
+            $.mobile.urlHistory.stack.push(
+               {
+                    "url":"/android_asset/www/index.html",
+                    "transition":"fade",
+                    "title":"Besiktning",
+                    "pageUrl":"/android_asset/www/index.html"
+               },                
+               {
+                    "url":"one",
+                    "transition":"fade",
+                    "title":"Besiktning",
+                    "pageUrl":"one",
+                    "lastScroll":1
+               }
+            );            
+
+            window.localStorage.removeItem('current_tt');
         };
+
+        //error callback
 
         var error = function(jqxhr, status, error){
 
+            // Reset the cached current trouble ticket 
+            var stt = ttc.getAllAsArray();
+
+            lg.log('DEBUG', ' stt[index] instanceof TroubleTicket ' + (stt[index] instanceof TroubleTicket));
+
+            current_tt.damages = Array();
+            /*
+            for (var index in stt) {
+                current_tt.damages.push(
+                    JSON.parse(
+                        stt[index].damage.serialize()
+                    )
+                );
+            }
+            */
+            window.localStorage.setItem('current_tt', JSON.stringify(current_tt));
+            
         };
 
         var status = function(aAttemptCount, aTotalCount){
@@ -742,7 +1016,6 @@ $(document).delegate('#five', 'pageshow', function () {
         $('#a_dialog').click();              
 
         lg.log('TRACE', '#five #sendalldamages click end');   
-
     });
 
     /**
@@ -760,7 +1033,6 @@ $(document).delegate('#five', 'pageshow', function () {
         $.mobile.changePage('#four');  
 
         lg.log('TRACE', '#five #savedamage click end');   
-
     });    
 
     /**
@@ -769,7 +1041,9 @@ $(document).delegate('#five', 'pageshow', function () {
      * -----------------
      */
 
-    if (current_tt.damages instanceof Array && current_tt.damages.length > 0) {
+    if ( current_tt != null &&
+            current_tt.damages instanceof Array && 
+            current_tt.damages.length > 0) {
 
         $('#five .bxslider-five-b').html('');
 
@@ -791,7 +1065,7 @@ $(document).delegate('#contact', 'pageshow', function () {
 $(document).delegate('#settings', 'pageshow', function () {
     //Environment SetUp
     var lg_settings = new Logger('TRACE','gta-page#settings$pageshow'); 
-    var req = new Request(Config.url, Config.client_id);
+    var req = new Request(Config.url);
     var usr = new User(req);
 
     lg_settings.log('TRACE', 'page loaded');
@@ -806,6 +1080,9 @@ $(document).delegate('#settings', 'pageshow', function () {
         lg_settings.log('TRACE', ' username: ' + $('#settings_username').val());
         lg_settings.log('TRACE', ' password: ' + $('#settings_password').val());
         lg_settings.log('TRACE', ' client_id: ' + $('#settings_client_id').val());
+
+        //Clear All cache
+        window.localStorage.clear();
 
         var success = function(data){
             lg_settings.log('TRACE', ' successfully authenticated');
@@ -869,7 +1146,7 @@ $(document).delegate('#settings', 'pageshow', function () {
     lg_settings.log('TRACE', '#settings_save click binding done.');
 });
 
-$(document).bind('pagebeforechange', function(e, data) {
+$(document).bind('pagebeforechange', function (e, data) {
     //Environment SetUp
     var lg = new Logger('DEBUG', 'gta-page$pagebeforechange'); 
     var req = new Request(Config.url, Config.client_id);
@@ -882,26 +1159,26 @@ $(document).bind('pagebeforechange', function(e, data) {
     lg.log('TRACE', ' $.mobile.urlHistory :' + JSON.stringify($.mobile.urlHistory.stack));
 
     if (typeof to === 'object') {
-      if (to.attr('id') == 'one' && !usr.get('authenticated')) {
-        e.preventDefault();
-        $.mobile.changePage('#settings');
-      }
-    }
-
-    if (typeof to === 'string') {
-        var u = $.mobile.path.parseUrl(to);
-        to = u.hash || '#' + u.pathname.substring(1);
-        if (from) from = '#' + from.attr('id');
-
-        lg.log('DEBUG', 'To page: ' + to);
-        lg.log('DEBUG', 'usr.authenticated: ' + usr.get('authenticated'));
+        if (to.attr('id') == 'one' && !usr.get('authenticated')) {
+            lg.log('TRACE', ' Application loaded and user is not authenticated ');
+            e.preventDefault();
+            $.mobile.changePage('#settings');
+            return;
+        }
 
         //Access Control
         //Check if the user is authenticated
         //if not show him the access denied page
 
+        lg.log('DEBUG', 'usr.authenticated: ' + usr.get('authenticated'));
+        lg.log('DEBUG', ' to.attr(id): ' + to.attr('id'));
+
         if (!usr.get('authenticated')){
-            if (to === '#one' || to === '#two' || to == '#three' || to == '#four') {                    
+            if (to.attr('id') === 'one' || 
+                    to.attr('id') === 'two' || 
+                    to.attr('id') == 'three' || 
+                    to.attr('id') == 'four' || 
+                    to.attr('id') == 'five') {                    
                 e.preventDefault();
 
                 // remove active class on button
@@ -916,12 +1193,55 @@ $(document).bind('pagebeforechange', function(e, data) {
                 $('#a_dialog').click(); 
             }
         } else {
-            if (to === '#four') {
+            if (to.attr('id') === 'four' || 
+                    to.attr('id') === 'five') {
                 if (window.localStorage.getItem('current_tt') == null ||
                     window.localStorage.getItem('current_tt') == false) {
                     $.mobile.changePage('#one');
                 }
             }
         }
+
     }
+
+    if (typeof to === 'string') {
+        var u = $.mobile.path.parseUrl(to);
+        to = u.hash || '#' + u.pathname.substring(1);
+        if (from) from = '#' + from.attr('id');
+
+        lg.log('DEBUG', 'To page: ' + to);
+        lg.log('DEBUG', 'usr.authenticated: ' + usr.get('authenticated'));
+    }
+});
+
+$('#one').on('pagebeforecreate',function (event) {
+    /**
+     * Localization
+    var lg_one = new Logger('DEBUG', 'gta-page#one$pagebeforecreate'); 
+    lg_one.log('TRACE', 'page create start');
+
+    lg_one.log('DEBUG', 'navigator ' + JSON.stringify(navigator.camera));
+
+    navigator.globalization.getPreferredLanguage(
+        function (language) {
+            lg_one.log('DEBUG', 'localization ' + language.value);
+        },
+        function () {lg_one.log('DEBUG', 'Error getting language\n');}
+    );
+
+
+    $("*").each(function () {
+        if ($(this).children().length == 0) {
+            $(this).text($(this).text().replace('Kontakt','Contact'));
+        }
+    });    
+    */
+});
+
+$('div').live('pagehide',function (event, ui) {
+  //Environment SetUp
+  var lg = new Logger('DEBUG', 'pagehide');
+
+  lg.log('This page was just shown: '+ ui.nextPage);
+  lg.log('This page was just hidden: '+ ui.prevPage);
 });

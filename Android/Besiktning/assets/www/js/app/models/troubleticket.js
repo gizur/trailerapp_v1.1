@@ -33,6 +33,7 @@ var TroubleTicket = Stapes.subclass({
     constructor : function(aUsr) {
 
         this.extend({
+            _lg : new Logger('DEBUG', 'js/models/troubleticket'),
             _storage : window.localStorage,
             _usr : aUsr
         });
@@ -57,16 +58,57 @@ var TroubleTicket = Stapes.subclass({
     },
 
     /**
-     * Clones 'this' object and returns a new one
+     * Gets trouble ticket by id
      * @return {TroubleTicket} new object similar to this one
      */  
 
-    clone : function() {
-        var tt = new TroubleTicket();
-        var tt_attrs = this.getAll();
-        tt_attrs.damage = false;  
-        tt.set(tt_attrs);
-        return tt;
+    getAllSanitized :  function() {
+        var gas;
+
+        gas = this.getAll();
+
+        gas.trailerid = this.get('asset').get('assetname');
+
+        delete gas.enum_sealed;
+        delete gas.enum_place;
+        delete gas.asset;
+
+        return gas;
+    },
+
+    /**
+     * Gets trouble ticket by id
+     * @return {TroubleTicket} new object similar to this one
+     */  
+
+    getById : function(Id, successCb, errorCb) {
+        var that = this;
+
+        var successCbWrapper = function(data){
+            that.set(data.result);
+
+            that._lg.log('DEBUG', ' received data ' + JSON.stringify(data.result))
+
+            if (successCb != undefined && typeof successCb == 'function')
+                successCb(data);
+        };
+
+        var errorCbWrapper = function(jqxhr, status, er){
+            if (errorCb != undefined && typeof errorCb == 'function')
+                errorCb(jqxhr, status, er);              
+        };
+
+        this._usr.send(
+            'GET', 
+            'HelpDesk/' + Id,
+            {
+                'X_USERNAME': this._usr.get('username'),
+                'X_PASSWORD': this._usr.get('password')
+            },
+            '',
+            successCbWrapper,
+            errorCbWrapper
+        );
     },
 
     /**
@@ -109,12 +151,13 @@ var TroubleTicket = Stapes.subclass({
      * local storage.
      * @return {object} key value pairs of lists
      */
+
     getEnumSealed: function(successCb, errorCb) {
         var that = this;
 
         var successCbWrapper = function(data){
             that.set('enum_sealed', data.result);
-            this._storage.setItem('enum_sealed', JSON.stringify(data.result));
+            that._storage.setItem('enum_sealed', JSON.stringify(data.result));
 
             if (successCb != undefined && typeof successCb == 'function')
                 successCb(data);
@@ -157,9 +200,12 @@ var TroubleTicket = Stapes.subclass({
 
         var ast = this.get('asset');
 
+        this._lg.log('DEBUG', ' ast instanceof Asset ' + (ast instanceof Asset));
+        this._lg.log('DEBUG', ' ast.get(assetname) ' + ast.get('assetname'));
+
         data = {
             'trailerid' : ast.get('assetname'),
-            'place' : this.get('place'),
+            'damagereportlocation' : $('<div/>').html(this.get('place')).text(),
             'sealed' : this.get('sealed'),
         };
 
@@ -188,9 +234,12 @@ var TroubleTicket = Stapes.subclass({
                 files.push(docs[index].get('path'));
             }
 
-            data['ticket_title'] = 'Damage Reported for ' + this.get('trailerid'),
+            data['ticket_title'] = 'Damage Reported for ' + data['trailerid'],
             data['ticketstatus'] = 'Open';
             data['reportdamage'] = 'Yes';
+            data['damageposition'] = $('<div/>').html(this.get('damage').get('damageposition')).text();
+            data['damagetype'] = $('<div/>').html(this.get('damage').get('damagetype')).text();
+            data['drivercauseddamage'] = $('<div/>').html(this.get('damage').get('drivercauseddamage')).text();
 
             this._usr.send(
                 'POST',

@@ -24,31 +24,39 @@ var Request = (function() {
      * Class Definition
      */
     var Request = Stapes.subclass({
-        constructor : function(aBaseUrl, aClientId) {
+        constructor : function(aBaseUrl) {
 
             lg = new Logger('DEBUG', 'request');
 
             storage = window.localStorage;
 
             var attrs = storage.getItem('request');
-            
-            if (attrs) {
+
+            if (attrs != null) {
+
+                attrs = JSON.parse(attrs);
                 base_url = attrs.base_url;
                 client_id = attrs.client_id;
+
             }
 
-            if (aBaseUrl != undefined && aClientId != undefined) {
+            if (aBaseUrl != undefined) {
                 base_url = aBaseUrl;
-                client_id = aClientId;
+
+                storage.setItem('request', JSON.stringify({
+                    "base_url" : base_url,
+                    "client_id" : client_id
+                })); 
+
             }            
         },
         setClientId : function(aClientId) {
             client_id = aClientId;
 
-            storage.setItem('request', {
+            storage.setItem('request', JSON.stringify({
                 "base_url" : base_url,
                 "client_id" : client_id
-            });
+            }));
         },
         getClientId : function() {
             return client_id;
@@ -68,7 +76,8 @@ var Request = (function() {
             var errorCbWrapper = function(jqxhr, status, er){
                 //Login to handle special cases should be here
                 //...
-                lg.log('DEBUG', 'Request#send#errorCbWrapper : ' + jqxhr.status + ' ' +  jqxhr.responseText + ' status ' + status + ' er ' + er);
+                lg.log('DEBUG', 'Request#send#errorCbWrapper : ' + jqxhr.status + ' status ' + status + ' er ' + er);
+                lg.log('DEBUG', 'Request#send#errorCbWrapper : jqxhr.responseText ' + jqxhr.responseText);
 
                 $.mobile.loading( 'hide' );
 
@@ -85,16 +94,20 @@ var Request = (function() {
             $.mobile.loading( 'show', { theme: "b", text: "Please wait...", textonly: false});
 
             lg.log('DEBUG', 'Request#send : url ' + base_url +  url);
+            lg.log('DEBUG', 'Request#send : body ' + JSON.stringify(body));
 
             if (files == undefined || 
                 !(files instanceof Array) ||
                 files.length == 0) {
+
+                lg.log('TRACE', 'Request#send : no files ');
 
                 $.ajax({
                     type: method,
                     dataType: 'json',
                     url: base_url + url,
                     data: body,
+                    cache: false,
                     beforeSend: function(xhr){
                         xhr.setRequestHeader('X_CLIENTID', client_id);
                         for (key in headers) {
@@ -106,6 +119,8 @@ var Request = (function() {
                 });
             } else {
 
+                lg.log('TRACE', 'Request#send : with files ');
+
                 var ft = new FileTransfer();
                 var options = new FileUploadOptions();
 
@@ -113,19 +128,19 @@ var Request = (function() {
                 options.fileName=files[0].substr(files[0].lastIndexOf('/')+1);
                 options.mimeType="image/jpeg";                
 
-                options.params = data;
+                options.params = body;               
 
-                options.headers = {
-                    'X_CLIENTID' : client_id
-                };
+                headers.X_CLIENTID = client_id;
+
+                options.headers = headers;
 
                 var successCbWrapperF = function(r) {
-                    var data = JSON.stringify(r.response);
+                    var data = JSON.parse(r.response);
                     successCbWrapper(data);
                 };
 
                 var errorCbWrapperF = function(r) {
-                    errorCbWrapper({'responseText':'{"success":"false"}'}, r.http_status, r.code);
+                    errorCbWrapper({'responseText':'{"success":"false"}','status':'none'}, r.http_status, r.code);
                 };
                 
                 /**
