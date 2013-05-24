@@ -1,4 +1,5 @@
 /home/adminess/TrailerApp/Android/Besiktning/bin/classes.dex : \
+/home/adminess/TrailerApp/Android/Besiktning/bin/classes/R.java.d \
 /home/adminess/TrailerApp/Android/Besiktning/bin/classes/com/gizur/besiktning/R.class \
 /home/adminess/TrailerApp/Android/Besiktning/bin/classes/com/gizur/besiktning/Besiktning.class \
 /home/adminess/TrailerApp/Android/Besiktning/bin/classes/com/gizur/besiktning/R$layout.class \

@@ -82,9 +82,7 @@ var Request = (function() {
                 $.mobile.loading( 'hide' );
 
                 if (jqxhr.status == 0) {
-                    $('#dialog div[data-role=header]').html('<h3>Error</h3>');
-                    $('#dialog div[data-role=content]').children().first().html('Please check your internet connection and try again.');
-                    $('#a_dialog').click();
+                    $('#a_dialog_nointernet').click();
                 } else {
                     errorCb(jqxhr, status, er);
                 }

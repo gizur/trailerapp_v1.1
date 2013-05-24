@@ -48,12 +48,12 @@ var Asset = Stapes.subclass({
             that._storage.setItem('enum_trailertype', JSON.stringify(data.result));
 
             if (successCb != undefined && typeof successCb == 'function')                
-                successCb(data);
+                successCb(data, 'trailertype');
         };
 
         var errorCbWrapper = function(jqxhr, status, er){
             if (errorCb != undefined && typeof errorCb == 'function')
-                errorCb(jqxhr, status, er);
+                errorCb(jqxhr, status, er, 'trailertype');
         };
 
         lg.log('DEBUG', 'typeof usr = ' + (typeof this._usr));

@@ -63,6 +63,11 @@ var User = (function(){
             req.send(method, url, headers, body, successCb, errorCb, files);
         },
 
+        setAuthenticated :  function (status) {
+            this.set('authenticated', status);
+            storage.setItem('user', JSON.stringify(that.getAll()));             
+        },
+
         /**
          * Authenticates the current user
          */       

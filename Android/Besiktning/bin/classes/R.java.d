@@ -8,7 +8,6 @@
 /home/adminess/TrailerApp/Android/Besiktning/res/layout/main.xml \
 /home/adminess/TrailerApp/Android/Besiktning/res/drawable-xhdpi/ic_launcher.png \
 /home/adminess/TrailerApp/Android/Besiktning/res/drawable-xhdpi/icon.png \
-/home/adminess/TrailerApp/Android/Besiktning/res/drawable/splash.png \
 /home/adminess/TrailerApp/Android/Besiktning/res/drawable/icon.png \
 /home/adminess/TrailerApp/Android/Besiktning/res/drawable-ldpi/ic_launcher.png \
 /home/adminess/TrailerApp/Android/Besiktning/res/drawable-ldpi/icon.png \
@@ -18,7 +17,6 @@
 /home/adminess/TrailerApp/Android/Besiktning/bin/res/drawable-mdpi/icon.png \
 /home/adminess/TrailerApp/Android/Besiktning/bin/res/drawable-xhdpi/ic_launcher.png \
 /home/adminess/TrailerApp/Android/Besiktning/bin/res/drawable-xhdpi/icon.png \
-/home/adminess/TrailerApp/Android/Besiktning/bin/res/drawable/splash.png \
 /home/adminess/TrailerApp/Android/Besiktning/bin/res/drawable/icon.png \
 /home/adminess/TrailerApp/Android/Besiktning/bin/res/drawable-ldpi/ic_launcher.png \
 /home/adminess/TrailerApp/Android/Besiktning/bin/res/drawable-ldpi/icon.png \

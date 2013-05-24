@@ -77,12 +77,12 @@ var AssetCollection = (function() {
                 });
 
                 if (successCb != undefined && typeof successCb == 'function')
-                    successCb(data);
+                    successCb(data, 'assets');
             };
 
             var errorCbWrapper = function(jqxhr, status, er){
                 if (errorCb != undefined && typeof errorCb == 'function')
-                    errorCb(jqxhr, status, er);
+                    errorCb(jqxhr, status, er, 'assets');
             };
 
             usr.send(

@@ -4,17 +4,16 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1"> 
-	<title>Besiktning</title> 
+	<title>Survey</title> 
 	<link rel="stylesheet" href="js/lib/jquery.mobile-1.2.1/jquery.mobile-1.2.1.min.css" />
 	<link href="css/jquery.bxslider.css" rel="stylesheet" />	
 	
     <!--lib-->
-    <script src="js/lib/cordova-2.6.0.js"></script>    
-	<script src="js/lib/jquery.mobile-1.2.1/jquery-1.8.3.min.js"></script>
+    <script src="js/lib/cordova-2.6.0.js"></script>
+	<script src="js/lib/jquery.mobile-1.2.1/jquery-1.8.3.min.js"></script>  
 	<script src="js/lib/jquery.mobile-1.2.1/jquery.mobile-1.2.1.min.js"></script>
 	<script src="js/lib/jquery.bxslider.js"></script>
     <script src="js/lib/stapes.min.js"></script>
-    <script src="js/lib/jquery.base64.js"></script>
 
     <!--config-->
     <script src="js/app/config.js"></script>  
@@ -23,6 +22,7 @@
     <script src="js/app/util/request.js"></script>     
     <script src="js/app/util/logger.js"></script> 
     <script src="js/app/util/encoding.js"></script>
+    <script src="js/app/util/language.js"></script>
 
     <!--model-->
     <script src="js/app/models/asset.js"></script>
@@ -35,6 +35,13 @@
     <script src="js/app/models/user.js"></script>
 </head>
 <body> 
+<div data-role="page" id="splash">
+        <div data-role="content">
+            <div>
+                <img style="display:block;width:100%;height:auto;" src="img/splash.png"/>
+            </div>
+        </div>
+</div>
 <!-- Start of first page: #one -->
 <div data-role="page" id="one">
 	<div data-role="content" >	
@@ -42,25 +49,25 @@
             <ul>
                 <li>
                     <a href="#contact" data-transition="fade" data-theme="a">
-                        Kontakt
+                        Contact
                     </a>
                 </li>
                 <li>
                     <a href="#one" data-transition="fade" data-theme="a">
-                        Besiktning
+                        Survey
                     </a>
                 </li>
                 <li>
                     <a href="#settings" data-transition="fade" data-theme="a">
-                        Inställningar
+                        Settings
                     </a>
                 </li>
             </ul>
         </div>
-		<h2>Kontrollbesiktning</h2>
+		<h2>Survey</h2>
 		<div data-role="fieldcontain">
             <label for="trailertype">
-                Typ av trailer:
+                Trailer type:
             </label>
             <select id="trailertype" name="trailertype">
             </select>
@@ -74,13 +81,13 @@
         </div>
         <div data-role="fieldcontain">
             <label for="place">
-                Plats
+                Place
             </label>
             <select id="place" name="place">
             </select>
         </div>
 		
-		<h3>Befintliga Skador</h3>
+		<h3>Existing Damage(s)</h3>
 		<div data-role="fieldcontain">	
 	        <ul class="bxslider-one" id="troubleticketlist">
 	          <li><center><div style='height:60px;width:120px;'>No TroubleTickets</div></center></li>
@@ -90,20 +97,20 @@
         <div data-role="fieldcontain">
             <fieldset data-role="controlgroup" data-type="vertical" id="sealed">
                 <legend>
-                    Plomerad
+                    Sealed
                 </legend>
                 <input id="radio1" name="sealed" value="Ja" type="radio">
                 <label for="radio1">
-                    Ja
+                    Yes
                 </label>
                 <input id="radio2" name="sealed" value="Nej" type="radio">
                 <label for="radio2">
-                    Nej
+                    No
                 </label>
             </fieldset>
         </div>
-		<p><a data-theme="a" id="reportdamage" href="javascript:void(0);" data-role="button">Rapportera ny skada</a></p>	
-		<p><a data-theme="a" id="reportsurvey" href="javascript:void(0);" data-role="button" data-rel="dialog" data-transition="pop">Inga nya skador</a></p>
+		<p><a data-theme="a" id="reportdamage" href="javascript:void(0);" data-role="button">Report new damage</a></p>	
+		<p><a data-theme="a" id="reportsurvey" href="javascript:void(0);" data-role="button" data-rel="dialog" data-transition="pop">No new damage</a></p>
 	</div><!-- /content -->
 </div><!-- /page one -->
 <!-- Start of second page: #two -->
@@ -113,22 +120,22 @@
             <ul>
                 <li>
                     <a href="#contact" data-transition="fade" data-theme="a">
-                        Kontakt
+                        Contact
                     </a>
                 </li>
                 <li>
                     <a href="#one" data-transition="fade" data-theme="a">
-                        Besiktning
+                        Survey
                     </a>
                 </li>
                 <li>
                     <a href="#settings" data-transition="fade" data-theme="a">
-                        Inställningar
+                        Settings
                     </a>
                 </li>
             </ul>
         </div>
-		<p><a href="#one" data-rel="back" data-role="button" data-inline="true" data-icon="back">Tillbaka</a></p>
+		<p><a href="#one" data-rel="back" data-role="button" data-inline="true" data-icon="back">Back</a></p>
         <h3>Information om skada</h3>
         <div data-role="fieldcontain">
             <label for="damagetype">
@@ -162,22 +169,22 @@
             <ul>
                 <li>
                     <a href="#contact" data-transition="fade" data-theme="a">
-                        Kontakt
+                        Contact
                     </a>
                 </li>
                 <li>
                     <a href="#one" data-transition="fade" data-theme="a">
-                        Besiktning
+                        Survey
                     </a>
                 </li>
                 <li>
                     <a href="#settings" data-transition="fade" data-theme="a">
-                        Inställningar
+                        Settings
                     </a>
                 </li>
             </ul>
         </div>
-		<p><a href="#one" data-rel="back" data-role="button" data-inline="true" data-icon="back">Tillbaka</a></p>
+		<p><a href="#one" data-rel="back" data-role="button" data-inline="true" data-icon="back">Back</a></p>
         <h3>Foton</h3>
         <img src=""/>
 	</div><!-- /content -->
@@ -189,17 +196,17 @@
             <ul>
                 <li>
                     <a href="#contact" data-transition="fade" data-theme="a">
-                        Kontakt
+                        Contact
                     </a>
                 </li>
                 <li>
                     <a href="#one" data-transition="fade" data-theme="a">
-                        Besiktning
+                        Survey
                     </a>
                 </li>
                 <li>
                     <a href="#settings" data-transition="fade" data-theme="a">
-                        Inställningar
+                        Settings
                     </a>
                 </li>
             </ul>
@@ -258,17 +265,17 @@
             <ul>
                 <li>
                     <a href="#contact" data-transition="fade" data-theme="a">
-                        Kontakt
+                        Contact
                     </a>
                 </li>
                 <li>
                     <a href="#one" data-transition="fade" data-theme="a">
-                        Besiktning
+                        Survey
                     </a>
                 </li>
                 <li>
                     <a href="#settings" data-transition="fade" data-theme="a">
-                        Inställningar
+                        Settings
                     </a>
                 </li>
             </ul>
@@ -306,17 +313,17 @@
             <ul>
                 <li>
                     <a href="#contact" data-transition="fade" data-theme="a">
-                        Kontakt
+                        Contact
                     </a>
                 </li>
                 <li>
                     <a href="#one" data-transition="fade" data-theme="a">
-                        Besiktning
+                        Survey
                     </a>
                 </li>
                 <li>
                     <a href="#settings" data-transition="fade" data-theme="a">
-                        Inställningar
+                        Settings
                     </a>
                 </li>
             </ul>
@@ -357,17 +364,17 @@
             <ul>
                 <li>
                     <a href="#contact" data-transition="fade" data-theme="a">
-                        Kontakt
+                        Contact
                     </a>
                 </li>
                 <li>
                     <a href="#one" data-transition="fade" data-theme="a">
-                        Besiktning
+                        Survey
                     </a>
                 </li>
                 <li>
                     <a href="#settings" data-transition="fade" data-theme="a">
-                        Inställningar
+                        Settings
                     </a>
                 </li>
             </ul>
@@ -395,6 +402,7 @@
         <hr/>
 	</div><!-- /content -->
 </div><!-- /page contact -->
+
 <!-- Start of page: #nointernet -->
 <a id="a_dialog" href="#dialog" data-rel="dialog" style="display: none;"></a> 
 <div data-role="page" id="dialog" data-transition="flip">
@@ -403,10 +411,66 @@
     </div><!-- /header -->
 
     <div data-role="content" data-theme="d">
-        <p></p>        
+        <p></p>
+        <p></p>
+        <p></p>    
+        <p><a data-role="button" data-inline="true" data-icon="back">Ok</a></p>
+    </div><!-- /content -->
+</div><!-- /page nointernet -->
+
+<!-- Start of page: #nointernet -->
+<a id="a_dialog_success_cache" href="#dialog_success_cache" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_success_cache" data-transition="none">
+    <div data-role="header" data-theme="e">
+        <h2>Success</h2>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>Authenticated successfully and Cache built successfully.</p>   
+        <p><a href="#one" data-role="button" data-inline="true" data-icon="back">Ok</a></p>
+    </div><!-- /content -->
+</div><!-- /page nointernet -->
+
+<!-- Start of page: #nointernet -->
+<a id="a_dialog_success_login" href="#dialog_success_login" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_success_login" data-transition="none">
+    <div data-role="header" data-theme="e">
+        <h2>Success</h2>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>Authenticated successfully.</p>   
+        <p>Building Cache, please wait ... </p>   
+        <p>Completed 0 of 7</p>   
+    </div><!-- /content -->
+</div><!-- /page nointernet -->
+
+<!-- Start of page: #nointernet -->
+<a id="a_dialog_error_cache" href="#dialog_error_cache" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_error_cache" data-transition="none">
+    <div data-role="header" data-theme="e">
+        <h2>Unable to build cache</h2>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>Please try again, If the problem persists please contact the Gizur Saas Account holders.</p>
+        <p><a href="#five" data-role="button" data-inline="true" data-icon="back">Ok</a></p>
+    </div><!-- /content -->
+</div><!-- /page nointernet -->
+
+<!-- Start of page: #nointernet -->
+<a id="a_dialog_nointernet" href="#dialog_nointernet" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_nointernet" data-transition="none">
+    <div data-role="header" data-theme="e">
+        <h2>Connection Error</h2>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>Please check your internet connection and try again.</p>
         <p><a data-rel="back" data-role="button" data-inline="true" data-icon="back">Ok</a></p>
     </div><!-- /content -->
 </div><!-- /page nointernet -->
+
 <script src="js/app/index.js"></script>
 </body>
 </html>

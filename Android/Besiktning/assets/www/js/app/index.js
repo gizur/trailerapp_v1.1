@@ -9,15 +9,13 @@
  * @preserve  copyright 2013 Gizur AB 
  */
 
-$(document).delegate('#one', 'pageinit', function() {
-});
-
 $(document).delegate('#one', 'pageshow', function () {
     //Environment SetUp
     var lg_one = new Logger('DEBUG', 'gta-page#one$pageshow'); 
     lg_one.log('TRACE', 'page loaded');
     var req = new Request(Config.url, Config.client_id);
     var usr = new User(req);
+    var language = new Language();
 
     //For Debugging : The line below must be commented
     //window.localStorage.removeItem('17x519_tt');
@@ -459,7 +457,7 @@ $(document).delegate('#one', 'pageshow', function () {
      */
 
     $('#one #sealed').html('');
-    $('#one #sealed').append('<legend>Plomerad</legend>');
+    $('#one #sealed').append('<legend>' + language.translate('Sealed') + '</legend>');
 
     for (var index in enum_sealed) {    
 
@@ -961,22 +959,10 @@ $(document).delegate('#five', 'pageshow', function () {
 
             //Clear the cached current trouble ticket as the
             $.mobile.urlHistory.stack = [];
+            navigator.app.clearHistory();
 
-            $.mobile.urlHistory.stack.push(
-               {
-                    "url":"/android_asset/www/index.html",
-                    "transition":"fade",
-                    "title":"Besiktning",
-                    "pageUrl":"/android_asset/www/index.html"
-               },                
-               {
-                    "url":"one",
-                    "transition":"fade",
-                    "title":"Besiktning",
-                    "pageUrl":"one",
-                    "lastScroll":1
-               }
-            );            
+            $('#dialog a[data-role=button]').attr('href','#one');
+            $('#dialog a[data-role=button]').show();
 
             window.localStorage.removeItem('current_tt');
         };
@@ -985,13 +971,17 @@ $(document).delegate('#five', 'pageshow', function () {
 
         var error = function(jqxhr, status, error){
 
+            /**
+             * This section need to be tested thoroughly
+             */
+
             // Reset the cached current trouble ticket 
             var stt = ttc.getAllAsArray();
 
             lg.log('DEBUG', ' stt[index] instanceof TroubleTicket ' + (stt[index] instanceof TroubleTicket));
 
             current_tt.damages = Array();
-            /*
+            
             for (var index in stt) {
                 current_tt.damages.push(
                     JSON.parse(
@@ -999,7 +989,10 @@ $(document).delegate('#five', 'pageshow', function () {
                     )
                 );
             }
-            */
+            
+            $('#dialog a[data-role=button]').attr('href','#five');
+            $('#dialog a[data-role=button]').show();
+
             window.localStorage.setItem('current_tt', JSON.stringify(current_tt));
             
         };
@@ -1013,6 +1006,7 @@ $(document).delegate('#five', 'pageshow', function () {
         //Show success message
         $('#dialog div[data-role=header]').html('<h2>Sending Damage Report</h2>');
         $('#dialog div[data-role=content]').children().first().html('Completed ... 0 of ' + ttc.size());
+        $('#dialog a[data-role=button]').hide();
         $('#a_dialog').click();              
 
         lg.log('TRACE', '#five #sendalldamages click end');   
@@ -1076,13 +1070,50 @@ $(document).delegate('#settings', 'pageshow', function () {
     $('#settings_client_id').val(req.getClientId());
 
     $('#settings_save').unbind('click').bind('click', function(){
+        var cacheSuccessList = Array();
+        var cacheErrorList = Array();
 
         lg_settings.log('TRACE', ' username: ' + $('#settings_username').val());
         lg_settings.log('TRACE', ' password: ' + $('#settings_password').val());
         lg_settings.log('TRACE', ' client_id: ' + $('#settings_client_id').val());
 
-        //Clear All cache
+        //Show popup right away
+        $('#dialog div[data-role=header]').html('<h2>Authenticating</h2>');
+        $('#dialog div[data-role=content]').children().first().html('Please wait ... ');
+        $('#dialog a[data-role=button]').hide();
+        $('#a_dialog').click();
+
+        // Clear back button history so that if the user clicks on 
+        // device's back button the app exits
+        navigator.app.clearHistory();
+
+        // Clear All cache
         window.localStorage.clear();
+
+        // Create event handler for cache complete
+        usr.on('cache complete', function(status){
+            if (status.success) {
+                cacheSuccessList.push(status.name);
+                $('#dialog_success_login div[data-role=content]').children().eq(2).html('Completed ' + cacheSuccessList.length  + ' of 7');                                          
+            } else {
+                cacheErrorList.push(status.name);
+            }
+
+            //Check if all cache calls have completed
+            if ((cacheSuccessList.length + cacheErrorList.length) == 7) {
+
+                if (cacheErrorList.length==0) { 
+                    $('#a_dialog_success_cache').click();
+                    navigator.app.clearHistory();
+                } else {
+                    usr.setAuthenticated(false);
+                    $('#a_dialog_error_cache').click();
+                    navigator.app.clearHistory();                  
+                }
+                cacheSuccessList = cacheErrorList = [];
+            }
+        });
+        
 
         var success = function(data){
             lg_settings.log('TRACE', ' successfully authenticated');
@@ -1094,23 +1125,29 @@ $(document).delegate('#settings', 'pageshow', function () {
 
             lg_settings.log('TRACE', ' starting to cache');
 
-            //start caching picklists
-            tt.getEnumPlace();
-            tt.getEnumSealed();
+            var successCb = function (data, name) {
+                usr.emit("cache complete", {success: true, name: name});
+            };
 
-            dmg.getEnumDamageType();
-            dmg.getEnumDamagePosition();
-            dmg.getEnumDriverCausedDamage();
+            var errorCb = function (j, s, e, name) {
+                usr.emit("cache complete", {success: false, name: name});
+            };            
+
+            //start caching picklists
+            tt.getEnumPlace(successCb, errorCb);
+            tt.getEnumSealed(successCb, errorCb);
+
+            dmg.getEnumDamageType(successCb, errorCb);
+            dmg.getEnumDamagePosition(successCb, errorCb);
+            dmg.getEnumDriverCausedDamage(successCb, errorCb);
 
             lg_settings.log('TRACE', ' type of ast ' + (typeof ast));
 
-            ast.getEnumTrailerType();
-            ac.getAssets();
+            ast.getEnumTrailerType(successCb, errorCb);
+            ac.getAssets(successCb, errorCb);
 
             //Show success message
-            $('#dialog div[data-role=header]').html('<h2>Success</h2>');
-            $('#dialog div[data-role=content]').children().first().html('Credentials authenticated!');
-            $('#a_dialog').click();                
+            $('#a_dialog_success_login').click();                        
         };
 
         var error = function(jqxhr, status, er){
@@ -1127,8 +1164,8 @@ $(document).delegate('#settings', 'pageshow', function () {
 
             $('#dialog div[data-role=header]').html('<h2>Authentication Failed</h2>');
             $('#dialog div[data-role=content]').children().first().html(message);
-            $('#a_dialog').click();
-
+            $('#dialog a[data-role=button]').attr('href','#five');
+            $('#dialog a[data-role=button]').show();
         };
 
         //Saving the client id to cache
@@ -1147,9 +1184,12 @@ $(document).delegate('#settings', 'pageshow', function () {
 });
 
 $(document).bind('pagebeforechange', function (e, data) {
-    //Environment SetUp
+    /**
+     * Environment SetUp
+     */
+
     var lg = new Logger('DEBUG', 'gta-page$pagebeforechange'); 
-    var req = new Request(Config.url, Config.client_id);
+    var req = new Request(Config.url);
     var usr = new User(req);
 
     var to = data.toPage,
@@ -1157,6 +1197,11 @@ $(document).bind('pagebeforechange', function (e, data) {
 
     lg.log('TRACE', typeof to);
     lg.log('TRACE', ' $.mobile.urlHistory :' + JSON.stringify($.mobile.urlHistory.stack));
+
+    /**
+     * The type of to is object when there is a transition from
+     * one page to another.
+     */
 
     if (typeof to === 'object') {
         if (to.attr('id') == 'one' && !usr.get('authenticated')) {
@@ -1166,14 +1211,19 @@ $(document).bind('pagebeforechange', function (e, data) {
             return;
         }
 
-        //Access Control
-        //Check if the user is authenticated
-        //if not show him the access denied page
+        /**
+         * Access Control
+         * Check if the user is authenticated
+         * if not show him the access denied page
+         */
 
         lg.log('DEBUG', 'usr.authenticated: ' + usr.get('authenticated'));
         lg.log('DEBUG', ' to.attr(id): ' + to.attr('id'));
 
         if (!usr.get('authenticated')){
+            /**
+             * If user is not authenticated
+             */
             if (to.attr('id') === 'one' || 
                     to.attr('id') === 'two' || 
                     to.attr('id') == 'three' || 
@@ -1181,28 +1231,50 @@ $(document).bind('pagebeforechange', function (e, data) {
                     to.attr('id') == 'five') {                    
                 e.preventDefault();
 
-                // remove active class on button
-                // otherwise button would remain highlighted
+                /**
+                 * remove active class on button
+                 * otherwise button would remain highlighted
+                 */
+
                 $.mobile.activePage
                     .find('.ui-btn-active')
                     .removeClass('ui-btn-active');
 
-                //Show Access denied pop up
+                /**
+                 * Show Access denied pop up
+                 */
                 $('#dialog div[data-role=header]').html('<h3>Access Denied</h3>');
                 $('#dialog div[data-role=content]').children().first().html('You have not been authenticated. Please enter valid credentials and click save.');
                 $('#a_dialog').click(); 
             }
         } else {
+
+            /**
+             * If user is authenticated
+             */ 
+
             if (to.attr('id') === 'four' || 
                     to.attr('id') === 'five') {
+
+                /**
+                 * The user reaches here when he clicks the pop up's
+                 * back button after sending the damages to server
+                 */
+
                 if (window.localStorage.getItem('current_tt') == null ||
                     window.localStorage.getItem('current_tt') == false) {
                     $.mobile.changePage('#one');
+                    return;
                 }
             }
         }
 
     }
+
+    /**
+     * The type of to is string when there is a transition from
+     * no page to another i.e. during click of back button
+     */
 
     if (typeof to === 'string') {
         var u = $.mobile.path.parseUrl(to);
@@ -1211,37 +1283,58 @@ $(document).bind('pagebeforechange', function (e, data) {
 
         lg.log('DEBUG', 'To page: ' + to);
         lg.log('DEBUG', 'usr.authenticated: ' + usr.get('authenticated'));
+
+        /**
+         * If user is authenticated
+         */ 
+
+        if (to === '#four' || 
+                to === '#five') {
+
+            /**
+             * The user reaches here when he clicks the pop up's
+             * back button after sending the damages to server
+             */
+
+            if (window.localStorage.getItem('current_tt') == null ||
+                window.localStorage.getItem('current_tt') == false) {
+
+                /**
+                 * Changing page to one if there is not tt in cache
+                 */
+
+                lg.log('TRACE', ' changing to page one ');
+                $.mobile.changePage('#one');
+            }
+        }
     }
 });
 
-$('#one').on('pagebeforecreate',function (event) {
-    /**
-     * Localization
-    var lg_one = new Logger('DEBUG', 'gta-page#one$pagebeforecreate'); 
-    lg_one.log('TRACE', 'page create start');
+document.addEventListener("deviceready", function(){
 
-    lg_one.log('DEBUG', 'navigator ' + JSON.stringify(navigator.camera));
+        /**
+         * Localization
+         */
 
-    navigator.globalization.getPreferredLanguage(
-        function (language) {
-            lg_one.log('DEBUG', 'localization ' + language.value);
-        },
-        function () {lg_one.log('DEBUG', 'Error getting language\n');}
-    );
+        navigator.globalization.getPreferredLanguage(
+            function (lang) {
+                var language = new Language(lang.value);
 
+                if (language.hasLanguage()) {
+                    $("*").each(function () {
+                        if ($(this).children().length == 0) {
+                            var words = language.get(lang.value);
+                            for (var english in words) {
+                                $(this).text($(this).text().replace(english, words[english]));
+                            }
+                        }
+                    });
+                }
 
-    $("*").each(function () {
-        if ($(this).children().length == 0) {
-            $(this).text($(this).text().replace('Kontakt','Contact'));
-        }
-    });    
-    */
-});
-
-$('div').live('pagehide',function (event, ui) {
-  //Environment SetUp
-  var lg = new Logger('DEBUG', 'pagehide');
-
-  lg.log('This page was just shown: '+ ui.nextPage);
-  lg.log('This page was just hidden: '+ ui.prevPage);
-});
+                $.mobile.changePage('#one');
+            },
+            function () {
+                console.log('Error getting language\n');
+            }
+        );   
+}, false);

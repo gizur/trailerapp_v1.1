@@ -8,6 +8,7 @@
 /home/adminess/TrailerApp/Android/Besiktning/res/layout/main.xml \
 /home/adminess/TrailerApp/Android/Besiktning/res/drawable-xhdpi/ic_launcher.png \
 /home/adminess/TrailerApp/Android/Besiktning/res/drawable-xhdpi/icon.png \
+/home/adminess/TrailerApp/Android/Besiktning/res/drawable/splash.png \
 /home/adminess/TrailerApp/Android/Besiktning/res/drawable/icon.png \
 /home/adminess/TrailerApp/Android/Besiktning/res/drawable-ldpi/ic_launcher.png \
 /home/adminess/TrailerApp/Android/Besiktning/res/drawable-ldpi/icon.png \
@@ -17,6 +18,7 @@
 /home/adminess/TrailerApp/Android/Besiktning/bin/res/drawable-mdpi/icon.png \
 /home/adminess/TrailerApp/Android/Besiktning/bin/res/drawable-xhdpi/ic_launcher.png \
 /home/adminess/TrailerApp/Android/Besiktning/bin/res/drawable-xhdpi/icon.png \
+/home/adminess/TrailerApp/Android/Besiktning/bin/res/drawable/splash.png \
 /home/adminess/TrailerApp/Android/Besiktning/bin/res/drawable/icon.png \
 /home/adminess/TrailerApp/Android/Besiktning/bin/res/drawable-ldpi/ic_launcher.png \
 /home/adminess/TrailerApp/Android/Besiktning/bin/res/drawable-ldpi/icon.png \
@@ -60,6 +62,7 @@
 /home/adminess/TrailerApp/Android/Besiktning/assets/www/js/app/util \
 /home/adminess/TrailerApp/Android/Besiktning/assets/www/js/app/models \
 /home/adminess/TrailerApp/Android/Besiktning/assets/www/js/app/index.js \
+/home/adminess/TrailerApp/Android/Besiktning/assets/www/js/app/util/language.js \
 /home/adminess/TrailerApp/Android/Besiktning/assets/www/js/app/util/request.js \
 /home/adminess/TrailerApp/Android/Besiktning/assets/www/js/app/util/logger.js \
 /home/adminess/TrailerApp/Android/Besiktning/assets/www/js/app/util/encoding.js \
@@ -97,6 +100,7 @@
 /home/adminess/TrailerApp/Android/Besiktning/assets/www/js/lib/jquery.mobile-1.2.1/images/icons-36-white.png \
 /home/adminess/TrailerApp/Android/Besiktning/assets/www/js/lib/jquery.mobile-1.2.1/images/icons-36-black.png \
 /home/adminess/TrailerApp/Android/Besiktning/assets/www/img/d3-f.jpg \
+/home/adminess/TrailerApp/Android/Besiktning/assets/www/img/splash.png \
 /home/adminess/TrailerApp/Android/Besiktning/assets/www/img/bx_loader.gif \
 /home/adminess/TrailerApp/Android/Besiktning/assets/www/img/square1.jpg \
 /home/adminess/TrailerApp/Android/Besiktning/assets/www/img/d3.jpg \

@@ -125,12 +125,12 @@ var TroubleTicket = Stapes.subclass({
             that._storage.setItem('enum_place', JSON.stringify(data.result));
 
             if (successCb != undefined && typeof successCb == 'function')
-                successCb(data);
+                successCb(data, 'place');
         };
 
         var errorCbWrapper = function(jqxhr, status, er){
             if (errorCb != undefined && typeof errorCb == 'function')
-                errorCb(jqxhr, status, er);              
+                errorCb(jqxhr, status, er, 'place');              
         };
 
         this._usr.send(
@@ -160,12 +160,12 @@ var TroubleTicket = Stapes.subclass({
             that._storage.setItem('enum_sealed', JSON.stringify(data.result));
 
             if (successCb != undefined && typeof successCb == 'function')
-                successCb(data);
+                successCb(data, 'sealed');
         };
 
         var errorCbWrapper = function(jqxhr, status, er){
             if (errorCb != undefined && typeof errorCb == 'function')
-                errorCb(jqxhr, status, er);
+                errorCb(jqxhr, status, er, 'sealed');
         };
 
         this._usr.send(
