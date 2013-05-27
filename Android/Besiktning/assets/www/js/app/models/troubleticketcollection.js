@@ -19,7 +19,7 @@ var TroubleTicketCollection = Stapes.subclass({
     constructor : function(aUsr) {
         this.extend({
             '_usr' : aUsr,
-            '_lg' : new Logger('DEBUG', 'js/models/troubleticketcollection')
+            '_lg' : new Logger('FATAL', 'js/models/troubleticketcollection')
         });
     }, 
 

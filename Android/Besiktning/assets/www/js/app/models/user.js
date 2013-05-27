@@ -24,7 +24,7 @@ var User = (function(){
          */ 
         constructor : function(aReq) {
 
-            lg_user = new Logger('DEBUG','js/models/user'); 
+            lg_user = new Logger('FATAL','js/models/user'); 
 
             req = aReq;
 

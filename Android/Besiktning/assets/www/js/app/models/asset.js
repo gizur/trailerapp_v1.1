@@ -13,7 +13,7 @@ var Asset = Stapes.subclass({
     constructor : function(aUsr) {
 
         this.extend({
-            _lg : new Logger('DEBUG','js/model/asset'),
+            _lg : new Logger('FATAL','js/model/asset'),
             _storage : window.localStorage,
             _usr : aUsr
         });

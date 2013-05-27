@@ -29,7 +29,7 @@ var AssetCollection = (function() {
          */ 
         constructor : function(aUsr) {
 
-            lg = new Logger('DEBUG', 'AssetCollection');
+            lg = new Logger('FATAL', 'AssetCollection');
             lg.log('TRACE', '#constructor start');
 
             usr = aUsr;

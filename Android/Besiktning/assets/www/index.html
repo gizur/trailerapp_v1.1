@@ -212,11 +212,11 @@
             </ul>
         </div>
         <h3>
-            Skadeuppgifter
+            Damage details
         </h3>
         <div data-role="fieldcontain">
             <label for="damagetype">
-                Typ av skada
+                Type of damage
             </label>
             <select id="damagetype" name="damagetype">
             </select>
@@ -229,22 +229,17 @@
             </select>
         </div>
         <h3>
-            Foton
+            Picture
         </h3>
-		<p><a id="takephoto" href="" data-role="button">Lägg till en bild</a></p>
+		<p><a id="takephoto" href="" data-role="button">Add a picture</a></p>
 		<div data-role="fieldcontain">
-            <ul class="bxslider-four-picture">
-                <li>
-                    <center>
-                        <div style='height:60px;width:200px;'>No Picture(s) Attached</div>
-                    </center>
-                </li> 
-            </ul>
-            <p id='pager-four' style='text-align: right;'></p>
-        </div>
+            <div class="four-picture" style="width:inherit;height:100px;line-height:100px;border:1px solid #BBB;padding:5px;">
+                <center>No Picture Attached</center>
+            </div>
+        </div>       
         <div data-role="fieldcontain">
             <label for="drivercauseddamage">
-                Orsaka av:
+                I caused the damage:
             </label>
             <select id="drivercauseddamage" name="drivercauseddamage">
                 <option value="No">
@@ -255,7 +250,8 @@
                 </option>
             </select>
         </div>
-        <p><a id="savedamage" data-theme="a" href="#five" data-role="button">Spara</a></p>
+        <p><a id="savedamage" data-theme="a" href="#five" data-role="button">Save</a></p>
+        <p><a id="deletedamage" data-theme="e" href="javascript:void(0);" data-role="button">Delete</a></p>
 	</div><!-- /content -->
 </div><!-- /page four -->
 <!-- Start of fifth page: #five -->
@@ -280,7 +276,7 @@
                 </li>
             </ul>
         </div>
-        <h3>Tidigare rapporterade skador</h3>
+        <h3>Previously reported damages</h3>
         <div data-role="fieldcontain">
             <ul class="bxslider-five-a">
                 <li>
@@ -291,8 +287,8 @@
             </ul>	
         <p id='pager-five-a' style='text-align: right;'></p>
         </div>
-        <h3>Nyfunna skador</h3>
-        <p><a id="reportanotherdamage" data-theme="a" href="javascript:void(0);" data-role="button">Lägg fler skador</a></p>	
+        <h3>New found damage</h3>
+        <p><a id="reportanotherdamage" data-theme="a" href="javascript:void(0);" data-role="button">Add more damages</a></p>	
         <div data-role="fieldcontain">
             <ul class="bxslider-five-b">
                 <li>
@@ -303,7 +299,7 @@
             </ul>	
         <p id='pager-five-b' style='text-align: right;'></p>
         </div>
-		<p><a id="sendalldamages" data-theme="a" href="javascript:void(0);" data-role="button" data-rel="dialog" data-transition="pop">Skicka skaderapport</a></p>
+		<p><a id="sendalldamages" data-theme="a" href="javascript:void(0);" data-role="button" data-rel="dialog" data-transition="pop">Send damage report</a></p>
 	</div><!-- /content -->
 </div><!-- /page five -->
 <!-- Start of fifth page: #settings -->
@@ -336,24 +332,24 @@
         </div>
         <div data-role="fieldcontain">
             <label for="textinput2">
-                Lösen
+                Password
             </label>
             <input name="settings_password" id="settings_password" placeholder="" value="ivry34aq" type="text">
         </div>
         <a data-role="button" href="#one">
-            Ändra Lösenord
+            Change Password
         </a>
         <a data-role="button" href="#one">
-            Glömt Lösenord
+            Forgot Password
         </a>
         <div data-role="fieldcontain">
             <label for="settings_client_id">
-                Gizur Saas konto:
+                Gizur Saas Client ID:
             </label>
             <input name="settings_client_id" id="settings_client_id" placeholder="" value="" type="text">
         </div>
         <a id="settings_save" data-role="button" href="javascript:void(0);" data-theme="b">
-            Spara
+            Save
         </a>
 	</div><!-- /content -->
 </div><!-- /page setting -->
@@ -411,10 +407,20 @@
     </div><!-- /header -->
 
     <div data-role="content" data-theme="d">
-        <p></p>
-        <p></p>
-        <p></p>    
+        <p></p>  
         <p><a data-role="button" data-inline="true" data-icon="back">Ok</a></p>
+    </div><!-- /content -->
+</div><!-- /page nointernet -->
+
+<!-- Start of page: #nointernet -->
+<a id="a_dialog_authenticating" href="#dialog_authenticating" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_authenticating" data-transition="flip">
+    <div data-role="header" data-theme="e">
+        <h1>Authenticating</h1>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>Please wait ... </p>  
     </div><!-- /content -->
 </div><!-- /page nointernet -->
 

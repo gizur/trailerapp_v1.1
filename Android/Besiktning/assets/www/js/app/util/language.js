@@ -13,7 +13,7 @@ var Language = Stapes.subclass({
     constructor : function( language ) {
 
         this.extend({
-            _lg : new Logger('DEBUG', 'app/util/language')
+            _lg : new Logger('FATAL', 'app/util/language')
         });
 
         this.set( 'svenska' , {
@@ -30,7 +30,22 @@ var Language = Stapes.subclass({
                 'No new damage' : 'Inga nya skador',
                 'Existing Damage(s)': 'Befintliga Skador',
                 'Back' : 'Tillbaka',
-                'Picture' : 'Foton'
+                'Picture' : 'Foton',
+                'Save' : 'Spara',
+                'Change Password': 'Ändra Lösenord',
+                'Forgot Password': 'Glömt Lösenord',
+                'Password' : 'Lösenord',
+                'Gizur Saas Client ID' : 'Gizur Saas konto',
+                'Add more damages': 'Lägg fler skador',
+                'New found damage': 'Nyfunna skador',
+                'Send damage report': 'Skicka skaderapport',
+                'Previously reported damages': 'Tidigare rapporterade skador',
+                'I caused the damage': 'Jag orsakade skadan',
+                'Delete': 'Radera',
+                'Damage details': 'Skadeuppgifter',
+                'Type of damage': 'Typ av skada',
+                'Add a picture': 'Lägg till en bild',
+                'Weekday': 'Vardagar',
             }
         );
         if (typeof language != 'undefined') {
