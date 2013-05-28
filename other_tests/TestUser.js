@@ -14,14 +14,6 @@ node_unit = true;
 //Lib
 Stapes = require('../Android/Besiktning/assets/www/js/lib/stapes.js').Stapes;
 $ = require('jquery');
-$.mobile = {
-    loading : function(){}
-};
-Logger = require('../Android/Besiktning/assets/www/js/app/util/logger.js').Logger;
-LocalStorage = require('node-localstorage').LocalStorage;
-window = {
-    localStorage : new LocalStorage('./tmp')
-};
 
 //Config
 Config = require('../Android/Besiktning/assets/www/js/app/config.js').Config;
@@ -33,8 +25,7 @@ Request = require('../Android/Besiktning/assets/www/js/app/util/request.js').Req
 User = require('../Android/Besiktning/assets/www/js/app/models/user.js').User;
 
 //Environment SetUp
-req = new Request(Config.url);
-req.setClientId(Config.client_id);
+req = new Request(Config.url, Config.client_id);
 
 exports.User = {
     "has properties" : function(test){
@@ -70,7 +61,7 @@ exports.User = {
         };
         var error = function (jqxhr, e, t) {
             var data = JSON.parse(jqxhr.responseText);
-            test.ok(false, "Unable to authenticate user : " + data.error.trace_id + " : " + data.error.message);
+            test.ok(false, "Unable to authenticate user : " + data.error.trace_id + " : " + data.error.vtresponse);
             test.done();
         };      
 

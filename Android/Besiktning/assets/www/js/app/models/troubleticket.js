@@ -101,10 +101,6 @@ var TroubleTicket = Stapes.subclass({
         this._usr.send(
             'GET', 
             'HelpDesk/' + Id,
-            {
-                'X_USERNAME': this._usr.get('username'),
-                'X_PASSWORD': this._usr.get('password')
-            },
             '',
             successCbWrapper,
             errorCbWrapper
@@ -136,10 +132,6 @@ var TroubleTicket = Stapes.subclass({
         this._usr.send(
             'GET', 
             'HelpDesk/damagereportlocation',
-            {
-                'X_USERNAME': this._usr.get('username'),
-                'X_PASSWORD': this._usr.get('password')
-            },
             '',
             successCbWrapper,
             errorCbWrapper
@@ -171,10 +163,6 @@ var TroubleTicket = Stapes.subclass({
         this._usr.send(
             'GET', 
             'HelpDesk/sealed',
-            {
-                'X_USERNAME': this._usr.get('username'),
-                'X_PASSWORD': this._usr.get('password')
-            },
             '',
             successCbWrapper,
             errorCbWrapper
@@ -217,10 +205,6 @@ var TroubleTicket = Stapes.subclass({
             this._usr.send(
                 'POST', 
                 'HelpDesk',
-                {
-                    'X_USERNAME': this._usr.get('username'),
-                    'X_PASSWORD': this._usr.get('password')
-                },
                 data,
                 successCbWrapper,
                 errorCbWrapper
@@ -244,10 +228,6 @@ var TroubleTicket = Stapes.subclass({
             this._usr.send(
                 'POST',
                 'HelpDesk',
-                {
-                    'X_USERNAME': this._usr.get('username'),
-                    'X_PASSWORD': this._usr.get('password')
-                },
                 data,
                 successCbWrapper,
                 errorCbWrapper,
@@ -260,6 +240,6 @@ var TroubleTicket = Stapes.subclass({
 /**
  * For node-unit test
  */
-if (node_unit) {
+if (typeof node_unit != 'undefined') {
     exports.TroubleTicket = TroubleTicket;
 }

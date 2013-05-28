@@ -18,8 +18,8 @@ var TroubleTicketCollection = Stapes.subclass({
 
     constructor : function(aUsr) {
         this.extend({
-            '_usr' : aUsr,
-            '_lg' : new Logger('FATAL', 'js/models/troubleticketcollection')
+            _usr : aUsr,
+            _lg : new Logger('FATAL', 'js/models/troubleticketcollection')
         });
     }, 
 
@@ -32,12 +32,12 @@ var TroubleTicketCollection = Stapes.subclass({
      */       
 
     getDamagedTroubleTicketsByAsset : function(ast, successCb, errorCb) {
-        var lg = this._lg;
-
-        lg.log('TRACE', 'getDamagedTroubleTicketsByAsset START');
-        lg.log('DEBUG', 'typof usr ' + (typeof this._usr));
-
+        
         var that = this;
+
+        this._lg.log('TRACE', 'getDamagedTroubleTicketsByAsset START');
+        this._lg.log('DEBUG', 'typof usr ' + (typeof this._usr));
+
         var assetname;
 
         if (typeof ast == 'object') {
@@ -48,8 +48,8 @@ var TroubleTicketCollection = Stapes.subclass({
 
         var successCbWrapper = function(data){
 
-            lg.log('DEBUG', 'received TroubleTickets ' + data.result.length);
-            lg.log('DEBUG', ' received TroubleTickets ' + JSON.stringify(data.result));
+            that._lg.log('DEBUG', 'received TroubleTickets ' + data.result.length);
+            that._lg.log('DEBUG', ' received TroubleTickets ' + JSON.stringify(data.result));
 
             $.each(data.result, function(index, item){
                 var tt = new TroubleTicket();
@@ -66,22 +66,18 @@ var TroubleTicketCollection = Stapes.subclass({
                 errorCb(jqxhr, status, er);
         };
 
-        lg.log('DEBUG', 'typeof usr ' + (typeof this._usr));
-        lg.log('DEBUG', '(usr instanceof User) ' + (this._usr instanceof User));
+        this._lg.log('DEBUG', 'typeof usr ' + (typeof this._usr));
+        this._lg.log('DEBUG', '(usr instanceof User) ' + (this._usr instanceof User));
 
         this._usr.send(
             'GET', 
             'HelpDesk/damaged/0000/00/' + assetname + '/all',
-            {
-                'X_USERNAME': this._usr.get('username'),
-                'X_PASSWORD': this._usr.get('password')
-            },
             '',
             successCbWrapper,
             errorCbWrapper
         );
 
-        lg.log('TRACE', 'getDamagedTroubleTicketsByAsset END');
+        this._lg.log('TRACE', 'getDamagedTroubleTicketsByAsset END');
     },
 
     /**
@@ -95,9 +91,6 @@ var TroubleTicketCollection = Stapes.subclass({
      */
 
     save : function(successCb, errorCb, statusCb, aAttemptCount, aKeys, aTotalCount) {
-
-        var lg = this._lg;
-
         var that = this;
         var keys = aKeys;
         var current_key = '';
@@ -131,9 +124,9 @@ var TroubleTicketCollection = Stapes.subclass({
          */
         if (attempt_count == total_count) {
 
-            lg.log('DEBUG', ' attempt_count : total_count -> ' + attempt_count + ' : ' + total_count);            
+            this._lg.log('DEBUG', ' attempt_count : total_count -> ' + attempt_count + ' : ' + total_count);            
 
-            lg.log('DEBUG', ' attempt_count == total_count : keys.length ' + keys.length);
+            this._lg.log('DEBUG', ' attempt_count == total_count : keys.length ' + keys.length);
 
             if (keys.length == 0) {
                 newSuccessCb();
@@ -168,10 +161,10 @@ var TroubleTicketCollection = Stapes.subclass({
          * Pop the tt which is not yet reported
          */
         var attrs = this.getAll();
-        lg.log('DEBUG', 'attrs ' + JSON.stringify(attrs));        
+        this._lg.log('DEBUG', 'attrs ' + JSON.stringify(attrs));        
         for (current_key in attrs) {
-            lg.log('DEBUG', 'attrs[current_key] instanceof TroubleTicket ' + (attrs[current_key] instanceof TroubleTicket));            
-            lg.log('DEBUG', 'attrs[current_key].constructor ' + (attrs[current_key].constructor));            
+            this._lg.log('DEBUG', 'attrs[current_key] instanceof TroubleTicket ' + (attrs[current_key] instanceof TroubleTicket));            
+            this._lg.log('DEBUG', 'attrs[current_key].constructor ' + (attrs[current_key].constructor));            
 
             if (keys.indexOf(current_key) == -1) {
                 attrs[current_key].save(success, error);
@@ -185,6 +178,6 @@ var TroubleTicketCollection = Stapes.subclass({
 /**
  * For node-unit test
  */
-if (node_unit) {
+if (typeof node_unit != 'undefined') {
     exports.TroubleTicketCollection = TroubleTicketCollection;
 }

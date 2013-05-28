@@ -22,6 +22,6 @@ var DocCollection = Stapes.subclass({
 /**
  * For node-unit test
  */
-if (node_unit) {
+if (typeof node_unit != 'undefined') {
     exports.DocCollection = DocCollection;
 }

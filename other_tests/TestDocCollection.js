@@ -12,12 +12,6 @@
 node_unit = true;
 
 Stapes = require('../Android/Besiktning/assets/www/js/lib/stapes.js').Stapes;
-Logger = require('../Android/Besiktning/assets/www/js/app/util/logger.js').Logger;
-LocalStorage = require('node-localstorage').LocalStorage;
-window = {
-    localStorage : new LocalStorage('./tmp')
-};
-
 Doc = require('../Android/Besiktning/assets/www/js/app/models/doc.js').Doc;
 DocCollection = require('../Android/Besiktning/assets/www/js/app/models/doccollection.js').DocCollection;
 

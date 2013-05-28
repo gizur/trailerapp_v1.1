@@ -8,142 +8,134 @@
  * @license Commercial - Copyright 2013 Gizur AB
  * @see http://google-styleguide.googlecode.com/svn/trunk/javascriptguide.xml
  */
-var User = (function(){
+var User = Stapes.subclass({
 
     /**
-     * Private Variables
-     */
-    var req; //request object
-    var storage;  //cache object
-    var lg_user; //Logger object
+     * @constructor
+     */ 
+    constructor : function(aReq) {
 
-    var User = Stapes.subclass({
+        this.extend({
+            _lg : new Logger('FATAL','js/models/user'),
+            _req : aReq,
+            _storage : window.localStorage
+        });
 
-        /**
-         * @constructor
-         */ 
-        constructor : function(aReq) {
+        var attrs = this._storage.getItem('user');
 
-            lg_user = new Logger('FATAL','js/models/user'); 
+        this._lg.log('DEBUG', 'stored attrs: ' + attrs);
 
-            req = aReq;
+        if (attrs) {
 
-            storage = window.localStorage;
+            attrs = JSON.parse(attrs);
 
-            var attrs = storage.getItem('user');
+            this.set({
+                'id' : '',
+                'username' : attrs.username,
+                'password' : attrs.password,
+                'authenticated' : attrs.authenticated,
+            }); 
+        } else {
+            this.set({
+                'id' : '',
+                'username' : '',
+                'password' : '',
+                'authenticated' : ''
+            }); 
+        }
 
-            lg_user.log('DEBUG', 'stored attrs: ' + attrs);
+        this._lg.log('DEBUG', 'effective attrs: ' + JSON.stringify(this.getAll()));
+    },
 
-            if (attrs) {
+    /**
+     *  Send the request
+     */ 
+    send : function(method, url, body, successCb, errorCb, files) {
+        var headers = {
+            'X_USERNAME': this.get('username'),
+            'X_PASSWORD': this.get('password')
+        };
 
-                attrs = JSON.parse(attrs);
+        this._req.send(method, url, headers, body, successCb, errorCb, files);
+    },
 
-                this.set({
-                    'id' : '',
-                    'username' : attrs.username,
-                    'password' : attrs.password,
-                    'authenticated' : attrs.authenticated,
-                }); 
-            } else {
-                this.set({
-                    'id' : '',
-                    'username' : '',
-                    'password' : '',
-                    'authenticated' : '',
-                }); 
-            }
+    setAuthenticated :  function (status) {
+        this.set('authenticated', status);
+        this._storage.setItem('user', JSON.stringify(that.getAll()));             
+    },
 
-            lg_user.log('DEBUG', 'effective attrs: ' + JSON.stringify(this.getAll()));
-        },
+    /**
+     * Authenticates the current user
+     */       
+    authenticate : function(success, error) {
+        var that = this;
 
-        /**
-         *  Send the request
-         */ 
-        send : function(method, url, headers, body, successCb, errorCb, files) {
-            req.send(method, url, headers, body, successCb, errorCb, files);
-        },
+        var successWrapper = function(data){
 
-        setAuthenticated :  function (status) {
-            this.set('authenticated', status);
-            storage.setItem('user', JSON.stringify(that.getAll()));             
-        },
+            that._lg.log('TRACE', 'authenticate#successWrapper# enter');                                
 
-        /**
-         * Authenticates the current user
-         */       
-        authenticate : function(success, error) {
-            var that = this;
-
-            var successWrapper = function(data){
-
-                lg_user.log('TRACE', 'authenticate#successWrapper# enter');                                
-
-                // Set flag authenticated to true
-                that.set('authenticated', true);
-
-                //Saving user attr to cache
-                storage.setItem('user', JSON.stringify(that.getAll()));            
-
-                lg_user.log('DEBUG', 'authenticate#successWrapper#attributes saved to cache: ' + JSON.stringify(that.getAll()));                
-
-                //execute caller's callback
-                success(data);
-
-                lg_user.log('TRACE', 'authenticate#successWrapper# exit');
-            };
-
-            var errorWrapper = function(jqxhr, status, er){
-
-                lg_user.log('TRACE', 'authenticate#errorWrapper# enter');                                
-
-                // Set flag authenticated to true
-                that.set('authenticated', false);
-
-                //Saving user attr to cache
-                storage.setItem('user', JSON.stringify(that.getAll()));            
-
-                lg_user.log('DEBUG', 'authenticate#errorWrapper#attributes saved to cache: ' + JSON.stringify(that.getAll()));                
-
-                //execute caller's callback
-                error(jqxhr, status, er);
-
-                lg_user.log('TRACE', 'authenticate#errorWrapper# exit');
-            };            
+            // Set flag authenticated to true
+            that.set('authenticated', true);
 
             //Saving user attr to cache
-            storage.setItem('user', JSON.stringify(that.getAll()));            
+            that._storage.setItem('user', JSON.stringify(that.getAll()));            
 
-            lg_user.log('DEBUG', 'authenticate#attributes saved to cache: ' + JSON.stringify(this.getAll()));
+            that._lg.log('DEBUG', 'authenticate#successWrapper#attributes saved to cache: ' + JSON.stringify(that.getAll()));                
 
-            //Send the request to authenticate
-            req.send(
-                'POST',
-                'Authenticate/login',
-                {
-                    'X_USERNAME': that.get('username'),
-                    'X_PASSWORD': that.get('password')
-                },
-                '',
-                successWrapper,
-                errorWrapper
-            );  
-        },
+            //execute caller's callback
+            success(data);
 
-        /**
-         * Changes the password
-         */       
-        setNewPassword : function() {
+            that._lg.log('TRACE', 'authenticate#successWrapper# exit');
+        };
 
-        },
-    });
+        var errorWrapper = function(jqxhr, status, er){
 
-return User;
+            that._lg.log('TRACE', 'authenticate#errorWrapper# enter');                                
 
-})();
+            // Set flag authenticated to true
+            that.set('authenticated', false);
+
+            //Saving user attr to cache
+            that._storage.setItem('user', JSON.stringify(that.getAll()));            
+
+            that._lg.log('DEBUG', 'authenticate#errorWrapper#attributes saved to cache: ' + JSON.stringify(that.getAll()));                
+
+            //execute caller's callback
+            error(jqxhr, status, er);
+
+            that._lg.log('TRACE', 'authenticate#errorWrapper# exit');
+        };            
+
+        //Saving user attr to cache
+        this._storage.setItem('user', JSON.stringify(that.getAll()));            
+
+        this._lg.log('DEBUG', 'authenticate#attributes saved to cache: ' + JSON.stringify(this.getAll()));
+
+        //Send the request to authenticate
+        this._req.send(
+            'POST',
+            'Authenticate/login',
+            {
+                'X_USERNAME': this.get('username'),
+                'X_PASSWORD': this.get('password')
+            },
+            '',
+            successWrapper,
+            errorWrapper
+        );  
+    },
+
+    /**
+     * Changes the password
+     */       
+    setNewPassword : function() {
+
+    }
+});
 
 /**
  * For node-unit test
  */
-if (node_unit) {
+if (typeof node_unit != 'undefined') {
     exports.User = User;
 }

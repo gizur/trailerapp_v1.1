@@ -10,12 +10,13 @@
  */
 
  var Config = {
- 	'url': 'https://api.gizur.com/api/'//'http://c2.gizur.com/api/'
+ 	'url': 'http://c2.gizur.com/api/', //'https://api.gizur.com/api/'
+ 	'client_id' : 'clab'
  }
 
  /**
  * For node-unit test
  */
-if (node_unit) {
+if (typeof node_unit != 'undefined') {
     exports.Config = Config;
 }

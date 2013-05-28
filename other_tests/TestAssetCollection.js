@@ -14,9 +14,6 @@ node_unit = true;
 //Lib
 Stapes = require('../Android/Besiktning/assets/www/js/lib/stapes.js').Stapes;
 $ = require('jquery');
-$.mobile = {
-    loading : function(){}
-};
 Logger = require('../Android/Besiktning/assets/www/js/app/util/logger.js').Logger;
 LocalStorage = require('node-localstorage').LocalStorage;
 window = {
@@ -44,17 +41,10 @@ usr.set('password', 'ivry34aq');
 exports.assetcollection = {
     "has properties" : function(test){
         var astc = new AssetCollection();
-        var allassets = true;
-        var assets = astc.getAllAsArray();
 
         test.expect(1);
-
-        for (var index in assets) {
-            if (!(assets[index] instanceof Asset)) 
-                allassets = false;
-        }
         
-        test.ok(allassets, "Assets is not defined / properly");
+        test.ok(astc.size() == 0, "Assets is not defined / properly");
         
         test.done();
     },

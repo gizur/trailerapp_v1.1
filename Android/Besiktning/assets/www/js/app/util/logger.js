@@ -69,7 +69,9 @@ var Logger = Stapes.subclass({
         }
     },
     _logConsole : function(loglevel, message) {
-        console.log(loglevel + ' : ' + (new Date()).toString()  + ' : ' + this._trace_id);            
+        console.log(loglevel + ' : ' + (new Date()).toString()  + ' : ' + this._trace_id); 
+        var caller_line = (new Error()).stack.split("\n")[4];                   
+        console.log(caller_line);                    
         console.log(this._prefix + ' : ' + message);
     },
     _logLoggly : function(loglevel, message) {
@@ -96,6 +98,6 @@ var Logger = Stapes.subclass({
 /**
  * For node-unit test
  */
-if (node_unit) {
+if (typeof node_unit != 'undefined') {
     exports.Logger = Logger;
 }

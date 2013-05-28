@@ -12,22 +12,22 @@
 node_unit = true;
 
 Stapes = require('../Android/Besiktning/assets/www/js/lib/stapes.js').Stapes;
+Asset = require('../Android/Besiktning/assets/www/js/app/models/asset.js').Asset;
 Logger = require('../Android/Besiktning/assets/www/js/app/util/logger.js').Logger;
 LocalStorage = require('node-localstorage').LocalStorage;
 window = {
-    localStorage : new LocalStorage('./tmp')
+	localStorage : new LocalStorage('./tmp')
 };
 
-Doc = require('../Android/Besiktning/assets/www/js/app/models/doc.js').Doc;
-
-exports.Doc = {
+exports.Asset = {
     "has properties" : function(test){
-        var d = new Doc();
+        var a = new Asset();
 
-        test.expect(2);
+        test.expect(3);
         
-        test.ok(typeof d.get('id') == 'string', "id is not defined / properly");
-        test.ok(typeof d.get('path') == 'string', "path is not defined / properly");
+        test.ok(typeof a.get('id') == 'string', "id is not defined / properly");
+        test.ok(typeof a.get('assetname') == 'string', "asset_name is not defined / properly");
+        test.ok(typeof a.get('trailertype') == 'string', "trailertype is not defined / properly");
 
         test.done();
     }

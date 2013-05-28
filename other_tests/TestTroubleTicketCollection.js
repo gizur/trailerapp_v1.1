@@ -14,14 +14,6 @@ node_unit = true;
 //Lib
 Stapes = require('../Android/Besiktning/assets/www/js/lib/stapes.js').Stapes;
 $ = require('jquery');
-$.mobile = {
-    loading : function(){}
-};
-Logger = require('../Android/Besiktning/assets/www/js/app/util/logger.js').Logger;
-LocalStorage = require('node-localstorage').LocalStorage;
-window = {
-    localStorage : new LocalStorage('./tmp')
-};
 
 //Config
 Config = require('../Android/Besiktning/assets/www/js/app/config.js').Config;

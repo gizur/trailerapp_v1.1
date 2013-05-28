@@ -37,9 +37,7 @@ var Asset = Stapes.subclass({
      * local storage.
      */       
     getEnumTrailerType : function(successCb, errorCb) {
-        var lg = this._lg;
-
-        lg.log('DEBUG', 'getEnumTrailerType start');  
+        this._lg.log('DEBUG', 'getEnumTrailerType start');  
 
         var that = this;
 
@@ -56,27 +54,23 @@ var Asset = Stapes.subclass({
                 errorCb(jqxhr, status, er, 'trailertype');
         };
 
-        lg.log('DEBUG', 'typeof usr = ' + (typeof this._usr));
+        this._lg.log('DEBUG', 'typeof usr = ' + (typeof this._usr));
 
         this._usr.send(
             'GET', 
             'Assets/trailertype',
-            {
-                'X_USERNAME': this._usr.get('username'),
-                'X_PASSWORD': this._usr.get('password')
-            },
             '',
             successCbWrapper,
             errorCbWrapper
         );
         
-        lg.log('DEBUG', 'getEnumTrailerType end'); 
+        this._lg.log('DEBUG', 'getEnumTrailerType end'); 
     }
 });
 
 /**
  * For node-unit test
  */
-if (node_unit) {
+if (typeof node_unit != 'undefined') {
     exports.Asset = Asset;
 }

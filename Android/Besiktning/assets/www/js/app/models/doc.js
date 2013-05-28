@@ -59,10 +59,6 @@ var Doc = Stapes.subclass({
         this._usr.send(
             'GET', 
             'DocumentAttachments/' + this.get('id'),
-            {
-                'X_USERNAME': this._usr.get('username'),
-                'X_PASSWORD': this._usr.get('password')
-            },
             '',
             successCbWrapper,
             errorCbWrapper
@@ -73,6 +69,6 @@ var Doc = Stapes.subclass({
 /**
  * For node-unit test
  */
-if (node_unit) {
+if (typeof node_unit != 'undefined') {
     exports.Doc = Doc;
 }

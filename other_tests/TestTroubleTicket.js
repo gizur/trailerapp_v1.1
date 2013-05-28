@@ -14,14 +14,6 @@ node_unit = true;
 //Lib
 Stapes = require('../Android/Besiktning/assets/www/js/lib/stapes.js').Stapes;
 $ = require('jquery');
-$.mobile = {
-    loading : function(){}
-};
-Logger = require('../Android/Besiktning/assets/www/js/app/util/logger.js').Logger;
-LocalStorage = require('node-localstorage').LocalStorage;
-window = {
-    localStorage : new LocalStorage('./tmp')
-};
 
 //Config
 Config = require('../Android/Besiktning/assets/www/js/app/config.js').Config;
@@ -53,6 +45,19 @@ exports.troubleticket = {
         test.ok(typeof snd_tt.get('sealed') === 'string', "Sealed is not defined / properly");
         test.ok(typeof snd_tt.get('damage') === 'boolean', "Damage is not defined / properly");
         
+        test.done();
+    },
+    "clone method" : function(test) {
+        var snd_tt = new TroubleTicket();
+        var snd_tt_clone = snd_tt.clone();
+
+        snd_tt_values = snd_tt.getAll();
+        snd_tt_clone_values = snd_tt_clone.getAll();
+
+        test.expect(1);
+
+        test.deepEqual(snd_tt_values, snd_tt_clone_values, "Cloning not working properly");
+
         test.done();
     },
     "got picklist sealed" : function(test) {
