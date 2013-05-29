@@ -18,15 +18,21 @@ var Logger = Stapes.subclass({
         // Arggghh Stapes!!!!
         this.extend({
              _level : 1,
-             _type : 'console',
-             _type_config : {},
+             _type : (typeof Config.log_type == 'undefined')?'console':Config.log_type,
+             _type_config : {
+                loggly : {
+                    key : 'a631e820-9cec-418e-950b-1a3132c6b03a',
+                    buffer_size : (10 * 1024) //10kB
+                }
+             },
              _trace_id : '',
              _prefix : aPrefix,
              _enum_level : {
                 "DEBUG": 1,
                 "TRACE": 2,
                 "FATAL": 3
-             }               
+             },
+             _mutex_lock : false              
         });
 
         if (aType != undefined) 
@@ -69,29 +75,82 @@ var Logger = Stapes.subclass({
         }
     },
     _logConsole : function(loglevel, message) {
-        console.log(loglevel + ' : ' + (new Date()).toString()  + ' : ' + this._trace_id); 
-        var caller_line = (new Error()).stack.split("\n")[4];                   
-        console.log(caller_line);                    
+        console.log(loglevel + ' : ' + (new Date()).toString()  + ' : ' + this._trace_id);                  
+        console.log((new Error()).stack.split("\n")[4]); 
+        if (typeof message == 'object') 
+            message = JSON.stringify(message);                 
         console.log(this._prefix + ' : ' + message);
     },
+
+    /**
+     * Loggly way of sending logs
+     */
+
     _logLoggly : function(loglevel, message) {
         console.log(loglevel + ' : ' + (new Date()).toString()  + ' : ' + this._trace_id);            
-        console.log(this._prefix + ' : ' + message);
+        console.log($.trim((new Error()).stack.split("\n")[4]).replace('at ',''));
 
+        /**
+         * Check if message is an object or a string
+         */
+
+        if (typeof message == 'object') 
+            console.log(this._prefix + ' : ' + JSON.stringify(message));
+        else
+            console.log(this._prefix + ' : ' + message);
+
+        /**
+         * Create the body which needs to be sent; teh Payload
+         */
+
+        var that = this;
         var body = {
             loglevel : loglevel,
             timestamp : (new Date()).toString(),
             trace : this._trace_id,
             prefix : this._prefix,
+            callee : $.trim((new Error()).stack.split("\n")[4]).replace('at ',''),
             message : message
         };
 
-        $.ajax({
-            type: 'POST',
-            dataType: 'json',
-            url: 'https://logs.loggly.com/inputs/' + this._type_config.key,
-            data: JSON.stringify(body)
-        });
+        var error_log = JSON.parse(window.localStorage.getItem('error_log'));
+
+        if (error_log == null || !(error_log instanceof Array))
+            error_log = Array();
+
+        error_log.push(body);
+
+        var error_log_stringify = JSON.stringify(error_log);
+
+        if (error_log_stringify.length > this._type_config.loggly.buffer_size && 
+            !this._mutex_lock) {
+
+            console.log('<< send logs to loggly server >>');
+
+            this._mutex_lock = true;
+            window.localStorage.setItem('error_log', '[]');
+            var error_log_stringify_temp = error_log_stringify;
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                url: 'https://logs.loggly.com/inputs/' + this._type_config.loggly.key,
+                data: error_log_stringify,
+                success : function(){
+                    console.log('<< ' + Math.floor(error_log_stringify_temp.length/1024) + 'kB sent succesfully to loggly server >>');
+                },
+                error : function(jqxhr, status, error){
+                    console.log('<< could not send to loggly server ' + jqxhr.responseText + ' ' + status + ' ' + error + ' >>');
+                    var old_error_log = JSON.parse(error_log_stringify_temp);
+                    var new_error_log = JSON.parse(window.localStorage.getItem('error_log'));
+                    window.localStorage.setItem('error_log', JSON.stringify(old_error_log.concat(new_error_log)));
+                },
+                complete : function () {
+                    that._mutex_lock = false;
+                }
+            });
+        } else {
+            window.localStorage.setItem('error_log', error_log_stringify);            
+        }
     }    
 });
 

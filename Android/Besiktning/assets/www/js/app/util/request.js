@@ -13,7 +13,7 @@ var Request = Stapes.subclass({
     constructor : function(aBaseUrl) {
 
         this.extend({
-            _lg : new Logger('FATAL', 'request'),
+            _lg : new Logger('DEBUG', 'request'),
             _storage : window.localStorage,
             _base_url : aBaseUrl
         });

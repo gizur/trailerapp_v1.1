@@ -11,8 +11,8 @@
 
 $(document).delegate('#one', 'pageshow', function () {
     //Environment SetUp
-    var lg_one = new Logger('FATAL', 'gta-page#one$pageshow'); 
-    lg_one.log('TRACE', 'page loaded');
+    var lg = new Logger('FATAL', 'gta-page#one$pageshow'); 
+    lg.log('TRACE', 'page loaded');
     var req = new Request(Config.url, Config.client_id);
     var usr = new User(req);
     var language = new Language();
@@ -45,7 +45,7 @@ $(document).delegate('#one', 'pageshow', function () {
      */
 
     $('#one select#trailertype').unbind('change').change(function(){
-        lg_one.log('TRACE', 'trailertype change event start');
+        lg.log('TRACE', 'trailertype change event start');
 
         /**
          * Create the assetcollection object
@@ -54,7 +54,7 @@ $(document).delegate('#one', 'pageshow', function () {
          */
         var ac = new AssetCollection(usr);
 
-        lg_one.log('TRACE', 'assets filtered START');
+        lg.log('TRACE', 'assets filtered START');
 
         /**
          * Use stapes method to filter out related trailer ids
@@ -63,9 +63,9 @@ $(document).delegate('#one', 'pageshow', function () {
             return item.get('trailertype') === $('#one select#trailertype option:selected').html();
         });
 
-        lg_one.log('DEBUG', 'assets filtered list : ' + JSON.stringify(assets));
+        lg.log('DEBUG', 'assets filtered list : ' + JSON.stringify(assets));
         
-        lg_one.log('TRACE', 'assets filtered END');
+        lg.log('TRACE', 'assets filtered END');
 
         /**
          * Load the filtered trailer ids into the select menu
@@ -83,7 +83,7 @@ $(document).delegate('#one', 'pageshow', function () {
         $('#one select#trailerid').selectmenu('refresh');
         $('#one select#trailertype').selectmenu('refresh');
 
-        lg_one.log('trailertype change event end');
+        lg.log('trailertype change event end');
     });   
 
     /**
@@ -92,7 +92,7 @@ $(document).delegate('#one', 'pageshow', function () {
      */
 
     $('#one select#trailerid').unbind('change').change(function(){
-        lg_one.log('TRACE', 'trailerid change event start');
+        lg.log('TRACE', 'trailerid change event start');
 
         /**
          * Create the assetcollection object
@@ -109,20 +109,20 @@ $(document).delegate('#one', 'pageshow', function () {
 
             //A memory issue is encountered when the following 
             //line is uncommented
-            //lg_one.log('DEBUG', ' tts ' + JSON.stringify(tts));
+            //lg.log('DEBUG', ' tts ' + JSON.stringify(tts));
 
             $('#one #troubleticketlist').html('');
             tt_list = {};
             var tt_list_html = '';
             for (index in tts) {
 
-                lg_one.log('DEBUG', ' tts[index].get(id) ' + tts[index].get('id'));
+                lg.log('DEBUG', ' tts[index].get(id) ' + tts[index].get('id'));
 
                 var clipped_tt = tts[index].getAll();
 
-                lg_one.log('DEBUG', ' tts[index].asset instanceof Asset ' + (tts[index].get('asset') instanceof Asset));
-                lg_one.log('DEBUG', "tts[index].get('damageposition') " + tts[index].get('damageposition'));
-                lg_one.log('DEBUG', "tts[index].get('damagetype') " + tts[index].get('damagetype'));
+                lg.log('DEBUG', ' tts[index].asset instanceof Asset ' + (tts[index].get('asset') instanceof Asset));
+                lg.log('DEBUG', "tts[index].get('damageposition') " + tts[index].get('damageposition'));
+                lg.log('DEBUG', "tts[index].get('damagetype') " + tts[index].get('damagetype'));
 
                 clipped_tt.trailerid =  tts[index].get('asset').get('assetname');
 
@@ -150,7 +150,7 @@ $(document).delegate('#one', 'pageshow', function () {
 
         ttc.getDamagedTroubleTicketsByAsset($('#one select#trailerid option:selected').text(), success);
 
-        lg_one.log('trailerid change event end');
+        lg.log('trailerid change event end');
     });  
 
     /**
@@ -159,7 +159,7 @@ $(document).delegate('#one', 'pageshow', function () {
      */
 
     $('#one #reportsurvey').unbind('click').click(function(){
-        lg_one.log('TRACE', 'reportsurvey click START');
+        lg.log('TRACE', 'reportsurvey click START');
 
         /**
          * Validate
@@ -224,7 +224,7 @@ $(document).delegate('#one', 'pageshow', function () {
 
         tt.save(success, error);
 
-        lg_one.log('TRACE', 'reportsurvey click END');
+        lg.log('TRACE', 'reportsurvey click END');
     });                     
 
     /**
@@ -233,7 +233,7 @@ $(document).delegate('#one', 'pageshow', function () {
      */
 
     $('#one #reportdamage').unbind('click').click(function(){
-        lg_one.log('TRACE', 'reportdamage click START');
+        lg.log('TRACE', 'reportdamage click START');
 
         /**
          * Validate
@@ -284,14 +284,14 @@ $(document).delegate('#one', 'pageshow', function () {
 
         window.localStorage.setItem('current_tt', JSON.stringify(current_tt));
 
-        lg_one.log('TRACE', 'reportdamage current tt saved : ' + JSON.stringify(current_tt));
+        lg.log('TRACE', 'reportdamage current tt saved : ' + JSON.stringify(current_tt));
 
         slider.hide();
         slider.destroySlider();
         
         $.mobile.changePage('#four');
 
-        lg_one.log('TRACE', 'reportdamage click END');
+        lg.log('TRACE', 'reportdamage click END');
     });          
 
     /**
@@ -305,8 +305,8 @@ $(document).delegate('#one', 'pageshow', function () {
         var that = this;
         var tt = new TroubleTicket(usr);
 
-        lg_one.log('TRACE', '.bxslider-one li a click start');
-        lg_one.log('DEBUG', " $(this).attr('id') " + $(this).attr('id'));   
+        lg.log('TRACE', '.bxslider-one li a click start');
+        lg.log('DEBUG', " $(this).attr('id') " + $(this).attr('id'));   
 
         // Save the position
 
@@ -316,14 +316,14 @@ $(document).delegate('#one', 'pageshow', function () {
 
         var success = function(data) {
 
-            lg_one.log('TRACE', '.bxslider-one li a click start');            
+            lg.log('TRACE', '.bxslider-one li a click start');            
 
             var doc = new Doc(usr);
             doc.set(data.result.documents[0]);
 
             //Download Images
             var successCb = function(data) {
-                lg_one.log('TRACE', 'successCb Download Images start');
+                lg.log('TRACE', 'successCb Download Images start');
 
                 /**
                  * Save the page state
@@ -338,7 +338,7 @@ $(document).delegate('#one', 'pageshow', function () {
                 current_tt.sealed = escapeHtmlEntities($('#one input[name=sealed]:checked').val());
 
                 window.localStorage.setItem('current_tt', JSON.stringify(current_tt));  
-                lg_one.log('TRACE', 'successCb saved current tt state');
+                lg.log('TRACE', 'successCb saved current tt state');
 
                 /**
                  * Set initial state for page two
@@ -351,13 +351,13 @@ $(document).delegate('#one', 'pageshow', function () {
                 window.localStorage.setItem('details_tt_id', $(that).attr('id'));
                 window.localStorage.setItem($(that).attr('id') + '_tt', JSON.stringify(gas));
 
-                lg_one.log('TRACE', 'successCb saved initial state for page two');
+                lg.log('TRACE', 'successCb saved initial state for page two');
 
                 $.mobile.changePage('#two');
             };
 
             var errorCb = function(jqxhr, status, er) {
-                lg_one.log('TRACE', 'errorCb Download Images start');
+                lg.log('TRACE', 'errorCb Download Images start');
             };
 
             doc.download(successCb, errorCb);
@@ -384,7 +384,7 @@ $(document).delegate('#one', 'pageshow', function () {
     var current_tt = JSON.parse(window.localStorage.getItem('current_tt'));
     var selected; //text to save selected attr 
 
-    lg_one.log('DEBUG', 'from cache current_tt : ' + JSON.stringify(current_tt));
+    lg.log('DEBUG', 'from cache current_tt : ' + JSON.stringify(current_tt));
 
     /**
      * Create a new Asset object this object should have a cached
@@ -395,7 +395,7 @@ $(document).delegate('#one', 'pageshow', function () {
 
     $('#one select#trailerid').html('');   
 
-    lg_one.log('DEBUG', 'enum_trailertype : ' + JSON.stringify(enum_trailertype));
+    lg.log('DEBUG', 'enum_trailertype : ' + JSON.stringify(enum_trailertype));
 
     /**
      * Load the trailer types into the select menu
@@ -410,7 +410,7 @@ $(document).delegate('#one', 'pageshow', function () {
         selected = '';
         if (current_tt != null && enum_trailertype[index].value == current_tt.trailertype) {
             selected = 'selected="selected"';
-            lg_one.log('DEBUG', 'selected trailer type : ' + enum_trailertype[index].value);            
+            lg.log('DEBUG', 'selected trailer type : ' + enum_trailertype[index].value);            
         }
 
         $('#one select#trailertype').append('<option ' + selected + ' value="' + enum_trailertype[index].value + '">' + enum_trailertype[index].label + '</option>');
@@ -433,13 +433,13 @@ $(document).delegate('#one', 'pageshow', function () {
 
         //Load value from cache
         selected = '';
-        lg_one.log('DEBUG', 'loop  preload trailer id : ' + assets[index].get('assetname'));
-        lg_one.log('DEBUG', 'loop  preload trailer id : ' + current_tt.trailerid);
-        lg_one.log('DEBUG', 'loop  preload are they equal : ' + (assets[index].get('assetname') == current_tt.trailerid));
+        lg.log('DEBUG', 'loop  preload trailer id : ' + assets[index].get('assetname'));
+        lg.log('DEBUG', 'loop  preload trailer id : ' + current_tt.trailerid);
+        lg.log('DEBUG', 'loop  preload are they equal : ' + (assets[index].get('assetname') == current_tt.trailerid));
         
         if (current_tt != null && assets[index].get('assetname') == current_tt.trailerid) {
             selected = 'selected="selected"';
-            lg_one.log('DEBUG', 'selected trailer id : ' + assets[index].get('assetname'));            
+            lg.log('DEBUG', 'selected trailer id : ' + assets[index].get('assetname'));            
         }
 
         $('#trailerid').append('<option ' + selected + ' value="' + assets[index].get('assetname') + '">' + assets[index].get('assetname') + '</option>');
@@ -455,7 +455,7 @@ $(document).delegate('#one', 'pageshow', function () {
     var enum_sealed = tt.get('enum_sealed');
     var enum_place = tt.get('enum_place');
 
-    lg_one.log('DEBUG', 'enum_sealed : ' + JSON.stringify(enum_sealed));
+    lg.log('DEBUG', 'enum_sealed : ' + JSON.stringify(enum_sealed));
 
     /**
      * Load the sealed into the select menu
@@ -471,7 +471,7 @@ $(document).delegate('#one', 'pageshow', function () {
         selected = '';
         if (current_tt != null && enum_sealed[index].value == current_tt.sealed) {
             selected = 'checked="checked"';
-            lg_one.log('DEBUG', 'selected sealed : ' + enum_sealed[index].value);                        
+            lg.log('DEBUG', 'selected sealed : ' + enum_sealed[index].value);                        
         }
 
         $('#one #sealed').append('<input ' + selected + ' id="radio' + index + '" name="sealed" value="' + enum_sealed[index].value + '" type="radio">');
@@ -480,7 +480,7 @@ $(document).delegate('#one', 'pageshow', function () {
     $('#one #sealed').trigger('create');
     $('#one #sealed').controlgroup();   
 
-    lg_one.log('DEBUG', 'enum_place : ' + JSON.stringify(enum_place));
+    lg.log('DEBUG', 'enum_place : ' + JSON.stringify(enum_place));
 
     /**
      * Load the place into the select menu
@@ -491,19 +491,19 @@ $(document).delegate('#one', 'pageshow', function () {
 
     for (var index in enum_place) {
 
-        //lg_one.log('DEBUG', 'enum_place value : ' + enum_place[index].value);        
+        //lg.log('DEBUG', 'enum_place value : ' + enum_place[index].value);        
 
         //Load value from cache
         selected = '';        
         if (current_tt != null && enum_place[index].value == current_tt.place) {
             selected = 'selected="selected"';
-            lg_one.log('DEBUG', 'selected place : ' + enum_place[index].value);                                    
+            lg.log('DEBUG', 'selected place : ' + enum_place[index].value);                                    
         }
 
         $('#one select#place').append('<option ' + selected + ' value="' + enum_place[index].value + '">' + enum_place[index].label + '</option>');
     }
 
-    lg_one.log('DEBUG', '#one select#place html : ' + $('#one select#place').html());
+    lg.log('DEBUG', '#one select#place html : ' + $('#one select#place').html());
 
     $('#one select#place').selectmenu('refresh');    
 
@@ -515,7 +515,7 @@ $(document).delegate('#one', 'pageshow', function () {
 
     var tt_list = JSON.parse(window.localStorage.getItem('tt_list'));
     if (tt_list != null && current_tt != null) {
-        lg_one.log('DEBUG', 'reloading slider for troubleticketlist  to position ' + tt_list.position);        
+        lg.log('DEBUG', 'reloading slider for troubleticketlist  to position ' + tt_list.position);        
 
         $('#one #troubleticketlist').html(tt_list.html);
         slider.reloadSlider();
@@ -525,7 +525,7 @@ $(document).delegate('#one', 'pageshow', function () {
         slider.reloadSlider();       
     }
 
-    lg_one.log('DEBUG', '#one #troubleticketlist html : ' + $('#one #troubleticketlist').html());        
+    lg.log('DEBUG', '#one #troubleticketlist html : ' + $('#one #troubleticketlist').html());        
 });
 
 /**
@@ -955,74 +955,102 @@ $(document).delegate('#five', 'pageshow', function () {
      */  
 
     $('.bxslider-five-a li a').unbind('click').live('click', function(e){
-        e.preventDefault();
+        try {
+            e.preventDefault();
 
-        var that = this;
-        var tt = new TroubleTicket(usr);
+            var that = this;
+            var tt = new TroubleTicket(usr);
 
-        lg_one.log('TRACE', '.bxslider-five-a li a click start');
-        lg_one.log('DEBUG', " $(this).attr('id') " + $(this).attr('id'));   
+            lg.log('TRACE', '.bxslider-five-a li a click start');
+            lg.log('DEBUG', " $(this).attr('id') " + $(this).attr('id'));   
 
-        // Save the position
+            /**
+             * Save the position and contents 
+             * of the slider so that when the page is loaded
+             * back the user is taken to the exact same position and 
+             * content
+             */
 
-        tt_list = JSON.parse(window.localStorage.getItem('tt_list'));
-        tt_list.position = slider.getCurrentSlide();
-        window.localStorage.setItem('tt_list', JSON.stringify(tt_list));  
+            tt_list = JSON.parse(window.localStorage.getItem('tt_list'));
+            tt_list.position = slider_a.getCurrentSlide();
+            window.localStorage.setItem('tt_list', JSON.stringify(tt_list)); 
 
-        var success = function(data) {
+            /**
+             * Success callback function after calling 
+             * details of a trouble ticket; these details will
+             * give us the documents attached.
+             */ 
 
-            lg_one.log('TRACE', '.bxslider-five-a li a click start');            
-
-            var doc = new Doc(usr);
-            doc.set(data.result.documents[0]);
-
-            //Download Images
-            var successCb = function(data) {
-                lg_one.log('TRACE', 'successCb Download Images start');
+            var success = function(data) {
+                lg.log('TRACE', '.bxslider-five-a li a click success start');            
 
                 /**
-                 * Save the page state
+                 * Create Document object for the document details received
                  */
 
-                if (current_tt == null)   
-                    current_tt = {};
-
-                current_tt.trailertype = escapeHtmlEntities($('#one #trailertype option:selected').text());
-                current_tt.trailerid = escapeHtmlEntities($('#one #trailerid option:selected').text());
-                current_tt.place = escapeHtmlEntities($('#one #place option:selected').text());
-                current_tt.sealed = escapeHtmlEntities($('#one input[name=sealed]:checked').val());
-
-                window.localStorage.setItem('current_tt', JSON.stringify(current_tt));  
-                lg_one.log('TRACE', 'successCb saved current tt state');
+                var doc = new Doc(usr);
+                doc.set(data.result.documents[0]);
 
                 /**
-                 * Set initial state for page two
-                 */                
+                 * Download Images
+                 */
 
-                var gas = tt.getAllSanitized();
-                gas.docs = Array();
-                gas.docs.push({'path': doc.get('path')});              
+                var successCb = function(data) {
+                    lg.log('TRACE', 'successCb Download Images start');
 
-                window.localStorage.setItem('details_tt_id', $(that).attr('id'));
-                window.localStorage.setItem($(that).attr('id') + '_tt', JSON.stringify(gas));
+                    /**
+                     * Save the page state
+                     */
 
-                lg_one.log('TRACE', 'successCb saved initial state for page two');
+                    if (current_tt == null)   
+                        current_tt = {};
 
-                $.mobile.changePage('#two');
+                    current_tt.trailertype = escapeHtmlEntities($('#one #trailertype option:selected').text());
+                    current_tt.trailerid = escapeHtmlEntities($('#one #trailerid option:selected').text());
+                    current_tt.place = escapeHtmlEntities($('#one #place option:selected').text());
+                    current_tt.sealed = escapeHtmlEntities($('#one input[name=sealed]:checked').val());
+
+                    window.localStorage.setItem('current_tt', JSON.stringify(current_tt));  
+                    lg.log('TRACE', 'successCb saved current tt state');
+
+                    /**
+                     * Set initial state for page two
+                     */                
+
+                    var gas = tt.getAllSanitized();
+                    gas.docs = Array();
+                    gas.docs.push({'path': doc.get('path')});              
+
+                    window.localStorage.setItem('details_tt_id', $(that).attr('id'));
+                    window.localStorage.setItem($(that).attr('id') + '_tt', JSON.stringify(gas));
+
+                    lg.log('TRACE', 'successCb saved initial state for page two');
+
+                    $.mobile.changePage('#two');
+                };
+
+                var errorCb = function(jqxhr, status, er) {
+                    lg.log('TRACE', 'errorCb Download Images start');
+                };
+
+                doc.download(successCb, errorCb);
             };
 
-            var errorCb = function(jqxhr, status, er) {
-                lg_one.log('TRACE', 'errorCb Download Images start');
+            var error = function() {
+
             };
 
-            doc.download(successCb, errorCb);
-        };
+            tt.getById($(this).attr('id'), success, error);
 
-        var error = function() {
+        } catch (err) {
 
-        };
+            /**
+             * Uncaught error catching and log it as FATAL
+             */
 
-        tt.getById($(this).attr('id'), success, error);
+            lg.log('FATAL', JSON.stringify(err));
+
+        }        
     });
 
     $('#five #sendalldamages').unbind('click').click(function(){
@@ -1177,7 +1205,7 @@ $(document).delegate('#five', 'pageshow', function () {
 
     var tt_list = JSON.parse(window.localStorage.getItem('tt_list'));
     if (tt_list != null && current_tt != null) {
-        lg_one.log('DEBUG', 'reloading slider for troubleticketlist  to position ' + tt_list.position);        
+        lg.log('DEBUG', 'reloading slider for troubleticketlist  to position ' + tt_list.position);        
 
         $('.bxslider-five-a').html(tt_list.html);
         slider_a.reloadSlider();
@@ -1190,133 +1218,330 @@ $(document).delegate('#five', 'pageshow', function () {
 
 $(document).delegate('#contact', 'pageshow', function () {
     //Environment SetUp
-    var lg = new Logger('TRACE', 'gta-page#contact$pageshow'); 
+    var lg = new Logger('DEBUG', 'gta-page#contact$pageshow'); 
+    try {
 
-    lg.log(' page loaded: ');
+        lg.log('TRACE',' page loaded: ');
+
+        var contact_html = window.localStorage.getItem('contact');
+
+        lg.log('DEBUG',' contact_html ' + contact_html);
+
+        if (contact_html == null) {
+            $('#contact div[data-role=navbar]').siblings().remove();
+
+            lg.log('DEBUG', " $('#contact div[data-role=navbar]') " + $('#contact div[data-role=navbar]').length);            
+
+            $(  '<div><p>An account needs to setup in order to use '.concat(
+                'this service. Please contact ' ,
+                '<a href="mailto://sales@gizur.com">sales@gizur.com' ,
+                '</a> ' ,
+                'in order to setup an account.</p></div>')).insertAfter('#contact div[data-role=navbar]');
+        } else {
+            $('#contact div[data-role=navbar]').siblings().remove();
+            $('<div>' + contact_html + '</div>').insertAfter('#contact div[data-role=navbar]');
+        }
+
+        $('#contact').off('swiperight');
+        
+        $('#contact').on('swiperight',function(){
+            var trace_id = window.localStorage.getItem('trace_id');
+            $('<div><p style="text-align:center;">' + trace_id + '<p></div>').insertAfter('#contact div[data-role=navbar]');
+        });
+
+        lg.log('TRACE', ' page loaded: complete');
+
+    } catch (err) {
+
+        lg.log('FATAL', JSON.stringify(err))
+
+    }
 });
 
 $(document).delegate('#settings', 'pageshow', function () {
-    //Environment SetUp
-    var lg_settings = new Logger('TRACE','gta-page#settings$pageshow'); 
-    var req = new Request(Config.url);
-    var usr = new User(req);
 
-    lg_settings.log('TRACE', 'page loaded');
+    var lg = new Logger('TRACE','gta-page#settings$pageshow');     
 
-    //Load values 
-    $('#settings_username').val(usr.get('username'));
-    $('#settings_password').val(usr.get('password'));
-    $('#settings_client_id').val(req.getClientId());
-
-    $('#settings_save').unbind('click').bind('click', function(){
-        var cacheSuccessList = Array();
-        var cacheErrorList = Array();
-
-        lg_settings.log('TRACE', ' username: ' + $('#settings_username').val());
-        lg_settings.log('TRACE', ' password: ' + $('#settings_password').val());
-        lg_settings.log('TRACE', ' client_id: ' + $('#settings_client_id').val());
-
-        //Show popup right away
-        $('#a_dialog_authenticating').click();
-
-        // Clear back button history so that if the user clicks on 
-        // device's back button the app exits
-        navigator.app.clearHistory();
-
-        // Clear All cache
-        window.localStorage.clear();
-
-        // Create event handler for cache complete
-        usr.on('cache complete', function(status){
-            if (status.success) {
-                cacheSuccessList.push(status.name);
-                $('#dialog_success_login div[data-role=content]').children().eq(2).html('Completed ' + cacheSuccessList.length  + ' of 7');                                          
-            } else {
-                cacheErrorList.push(status.name);
-            }
-
-            //Check if all cache calls have completed
-            if ((cacheSuccessList.length + cacheErrorList.length) == 7) {
-
-                if (cacheErrorList.length==0) { 
-                    $('#a_dialog_success_cache').click();
-                    navigator.app.clearHistory();
-                } else {
-                    usr.setAuthenticated(false);
-                    $('#a_dialog_error_cache').click();
-                    navigator.app.clearHistory();                  
-                }
-                cacheSuccessList = cacheErrorList = [];
-            }
-        });
+    try {
         
+        /**
+         * Environment SetUp
+         */
 
-        var success = function(data){
-            lg_settings.log('TRACE', ' successfully authenticated');
+        var req = new Request(Config.url);
+        var usr = new User(req);
 
-            var tt = new TroubleTicket(usr);
-            var dmg = new Damage(usr);
-            var ast = new Asset(usr);
-            var ac = new AssetCollection(usr);
+        lg.log('TRACE', 'page loaded');
 
-            lg_settings.log('TRACE', ' starting to cache');
+        /**
+         * Load values 
+         */
 
-            var successCb = function (data, name) {
-                usr.emit("cache complete", {success: true, name: name});
-            };
+        $('#settings_username').val(usr.get('username'));
+        $('#settings_password').val(usr.get('password'));
+        $('#settings_client_id').val(req.getClientId());
 
-            var errorCb = function (j, s, e, name) {
-                usr.emit("cache complete", {success: false, name: name});
-            };            
+        /**
+         * ---------------
+         * Event Bindings
+         * ---------------
+         */
 
-            //start caching picklists
-            tt.getEnumPlace(successCb, errorCb);
-            tt.getEnumSealed(successCb, errorCb);
+        /**
+         * Saving the username, password and client id 
+         * and authenticating it
+         */
 
-            dmg.getEnumDamageType(successCb, errorCb);
-            dmg.getEnumDamagePosition(successCb, errorCb);
-            dmg.getEnumDriverCausedDamage(successCb, errorCb);
+        $('#settings_save').unbind('click').bind('click', function() {
+            try {
+                
+                /**
+                 * Storage place for the list of cache items which
+                 * were cache and which werent.
+                 */
 
-            lg_settings.log('TRACE', ' type of ast ' + (typeof ast));
+                var cacheSuccessList = Array();
+                var cacheErrorList = Array();
 
-            ast.getEnumTrailerType(successCb, errorCb);
-            ac.getAssets(successCb, errorCb);
+                /**
+                 * Log it
+                 */
 
-            //Show success message
-            $('#a_dialog_success_login').click();                        
-        };
+                lg.log('TRACE', ' username: ' + $('#settings_username').val());
+                lg.log('TRACE', ' password: ' + $('#settings_password').val());
+                lg.log('TRACE', ' client_id: ' + $('#settings_client_id').val());
 
-        var error = function(jqxhr, status, er){
-            lg_settings.log('TRACE', ' error ');
+                /**
+                 * Show popup right away
+                 */
 
-            var data = JSON.parse(jqxhr.responseText);
-            var message;
+                $('#a_dialog_authenticating').click();
 
-            if (data.error.message == 'Invalid Username and Password') {
-                message = data.error.message;
-            } else {
-                message = 'Contact Gizur Saas Account holders, details are available under \'Contact\' tab.';
+                /**
+                 * Clear back button history so that if the user clicks on 
+                 * device's back button the app exits
+                 */
+
+                navigator.app.clearHistory();
+
+                /**
+                 * Clear All cache
+                 */
+
+                window.localStorage.clear();
+ 
+                /**
+                 * Create event handler for cache complete
+                 */
+
+                usr.on('cache complete', function(status){
+                    if (status.success) {
+                        cacheSuccessList.push(status.name);
+                        $('#dialog_success_login div[data-role=content]').children().eq(2).html('Completed ' + cacheSuccessList.length  + ' of 7');                                          
+                    } else {
+                        cacheErrorList.push(status.name);
+                    }
+
+                    /**
+                     * Check if all cache calls have completed
+                     */
+
+                    if ((cacheSuccessList.length + cacheErrorList.length) == 7) {
+
+                        if (cacheErrorList.length==0) { 
+                            $('#a_dialog_success_cache').click();
+                            navigator.app.clearHistory();
+                        } else {
+                            usr.setAuthenticated(false);
+                            $('#a_dialog_error_cache').click();
+                            navigator.app.clearHistory();                  
+                        }
+                        cacheSuccessList = cacheErrorList = [];
+                    }
+                });
+                
+
+                var success = function(data){
+                    lg.log('TRACE', ' successfully authenticated');
+
+                    var tt = new TroubleTicket(usr);
+                    var dmg = new Damage(usr);
+                    var ast = new Asset(usr);
+                    var ac = new AssetCollection(usr);
+
+                    lg.log('TRACE', ' starting to cache');
+
+                    var successCb = function (data, name) {
+                        usr.emit("cache complete", {success: true, name: name});
+                    };
+
+                    var errorCb = function (j, s, e, name) {
+                        usr.emit("cache complete", {success: false, name: name});
+                    };            
+
+                    //start caching picklists
+                    tt.getEnumPlace(successCb, errorCb);
+                    tt.getEnumSealed(successCb, errorCb);
+
+                    dmg.getEnumDamageType(successCb, errorCb);
+                    dmg.getEnumDamagePosition(successCb, errorCb);
+                    dmg.getEnumDriverCausedDamage(successCb, errorCb);
+
+                    lg.log('TRACE', ' type of ast ' + (typeof ast));
+
+                    ast.getEnumTrailerType(successCb, errorCb);
+                    ac.getAssets(successCb, errorCb);
+
+                    //Show success message
+                    $('#a_dialog_success_login').click();                        
+                };
+
+                var error = function( jqxhr, status, er ){
+                    lg.log('TRACE', ' error start');
+
+                    lg.log('TRACE', ' jqxhr ' + jqxhr.responseText);
+                    var data = JSON.parse(jqxhr.responseText);
+                    var message;
+
+                    if (data.error.message == 'Invalid Username and Password') {
+                        message = data.error.message;
+                    } else {
+                        message = 'Contact Gizur Saas Account holders, details are available under \'Contact\' tab.';
+                    }
+
+                    $('#dialog div[data-role=header]').html('<h2>Authentication Failed</h2>');
+                    $('#dialog div[data-role=content]').children().first().html(message);
+                    $('#dialog a[data-role=button]').attr('href','#settings');
+                    $('#dialog a[data-role=button]').show();
+                    
+                    navigator.app.clearHistory();
+
+                    $('#a_dialog').click();
+
+                    lg.log('TRACE', ' error end');
+                };
+
+                //Saving the client id to cache
+                req.setClientId($('#settings_client_id').val());
+
+                //Seting username and password for authentication
+                usr.set('username', $('#settings_username').val());
+                usr.set('password', $('#settings_password').val());
+
+                //This caches both the username, password and 
+                //authenticated flag before and after authenticating
+                usr.authenticate(success, error);
+
+            } catch (err) {
+
+                lg.log('FATAL', JSON.stringify(err));
+
+            }            
+        });
+
+        $('#forgot_password').unbind('click').bind('click', function ( e ){
+            
+            try {
+
+                $('#a_dialog_resetpassword_confirm').click();
+
+            } catch (err) {
+
+                lg.log('FATAL', JSON.stringify(err));
+
+            }            
+        });
+
+        $('#dialog_resetpassword_confirm #resetpassword').unbind('click').bind('click', function ( e ){
+            
+            try {
+
+                e.preventDefault();
+                navigator.app.clearHistory();
+
+                var success = function( data ){
+
+                    lg.log('TRACE', ' password reset successfully ' + JSON.stringify(data));
+                    navigator.app.clearHistory();
+                    $('#a_dialog_resetpassword_success').click();
+
+                };
+
+                var error = function( jqxhr, status, er ){
+
+                    lg.log('TRACE', ' error reset password ' + jqxhr.responseText);
+                    navigator.app.clearHistory();
+                    $('#a_dialog_resetpassword_error').click();                    
+
+                };                
+
+                usr.resetPassword(success, error);
+
+            } catch (err) {
+
+                lg.log('FATAL', JSON.stringify(err));
+
+            }            
+        });        
+
+        /**
+         * Change password call
+         */
+
+        $('#change_password').unbind('click').bind( 'click', function ( e ) {
+
+            try {
+
+                $('#a_dialog_changepassword').click();
+
+            } catch (err) {
+
+                lg.log('FATAL', JSON.stringify(err));
+
             }
 
-            $('#dialog div[data-role=header]').html('<h2>Authentication Failed</h2>');
-            $('#dialog div[data-role=content]').children().first().html(message);
-            $('#dialog a[data-role=button]').attr('href','#five');
-            $('#dialog a[data-role=button]').show();
-        };
+        });
 
-        //Saving the client id to cache
-        req.setClientId($('#settings_client_id').val());
+        $('#dialog_changepassword #change').unbind('click').bind('click', function(e){
 
-        //Seting username and password for authentication
-        usr.set('username', $('#settings_username').val());
-        usr.set('password', $('#settings_password').val());
+            try {
 
-        //This caches both the username, password and 
-        //authenticated flag before and after authenticating
-        usr.authenticate(success, error);
-    });
+                e.preventDefault();
+                navigator.app.clearHistory();
 
-    lg_settings.log('TRACE', '#settings_save click binding done.');
+                var success = function( data ){
+
+                    lg.log('TRACE', ' password changed successfully ' + JSON.stringify(data));
+                    navigator.app.clearHistory();
+                    $('#a_dialog_changepassword_success').click();
+
+                };
+
+                var error = function( jqxhr, status, er ){
+
+                    lg.log('TRACE', ' error changing password ' + jqxhr.responseText);
+                    navigator.app.clearHistory();
+                    $('#a_dialog_changepassword_error').click();                    
+
+                };
+
+                usr.changePassword($('#dialog_changepassword #newpassword').val(), success, error);
+
+            } catch (err) {
+
+                lg.log('FATAL', JSON.stringify(err));
+
+            }    
+
+        });
+
+        lg.log('TRACE', '#settings_save click binding done.');
+
+    } catch (err) {
+
+        lg.log('FATAL', JSON.stringify(err));
+
+    }
 });
 
 $(document).bind('pagebeforechange', function (e, data) {

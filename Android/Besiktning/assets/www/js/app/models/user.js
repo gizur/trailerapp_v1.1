@@ -16,7 +16,7 @@ var User = Stapes.subclass({
     constructor : function(aReq) {
 
         this.extend({
-            _lg : new Logger('FATAL','js/models/user'),
+            _lg : new Logger('DEBUG','js/models/user'),
             _req : aReq,
             _storage : window.localStorage
         });
@@ -78,7 +78,12 @@ var User = Stapes.subclass({
             that.set('authenticated', true);
 
             //Saving user attr to cache
-            that._storage.setItem('user', JSON.stringify(that.getAll()));            
+            that._storage.setItem('user', JSON.stringify(that.getAll()));  
+
+            if (typeof data.contactinfo != 'undefined') {
+                that._lg.log('DEBUG', 'authenticate#successWrapper#attributes saved to cache data.contactinfo : ' + data.contactinfo);                
+                window.localStorage.setItem('contact', data.contactinfo);
+            }          
 
             that._lg.log('DEBUG', 'authenticate#successWrapper#attributes saved to cache: ' + JSON.stringify(that.getAll()));                
 
@@ -94,6 +99,7 @@ var User = Stapes.subclass({
 
             // Set flag authenticated to true
             that.set('authenticated', false);
+            window.localStorage.removeItem('contact');
 
             //Saving user attr to cache
             that._storage.setItem('user', JSON.stringify(that.getAll()));            
@@ -126,11 +132,107 @@ var User = Stapes.subclass({
     },
 
     /**
-     * Changes the password
-     */       
-    setNewPassword : function() {
+     * Reset the password
+     */
 
-    }
+    resetPassword : function(success, error) {
+        var that = this;
+
+        var successWrapper = function(data){
+
+            that._lg.log('TRACE', 'reset#successWrapper# enter');
+
+            that.set('password', '');
+            that._storage.setItem('user', JSON.stringify(that.getAll())); 
+
+            if (typeof success == 'function')
+                success(data);
+
+            that._lg.log('TRACE', 'reset#successWrapper# exit');
+        };
+
+        var errorWrapper = function(jqxhr, status, er){
+
+            that._lg.log('TRACE', 'reset#errorWrapper# enter');                                
+
+            if (typeof success == 'function')
+                error(jqxhr, status, er);
+
+            that._lg.log('TRACE', 'reset#errorWrapper# exit');
+        };                     
+
+        that._lg.log('TRACE', 'resetPassword send call');
+
+        /**
+         * Send the request to reset
+         */
+
+        this._req.send(
+            'PUT',
+            'Authenticate/reset',
+            {
+                'X_USERNAME': this.get('username')
+            },
+            '',
+            successWrapper,
+            errorWrapper
+        );
+    },
+
+    /**
+     * Change the password
+     */       
+
+    changePassword : function( newpassword, success, error ) {
+
+        var that = this;
+
+        that._lg.log('DEBUG', 'got new password ' + newpassword);
+
+
+        var successWrapper = function( data ){
+
+            that._lg.log('TRACE', 'changepassword#successWrapper# enter');
+
+            that._lg.log('DEBUG', 'changepassword#successWrapper# new password ' + newpassword);
+
+            that.set('password', newpassword);
+            that._storage.setItem('user', JSON.stringify(that.getAll()));  
+
+            if (typeof success == 'function')
+                success(data);
+
+            that._lg.log('TRACE', 'changepassword#successWrapper# exit');
+        };
+
+        var errorWrapper = function( jqxhr, status, er ){
+
+            that._lg.log('TRACE', 'changepassword#errorWrapper# enter');                                
+
+            if (typeof success == 'function')
+                error(jqxhr, status, er);
+
+            that._lg.log('TRACE', 'changepassword#errorWrapper# exit');
+        };                     
+
+        that._lg.log('TRACE', 'changepassword send call');
+
+        /**
+         * Send the request to reset
+         */
+
+        this._req.send(
+            'PUT',
+            'Authenticate/changepw',
+            {
+                'X_USERNAME' : this.get('username'),
+                'X_PASSWORD' : this.get('password')
+            },
+            'newpassword=' + newpassword,
+            successWrapper,
+            errorWrapper
+        );
+    }    
 });
 
 /**

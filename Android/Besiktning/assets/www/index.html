@@ -328,18 +328,18 @@
             <label for="settings_username">
                 E-mail:
             </label>
-            <input name="settings_username" id="settings_username" placeholder="" value="mobile_user@gizur.com" type="text">
+            <input name="settings_username" id="settings_username" placeholder="" value="" type="text">
         </div>
         <div data-role="fieldcontain">
             <label for="textinput2">
                 Password
             </label>
-            <input name="settings_password" id="settings_password" placeholder="" value="ivry34aq" type="text">
+            <input name="settings_password" id="settings_password" placeholder="" value="" type="text">
         </div>
-        <a data-role="button" href="#one">
+        <a id="change_password" data-role="button" href="javascript:void(0);">
             Change Password
         </a>
-        <a data-role="button" href="#one">
+        <a id="forgot_password" data-role="button" href="javascript:void(0);">
             Forgot Password
         </a>
         <div data-role="fieldcontain">
@@ -375,7 +375,7 @@
                 </li>
             </ul>
         </div>
-        <div>
+        <!--div>
             <p>
                 <div>Vardagar 06:00 - 18:00</div>
                 <div>Ring Coop tagstyrning</div>
@@ -392,9 +392,8 @@
                 <div>Maila Coops tagstyrning</div>
                 <div>tagstyrningen@coop.se</div>
             </p> 
-        </div>
+        </div-->
         <div style="display:none;"></div>
-        <hr/>
 	</div><!-- /content -->
 </div><!-- /page contact -->
 
@@ -408,6 +407,99 @@
     <div data-role="content" data-theme="d">
         <p></p>  
         <p><a data-role="button" data-inline="true" data-icon="back">Ok</a></p>
+    </div><!-- /content -->
+</div><!-- /page nointernet -->
+
+<!-- Start of page: #nointernet -->
+<a id="a_dialog_changepassword_success" href="#dialog_changepassword_success" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_changepassword_success" data-transition="flip">
+    <div data-role="header" data-theme="e">
+        <h1>Password Changed</h1>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>Password Changed successfully.</p>
+        <p>
+            <a href="#settings" data-role="button" data-inline="true" data-icon="back">Ok</a>
+        </p>                
+    </div><!-- /content -->
+</div><!-- /page nointernet -->
+
+<!-- Start of page: #nointernet -->
+<a id="a_dialog_resetpassword_confirm" href="#dialog_resetpassword_confirm" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_resetpassword_confirm" data-transition="flip">
+    <div data-role="header" data-theme="e">
+        <h1>Forgot Password</h1>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>Are you sure you want to reset your password? If yes click 'Ok', (you will receive a mail with the new password) else click 'Go Back'.</p>
+        <p>
+            <a id="resetpassword" href="javascript(0);" data-role="button" data-inline="true" data-icon="back">Ok</a>
+            <a href="#settings" data-role="button" data-inline="true" data-icon="back">Go Back</a>
+        </p>                
+    </div><!-- /content -->
+</div><!-- /page nointernet -->
+
+<!-- Start of page: #nointernet -->
+<a id="a_dialog_resetpassword_success" href="#dialog_resetpassword_success" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_resetpassword_success" data-transition="flip">
+    <div data-role="header" data-theme="e">
+        <h1>Forgot Password</h1>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>Password has been reset successfully. Please check your mail for the new password.</p>
+        <p>
+            <a href="#settings" data-role="button" data-inline="true" data-icon="back">Ok</a>
+        </p>                
+    </div><!-- /content -->
+</div><!-- /page nointernet -->
+
+<!-- Start of page: #nointernet -->
+<a id="a_dialog_resetpassword_error" href="#dialog_resetpassword_error" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_resetpassword_error" data-transition="flip">
+    <div data-role="header" data-theme="e">
+        <h1>Forgot Password</h1>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>Unable to reset password. Please try again, If the problem persists please contact the Gizur Saas Account holders.</p>
+        <p>
+            <a href="#settings" data-role="button" data-inline="true" data-icon="back">Ok</a>
+        </p>                
+    </div><!-- /content -->
+</div><!-- /page nointernet -->
+
+<!-- Start of page: #nointernet -->
+<a id="a_dialog_changepassword_error" href="#dialog_changepassword_error" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_changepassword_error" data-transition="flip">
+    <div data-role="header" data-theme="e">
+        <h1>Error</h1>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>Unable to change password. Please try again, If the problem persists please contact the Gizur Saas Account holders.</p>
+        <p>
+            <a href="#settings" data-role="button" data-inline="true" data-icon="back">Ok</a>
+        </p>                
+    </div><!-- /content -->
+</div><!-- /page nointernet -->
+
+<!-- Start of page: #nointernet -->
+<a id="a_dialog_changepassword" href="#dialog_changepassword" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_changepassword" data-transition="flip">
+    <div data-role="header" data-theme="e">
+        <h1>Enter New Password</h1>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>Enter New Password</p>
+        <p><input id="newpassword" type="text"></p>
+        <p>
+            <a id="change" data-role="button" data-inline="true" data-icon="Check">Change</a>
+            <a href="#settings" data-role="button" data-inline="true" data-icon="back">Cancel</a>
+        </p>                
     </div><!-- /content -->
 </div><!-- /page nointernet -->
 

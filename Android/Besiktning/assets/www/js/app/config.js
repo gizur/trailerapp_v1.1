@@ -11,7 +11,8 @@
 
  var Config = {
  	'url': 'http://c2.gizur.com/api/', //'https://api.gizur.com/api/'
- 	'client_id' : 'clab'
+ 	'client_id' : 'clab',
+ 	'log_type' : 'loggly' // 'console'
  }
 
  /**
