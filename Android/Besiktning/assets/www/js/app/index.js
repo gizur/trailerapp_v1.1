@@ -9,6 +9,12 @@
  * @preserve  copyright 2013 Gizur AB 
  */
 
+/**
+ * Screen One Init
+ * Creates Survey
+ *
+ */
+
 $(document).delegate('#one', 'pageshow', function () {
     //Environment SetUp
     var lg = new Logger('FATAL', 'gta-page#one$pageshow'); 
@@ -52,6 +58,7 @@ $(document).delegate('#one', 'pageshow', function () {
          * this object automatically loads the cached
          * list of assets
          */
+
         var ac = new AssetCollection(usr);
 
         lg.log('TRACE', 'assets filtered START');
@@ -59,6 +66,7 @@ $(document).delegate('#one', 'pageshow', function () {
         /**
          * Use stapes method to filter out related trailer ids
          */
+
         var assets = ac.filter(function(item, key) {
             return item.get('trailertype') === $('#one select#trailertype option:selected').html();
         });
@@ -73,6 +81,7 @@ $(document).delegate('#one', 'pageshow', function () {
          * as jquery mobile needs this, else it does not reflect 
          * on the UI.
          */
+
         $('#one select#trailerid').html('');
         
         $('#trailerid').append('<option value=""> - Select One - </option>');
@@ -141,6 +150,7 @@ $(document).delegate('#one', 'pageshow', function () {
             /**
              * Save the downloaded trouble ticket collection
              */
+
             tt_list.html = tt_list_html;
             tt_list.position = 0;
             window.localStorage.setItem('tt_list', JSON.stringify(tt_list));
@@ -197,6 +207,7 @@ $(document).delegate('#one', 'pageshow', function () {
          * this object automatically loads the cached
          * list of assets
          */
+
         var tt = new TroubleTicket(usr);
 
         var success = function(data){
@@ -524,6 +535,13 @@ $(document).delegate('#one', 'pageshow', function () {
         $('#one #troubleticketlist').html("<li><center><div style='height:60px;width:120px;'>No TroubleTickets</div></center></li>");
         slider.reloadSlider();       
     }
+
+    /**
+     * Only once this page is completed logger should be allowed 
+     * to send logs to server
+     */
+
+    lg.appLoadingComplete();
 
     lg.log('DEBUG', '#one #troubleticketlist html : ' + $('#one #troubleticketlist').html());        
 });
@@ -898,6 +916,12 @@ $(document).delegate('#two', 'pageshow', function () {
     slider_picture.reloadSlider();    
 });
 
+/**
+ * Screen Three Init
+ * Shows the image in full view
+ *
+ */
+
 $(document).delegate('#three', 'pageshow', function () {
     var base64_image = window.localStorage.getItem(window.localStorage.getItem('details_doc_id'));
     $('#three img').attr('src', 'data:image/jpeg;base64,' + base64_image);
@@ -1213,8 +1237,21 @@ $(document).delegate('#five', 'pageshow', function () {
     } else {
         $('#one #troubleticketlist').html("<li><center><div style='height:60px;width:120px;'>No TroubleTickets</div></center></li>");
         slider_a.reloadSlider();       
-    }      
+    }  
+
+    /**
+     * Only once this page is completed logger should be allowed 
+     * to send logs to server
+     */
+
+    lg.appLoadingComplete();
 });
+
+/**
+ * Screen Contact Init
+ * Shows contact information sent from the server
+ *
+ */
 
 $(document).delegate('#contact', 'pageshow', function () {
     //Environment SetUp
@@ -1243,7 +1280,7 @@ $(document).delegate('#contact', 'pageshow', function () {
         }
 
         $('#contact').off('swiperight');
-        
+
         $('#contact').on('swiperight',function(){
             var trace_id = window.localStorage.getItem('trace_id');
             $('<div><p style="text-align:center;">' + trace_id + '<p></div>').insertAfter('#contact div[data-role=navbar]');
@@ -1257,6 +1294,13 @@ $(document).delegate('#contact', 'pageshow', function () {
 
     }
 });
+
+
+/**
+ * Screen Setting Init
+ * Shows settings page which holds the credentails and client id
+ * info
+ */
 
 $(document).delegate('#settings', 'pageshow', function () {
 
@@ -1544,80 +1588,138 @@ $(document).delegate('#settings', 'pageshow', function () {
     }
 });
 
+/**
+ * Page Before Change
+ * Executed before transition or change between any pages
+ * 
+ */
+
 $(document).bind('pagebeforechange', function (e, data) {
-    /**
-     * Environment SetUp
-     */
 
-    var lg = new Logger('FATAL', 'gta-page$pagebeforechange'); 
-    var req = new Request(Config.url);
-    var usr = new User(req);
+    try {
 
-    var to = data.toPage,
-        from = data.options.fromPage;
+        /**
+         * Environment SetUp
+         */
 
-    lg.log('TRACE', typeof to);
-    lg.log('TRACE', ' $.mobile.urlHistory :' + JSON.stringify($.mobile.urlHistory.stack));
-    //navigator.app.clearHistory();
-    if (typeof navigator.app != 'undefined')
-        navigator.app.clearCache();
-    /**
-     * The type of to is object when there is a transition from
-     * one page to another.
-     */
+        var lg = new Logger('FATAL', 'gta-page$pagebeforechange'); 
+        var req = new Request(Config.url);
+        var usr = new User(req);
 
-    if (typeof to === 'object') {
-        if (to.attr('id') == 'one' && !usr.get('authenticated')) {
-            lg.log('TRACE', ' Application loaded and user is not authenticated ');
-            e.preventDefault();
-            $.mobile.changePage('#settings');
-            return;
+        var to = data.toPage,
+            from = data.options.fromPage;
+
+        lg.log('TRACE', typeof to);
+        lg.log('TRACE', ' $.mobile.urlHistory :' + JSON.stringify($.mobile.urlHistory.stack));
+        
+        /**
+         * Clear any browser cache
+         */
+
+        if (typeof navigator.app != 'undefined')
+            navigator.app.clearCache();
+
+        /**
+         * The type of to is object when there is a transition from
+         * one page to another.
+         */
+
+        if (typeof to === 'object') {
+
+            /**
+             * If the User is not authenticated so after load
+             * the user should be redirected to settings page
+             */
+
+            if (to.attr('id') == 'one' && !usr.get('authenticated')) {
+                lg.log('TRACE', ' Application loaded and user is not authenticated ');
+                e.preventDefault();
+                $.mobile.changePage('#settings');
+                return;
+            }
+
+            /**
+             * Access Control
+             * Check if the user is authenticated
+             * if not show him the access denied page
+             */
+
+            lg.log('DEBUG', 'usr.authenticated: ' + usr.get('authenticated'));
+            lg.log('DEBUG', ' to.attr(id): ' + to.attr('id'));
+
+            if (!usr.get('authenticated')){
+
+                /**
+                 * If user is not authenticated
+                 */
+
+                if (to.attr('id') === 'one' || 
+                        to.attr('id') === 'two' || 
+                        to.attr('id') == 'three' || 
+                        to.attr('id') == 'four' || 
+                        to.attr('id') == 'five') {                    
+                    e.preventDefault();
+
+                    /**
+                     * remove active class on button
+                     * otherwise button would remain highlighted
+                     */
+
+                    $.mobile.activePage
+                        .find('.ui-btn-active')
+                        .removeClass('ui-btn-active');
+
+                    /**
+                     * Show Access denied pop up
+                     */
+
+                    $('#dialog div[data-role=header]').html('<h3>Access Denied</h3>');
+                    $('#dialog div[data-role=content]').children().first().html('You have not been authenticated. Please enter valid credentials and click save.');
+                    $('#a_dialog').click(); 
+                }
+            } else {
+
+                /**
+                 * If user is authenticated
+                 */ 
+
+                if (to.attr('id') === 'four' || 
+                        to.attr('id') === 'five') {
+
+                    /**
+                     * The user reaches here when he clicks the pop up's
+                     * back button after sending the damages to server
+                     */
+
+                    if (window.localStorage.getItem('current_tt') == null ||
+                        window.localStorage.getItem('current_tt') == false) {
+                        $.mobile.changePage('#one');
+                        return;
+                    }
+                }
+            }
+
         }
 
         /**
-         * Access Control
-         * Check if the user is authenticated
-         * if not show him the access denied page
+         * The type of to is string when there is a transition from
+         * no page to another i.e. during click of back button
          */
 
-        lg.log('DEBUG', 'usr.authenticated: ' + usr.get('authenticated'));
-        lg.log('DEBUG', ' to.attr(id): ' + to.attr('id'));
+        if (typeof to === 'string') {
+            var u = $.mobile.path.parseUrl(to);
+            to = u.hash || '#' + u.pathname.substring(1);
+            if (from) from = '#' + from.attr('id');
 
-        if (!usr.get('authenticated')){
-            /**
-             * If user is not authenticated
-             */
-            if (to.attr('id') === 'one' || 
-                    to.attr('id') === 'two' || 
-                    to.attr('id') == 'three' || 
-                    to.attr('id') == 'four' || 
-                    to.attr('id') == 'five') {                    
-                e.preventDefault();
-
-                /**
-                 * remove active class on button
-                 * otherwise button would remain highlighted
-                 */
-
-                $.mobile.activePage
-                    .find('.ui-btn-active')
-                    .removeClass('ui-btn-active');
-
-                /**
-                 * Show Access denied pop up
-                 */
-                $('#dialog div[data-role=header]').html('<h3>Access Denied</h3>');
-                $('#dialog div[data-role=content]').children().first().html('You have not been authenticated. Please enter valid credentials and click save.');
-                $('#a_dialog').click(); 
-            }
-        } else {
+            lg.log('DEBUG', 'To page: ' + to);
+            lg.log('DEBUG', 'usr.authenticated: ' + usr.get('authenticated'));
 
             /**
              * If user is authenticated
              */ 
 
-            if (to.attr('id') === 'four' || 
-                    to.attr('id') === 'five') {
+            if (to === '#four' || 
+                    to === '#five') {
 
                 /**
                  * The user reaches here when he clicks the pop up's
@@ -1626,52 +1728,29 @@ $(document).bind('pagebeforechange', function (e, data) {
 
                 if (window.localStorage.getItem('current_tt') == null ||
                     window.localStorage.getItem('current_tt') == false) {
+
+                    /**
+                     * Changing page to one if there is not tt in cache
+                     */
+
+                    lg.log('TRACE', ' changing to page one ');
                     $.mobile.changePage('#one');
-                    return;
                 }
             }
         }
+    } catch (err) {
+
+        lg.log('FATAL', JSON.stringify(err));
 
     }
 
-    /**
-     * The type of to is string when there is a transition from
-     * no page to another i.e. during click of back button
-     */
-
-    if (typeof to === 'string') {
-        var u = $.mobile.path.parseUrl(to);
-        to = u.hash || '#' + u.pathname.substring(1);
-        if (from) from = '#' + from.attr('id');
-
-        lg.log('DEBUG', 'To page: ' + to);
-        lg.log('DEBUG', 'usr.authenticated: ' + usr.get('authenticated'));
-
-        /**
-         * If user is authenticated
-         */ 
-
-        if (to === '#four' || 
-                to === '#five') {
-
-            /**
-             * The user reaches here when he clicks the pop up's
-             * back button after sending the damages to server
-             */
-
-            if (window.localStorage.getItem('current_tt') == null ||
-                window.localStorage.getItem('current_tt') == false) {
-
-                /**
-                 * Changing page to one if there is not tt in cache
-                 */
-
-                lg.log('TRACE', ' changing to page one ');
-                $.mobile.changePage('#one');
-            }
-        }
-    }
 });
+
+/**
+ * Device Ready
+ * Shows and splash screen and waits for the cordova
+ * API to be loaded. Once done changes to page one
+ */
 
 document.addEventListener("deviceready", function(){
 
@@ -1683,10 +1762,31 @@ document.addEventListener("deviceready", function(){
             function (lang) {
                 var language = new Language(lang.value);
 
+                /**
+                 * Check if the language exists; if yes
+                 * replace all english to selected language.
+                 */
+
                 if (language.hasLanguage()) {
+
+                    /**
+                     * Find all text nodes and replace them
+                     * with its equivalent in given language
+                     */
+
                     $("*").each(function () {
                         if ($(this).children().length == 0) {
+
+                            /**
+                             * Get all words of the language
+                             */
+
                             var words = language.get(lang.value);
+
+                            /**
+                             * For each word replace with translated
+                             */
+
                             for (var english in words) {
                                 $(this).text($(this).text().replace(english, words[english]));
                             }
@@ -1694,11 +1794,21 @@ document.addEventListener("deviceready", function(){
                     });
                 }
 
+                /**
+                 * Change Page to page one and remove 
+                 * splash screen from browser history
+                 */                
+
                 $.mobile.changePage('#one');
                 navigator.app.clearHistory();
             },
+
+            /**
+             * Error handler function if language is not found
+             */
+
             function () {
                 console.log('Error getting language\n');
             }
-        );   
+        );
 }, false);
