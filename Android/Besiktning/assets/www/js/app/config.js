@@ -10,7 +10,7 @@
  */
 
  var Config = {
- 	'url': 'http://c2.gizur.com/api/', //'https://api.gizur.com/api/'
+ 	'url': , 'https://api.gizur.com/api/' //'http://c2.gizur.com/api/'
  	'client_id' : 'clab',
  	'log_type' : 'loggly' // 'console'
  }
