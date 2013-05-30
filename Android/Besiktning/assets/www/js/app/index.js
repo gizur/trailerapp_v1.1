@@ -1376,7 +1376,9 @@ $(document).delegate('#settings', 'pageshow', function () {
                  * Clear All cache
                  */
 
+                var temp_trace_id = window.localStorage.getItem('trace_id');
                 window.localStorage.clear();
+                window.localStorage.setItem('trace_id', temp_trace_id);
  
                 /**
                  * Create event handler for cache complete

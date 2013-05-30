@@ -27,7 +27,7 @@ var Damage = Stapes.subclass({
          */        
 
         this.extend({
-            _lg: new Logger('FATAL', 'app/model/damage'),
+            _lg: new Logger('DEBUG', 'app/model/damage'),
             _usr: aUsr,
             _storage: window.localStorage
         });

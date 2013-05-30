@@ -30,7 +30,7 @@ var User = Stapes.subclass({
          */
 
         this.extend({
-            _lg : new Logger('FATAL','js/models/user'),
+            _lg : new Logger('DEBUG','js/models/user'),
             _req : aReq,
             _storage : window.localStorage
         });

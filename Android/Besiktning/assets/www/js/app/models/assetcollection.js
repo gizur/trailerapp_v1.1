@@ -30,7 +30,7 @@ var AssetCollection = Stapes.subclass({
         this.extend({
             _usr : aUsr,
             _storage : window.localStorage,
-            _lg : new Logger('FATAL', 'AssetCollection')
+            _lg : new Logger('DEBUG', 'AssetCollection')
         });
 
         this._lg.log('TRACE', '#constructor start');
