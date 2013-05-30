@@ -24,7 +24,7 @@ window = {
 };
 
 //Config
-Config = require('../Android/Besiktning/assets/www/js/app/config.js').Config;
+Config = require('../config.test.js').Config;
 
 //Util
 Request = require('../Android/Besiktning/assets/www/js/app/util/request.js').Request;
@@ -52,10 +52,13 @@ exports.User = {
     "has method" : function(test) {
         var u = new User(req);
 
-        test.expect(2);
+        test.expect(5);
 
         test.ok(typeof u.authenticate == 'function' , "authenticate not defined");
-        test.ok(typeof u.setNewPassword == 'function' , "setNewPassword not defined");
+        test.ok(typeof u.send == 'function' , "send not defined");
+        test.ok(typeof u.resetPassword == 'function' , "resetPassword not defined");
+        test.ok(typeof u.changePassword == 'function' , "changePassword not defined");
+        test.ok(typeof u.setAuthenticated == 'function' , "setAuthenticated not defined");
 
         test.done();
     },
@@ -74,10 +77,46 @@ exports.User = {
             test.done();
         };      
 
-        u.set('username', 'mobile_user@gizur.com');
-        u.set('password', 'ivry34aq');
+        u.set('username', Config.username);
+        u.set('password', Config.password);
 
         u.authenticate(success, error);
 
-    }    
+    },
+    "change password" : function(test) {
+        var u = new User(req);       
+
+        test.expect(2);
+
+        var successFirstPass = function() {
+            test.ok(true);
+
+            var successSecondPass = function() {
+                test.ok(true);
+                test.done();
+            };
+
+            var errorSecondPass = function (jqxhr, e, t) {
+                var data = JSON.parse(jqxhr.responseText);
+                test.ok(false, "Unable to change password in second pass: " + data.error.trace_id + " : " + data.error.message);
+                test.done();
+            };            
+
+            u.set('password', 'thenewpassword');
+            u.changePassword(Config.password, successSecondPass, errorSecondPass);
+        };
+
+        var errorFirstPass = function (jqxhr, e, t) {
+            var data = JSON.parse(jqxhr.responseText);
+            test.ok(false, "Unable to change password in first pass: " + data.error.trace_id + " : " + data.error.message);
+            test.done();
+        };      
+
+        u.set('username', Config.username);
+        u.set('password', Config.password);
+
+        u.changePassword('thenewpassword', successFirstPass, errorFirstPass);
+
+    }        
+
 };

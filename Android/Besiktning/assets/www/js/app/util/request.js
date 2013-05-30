@@ -10,12 +10,27 @@
  */
 
 var Request = Stapes.subclass({
-    constructor : function(aBaseUrl) {
+
+    /**
+     * @constructor
+     *
+     * @param {string} aBaseUrl base url for the api
+     */
+
+    constructor : function(aBaseUrl, aClientId) {
+
+        /**
+         * Set pseudo private vars
+         * please dont change this using <objname>._privatevarname
+         * method from outside of here.
+         * Arggghh Stapes!!!!
+         */
 
         this.extend({
-            _lg : new Logger('DEBUG', 'request'),
+            _lg : new Logger('FATAL', 'request'),
             _storage : window.localStorage,
-            _base_url : aBaseUrl
+            _base_url : aBaseUrl,
+            _client_id : aClientId
         });
 
         var attrs = this._storage.getItem('request');
@@ -32,6 +47,13 @@ var Request = Stapes.subclass({
         }));        
 
     },
+
+    /**
+     * Sets the client id and also save it to the cache
+     *
+     * @param {string} aClientId the gizur client it
+     */
+
     setClientId : function(aClientId) {
         this._client_id = aClientId;
 
@@ -40,16 +62,34 @@ var Request = Stapes.subclass({
             "client_id" : this._client_id
         }));
     },
+
+    /**
+     * Gets the client id and also save it to the cache
+     *
+     */
+
     getClientId : function() {
         return this._client_id;
-    },        
+    },
+
+    /**
+     * Send the request to Gizur API
+     *
+     * @param {string}   method    HTTP method to send the request with
+     * @param {string}   url       the gizur api url
+     * @param {object}   headers   lists of headers to be sent with the request
+     * @param {string}   body      request body
+     * @param {function} successCb success callback function
+     * @param {function} errorCb   error callback function
+     * @param {array}    files     array of files to be sent
+     */
+
     send : function(method, url, headers, body, successCb, errorCb, files) {
         
         var that = this;
 
         var successCbWrapper = function(data){
-            //Login to handle special cases should be here
-            //...
+
             that._lg.log('DEBUG', 'Request#send#successCbWrapper : ' + JSON.stringify(data));
 
             $.mobile.loading( 'hide' );
@@ -58,8 +98,7 @@ var Request = Stapes.subclass({
         };
 
         var errorCbWrapper = function(jqxhr, status, er){
-            //Login to handle special cases should be here
-            //...
+
             that._lg.log('DEBUG', 'Request#send#errorCbWrapper : ' + jqxhr.status + ' status ' + status + ' er ' + er);
             that._lg.log('DEBUG', 'Request#send#errorCbWrapper : jqxhr.responseText ' + jqxhr.responseText);
 
@@ -77,6 +116,9 @@ var Request = Stapes.subclass({
 
         this._lg.log('DEBUG', 'Request#send : url ' + this._base_url +  url);
         this._lg.log('DEBUG', 'Request#send : body ' + JSON.stringify(body));
+
+        this._lg.log('DEBUG', 'Request#send : headers ' + JSON.stringify(headers));
+        this._lg.log('DEBUG', 'Request#send : client_id ' + this._client_id);
 
         if (files == undefined || 
             !(files instanceof Array) ||

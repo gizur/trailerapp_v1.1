@@ -16,7 +16,11 @@
  */
 
 $(document).delegate('#one', 'pageshow', function () {
-    //Environment SetUp
+
+    /**
+     * Environment
+     */
+
     var lg = new Logger('FATAL', 'gta-page#one$pageshow'); 
     lg.log('TRACE', 'page loaded');
     var req = new Request(Config.url, Config.client_id);

@@ -24,7 +24,7 @@ window = {
 };
 
 //Config
-Config = require('../Android/Besiktning/assets/www/js/app/config.js').Config;
+Config = require('../config.test.js').Config;
 
 //Util
 Request = require('../Android/Besiktning/assets/www/js/app/util/request.js').Request;
@@ -49,7 +49,7 @@ exports.troubleticketcollection = {
 
         test.expect(1);
         
-        test.ok(ttc.size() == 0, "TroubleTickets is not defined / properly");
+        test.ok(ttc.size() === 0, "TroubleTickets is not defined / properly");
         
         test.done();
     },

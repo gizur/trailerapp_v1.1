@@ -13,8 +13,18 @@ var Doc = Stapes.subclass({
 
     /**
      * @constructor
+     *
+     * @param {user} aUsr the user who will send the request
      */ 
+
     constructor : function(aUsr) {
+
+        /**
+         * Set pseudo private vars
+         * please dont change this using <objname>._privatevarname
+         * method from outside of here.
+         * Arggghh Stapes!!!!
+         */        
 
         this.extend({
             _usr :  aUsr,
@@ -29,7 +39,12 @@ var Doc = Stapes.subclass({
 
     /**
      * Download file from server
-     */ 
+     *
+     * @param  {function} successCb success callback executed in case of success
+     * @param  {function} errorCb   executed in case of error
+     * @return {void}      
+     */
+
     download : function(successCb, errorCb) {
         var that = this;
         var thatSuccessCb = successCb; 
@@ -37,7 +52,6 @@ var Doc = Stapes.subclass({
         var fullpath;
 
         that._lg.log('DEBUG', ' doc getAll ' + JSON.stringify(this.getAll()));
-
 
         var successCbWrapper = function(data){
             that._lg.log('TRACE', ' download successCbWrapper start');
@@ -47,12 +61,12 @@ var Doc = Stapes.subclass({
             that._lg.log('DEBUG', ' full path of file : ' + data.result.filename);
             that.set('path', data.result.filename);
 
-            if (thatSuccessCb != undefined && typeof thatSuccessCb == 'function')
+            if (typeof thatSuccessCb == 'function')
                 thatSuccessCb(data);          
         };
 
         var errorCbWrapper = function(jqxhr, status, er){
-            if (errorCb != undefined && typeof errorCb == 'function')
+            if (typeof errorCb == 'function')
                 errorCb(jqxhr, status, er);              
         };
 
@@ -69,6 +83,7 @@ var Doc = Stapes.subclass({
 /**
  * For node-unit test
  */
+
 if (typeof node_unit != 'undefined') {
     exports.Doc = Doc;
 }

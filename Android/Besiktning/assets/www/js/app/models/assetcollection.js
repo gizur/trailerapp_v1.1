@@ -11,10 +11,21 @@
  */
 
 var AssetCollection = Stapes.subclass({
+
     /**
      * @constructor
+     *
+     * @param {user} aUsr the user who will send the requests
      */ 
+
     constructor : function(aUsr) {
+
+        /**
+         * Set pseudo private vars
+         * please dont change this using <objname>._privatevarname
+         * method from outside of here.
+         * Arggghh Stapes!!!!
+         */        
 
         this.extend({
             _usr : aUsr,
@@ -27,11 +38,11 @@ var AssetCollection = Stapes.subclass({
         var assets = this._storage.getItem('assets');
         var that = this;
 
-        if (assets != false && assets !=null) {
+        if (assets && assets !== null) {
 
             this._lg.log('DEBUG', 'assets from cache ' + assets);
 
-            var assets = JSON.parse(assets);
+            assets = JSON.parse(assets);
 
             $.each(assets, function(index, item){
                 var ast = new Asset(this._usr);
@@ -44,11 +55,13 @@ var AssetCollection = Stapes.subclass({
 
     /**
      * Fetches troubletickets from server and populates 'this' object
-     * with all the received troubletickets
+     * with all the received assets
      *
-     * @param {string} asset_type filter for fetching trouble tickets
-     * @return {object} key value pairs of lists
-     */       
+     * @param  {function} successCb success callback executed in case of success
+     * @param  {function} errorCb   executed in case of error
+     * @return {void}
+     */  
+
     getAssets : function(successCb, errorCb) {
         this._lg.log('TRACE', '#getAssets');
 
@@ -64,12 +77,12 @@ var AssetCollection = Stapes.subclass({
                 that.push(ast);
             });
 
-            if (successCb != undefined && typeof successCb == 'function')
+            if (typeof successCb == 'function')
                 successCb(data, 'assets');
         };
 
         var errorCbWrapper = function(jqxhr, status, er){
-            if (errorCb != undefined && typeof errorCb == 'function')
+            if (typeof errorCb == 'function')
                 errorCb(jqxhr, status, er, 'assets');
         };
 

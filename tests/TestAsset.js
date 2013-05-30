@@ -1,9 +1,9 @@
 /* jshint undef: true, unused: true, strict: true, vars: true */
 
 /**
- * Node Unit Test file for Doc
+ * Node Unit Test file for Asset Model
  * 
- * @fileoverview Class definition of a collection of Docs
+ * @fileoverview testing asset model
  * @author anshuk.kumar@essindia.co.in (Anshuk Kumar)
  * @license Commercial - Copyright 2013 Gizur AB
  * @see http://google-styleguide.googlecode.com/svn/trunk/javascriptguide.xml

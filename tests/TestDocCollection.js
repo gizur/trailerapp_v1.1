@@ -27,7 +27,7 @@ exports.doccollection = {
 
         test.expect(1);
         
-        test.ok(dc.size() == 0, "Documents is not defined / properly");
+        test.ok(dc.size() === 0, "Documents is not defined / properly");
         
         test.done();
     },

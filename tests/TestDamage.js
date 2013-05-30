@@ -24,7 +24,7 @@ window = {
 };
 
 //Config
-Config = require('../Android/Besiktning/assets/www/js/app/config.js').Config;
+Config = require('../config.test.js').Config;
 
 //Util
 Request = require('../Android/Besiktning/assets/www/js/app/util/request.js').Request;
@@ -115,5 +115,5 @@ exports.Damage = {
         };
 
         dmg.getEnumDriverCausedDamage(success, error);
-    },       
+    }      
 };

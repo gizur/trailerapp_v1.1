@@ -3,14 +3,28 @@
 /**
  * Model Class Asset
  * 
- * @fileoverview Class definition of a collection of TroubleTickets
+ * @fileoverview Class definition of a Asset
  * @author anshuk.kumar@essindia.co.in (Anshuk Kumar)
  * @license Commercial - Copyright 2013 Gizur AB
  * @see http://google-styleguide.googlecode.com/svn/trunk/javascriptguide.xml
  */
 
 var Asset = Stapes.subclass({
+
+    /**
+     * @constructor
+     *
+     * @param {user} aUsr the user who is making calls to server
+     */
+
     constructor : function(aUsr) {
+
+        /**
+         * Set pseudo private vars
+         * please dont change this using <objname>._privatevarname
+         * method from outside of here.
+         * Arggghh Stapes!!!!
+         */        
 
         this.extend({
             _lg : new Logger('FATAL','js/model/asset'),
@@ -27,15 +41,21 @@ var Asset = Stapes.subclass({
             'enum_trailertype' : {}
         });
 
-        if (this._storage.getItem('enum_trailertype') !=  false && this._storage.getItem('enum_trailertype') !=  null) {
+        if (this._storage.getItem('enum_trailertype') && 
+            this._storage.getItem('enum_trailertype') !==  null) {
             this.set('enum_trailertype', JSON.parse(this._storage.getItem('enum_trailertype')));
-        }            
+        }
     },
 
     /**
      * Fetches data picklist of Type Of Damage also caches it in 
      * local storage.
-     */       
+     *
+     * @param  {function} successCb success callback
+     * @param  {function} errorCb   error callback   
+     * @return {void} 
+     */ 
+          
     getEnumTrailerType : function(successCb, errorCb) {
         this._lg.log('DEBUG', 'getEnumTrailerType start');  
 
@@ -45,12 +65,12 @@ var Asset = Stapes.subclass({
             that.set('enum_trailertype', data.result);
             that._storage.setItem('enum_trailertype', JSON.stringify(data.result));
 
-            if (successCb != undefined && typeof successCb == 'function')                
+            if (typeof successCb == 'function')                
                 successCb(data, 'trailertype');
         };
 
         var errorCbWrapper = function(jqxhr, status, er){
-            if (errorCb != undefined && typeof errorCb == 'function')
+            if (typeof errorCb == 'function')
                 errorCb(jqxhr, status, er, 'trailertype');
         };
 
@@ -71,6 +91,7 @@ var Asset = Stapes.subclass({
 /**
  * For node-unit test
  */
+
 if (typeof node_unit != 'undefined') {
     exports.Asset = Asset;
 }

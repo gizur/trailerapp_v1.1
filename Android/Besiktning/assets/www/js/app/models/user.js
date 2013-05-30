@@ -1,25 +1,44 @@
 /* jshint undef: true, unused: true, strict: true, vars: true */
 
 /**
- * Model Class for Documents ie pictures
+ * Model Class for User
  * 
- * @fileoverview Class definition Documents
+ * @fileoverview Class definition user. This class need to be defined as singleton
+ *               but I have not been able to figure of how to implement singleton
+ *               pattern in stapes.
  * @author anshuk.kumar@essindia.co.in (Anshuk Kumar)
  * @license Commercial - Copyright 2013 Gizur AB
  * @see http://google-styleguide.googlecode.com/svn/trunk/javascriptguide.xml
  */
+
 var User = Stapes.subclass({
 
     /**
      * @constructor
-     */ 
+     *
+     * @param {request} aReq request class object which the user with use to send
+     *                       requests to the API.
+     */
+
     constructor : function(aReq) {
 
+        /**
+         * Set pseudo private vars
+         * please dont change this using <objname>._privatevarname
+         * method from outside of here.
+         * Arggghh Stapes!!!!
+         */
+
         this.extend({
-            _lg : new Logger('DEBUG','js/models/user'),
+            _lg : new Logger('FATAL','js/models/user'),
             _req : aReq,
             _storage : window.localStorage
         });
+
+        /**
+         * Fetch the current user if they are available in
+         * cache. Else init var as blank.
+         */
 
         var attrs = this._storage.getItem('user');
 
@@ -33,7 +52,7 @@ var User = Stapes.subclass({
                 'id' : '',
                 'username' : attrs.username,
                 'password' : attrs.password,
-                'authenticated' : attrs.authenticated,
+                'authenticated' : attrs.authenticated
             }); 
         } else {
             this.set({
@@ -48,8 +67,16 @@ var User = Stapes.subclass({
     },
 
     /**
-     *  Send the request
+     * Send the request
+     *
+     * @param {string}   method    HTTP method to send the request with
+     * @param {string}   url       the gizur api API path
+     * @param {string}   body      request body
+     * @param {function} successCb success callback function
+     * @param {function} errorCb   error callback function
+     * @param {array}    files     array of files to be sent     
      */ 
+
     send : function(method, url, body, successCb, errorCb, files) {
         var headers = {
             'X_USERNAME': this.get('username'),
@@ -66,7 +93,11 @@ var User = Stapes.subclass({
 
     /**
      * Authenticates the current user
-     */       
+     *
+     * @param {function} success success callback function
+     * @param {function} error   error callback function     
+     */
+
     authenticate : function(success, error) {
         var that = this;
 
@@ -74,10 +105,16 @@ var User = Stapes.subclass({
 
             that._lg.log('TRACE', 'authenticate#successWrapper# enter');                                
 
-            // Set flag authenticated to true
+            /**
+             * Set flag authenticated to true
+             */
+
             that.set('authenticated', true);
 
-            //Saving user attr to cache
+            /**
+             * Saving user attr to cache
+             */
+
             that._storage.setItem('user', JSON.stringify(that.getAll()));  
 
             if (typeof data.contactinfo != 'undefined') {
@@ -87,7 +124,10 @@ var User = Stapes.subclass({
 
             that._lg.log('DEBUG', 'authenticate#successWrapper#attributes saved to cache: ' + JSON.stringify(that.getAll()));                
 
-            //execute caller's callback
+            /**
+             * Execute caller's callback
+             */
+
             success(data);
 
             that._lg.log('TRACE', 'authenticate#successWrapper# exit');
@@ -97,27 +137,42 @@ var User = Stapes.subclass({
 
             that._lg.log('TRACE', 'authenticate#errorWrapper# enter');                                
 
-            // Set flag authenticated to true
+            /**
+             * Set flag authenticated to true
+             */
+
             that.set('authenticated', false);
             window.localStorage.removeItem('contact');
 
-            //Saving user attr to cache
+            /**
+             * Saving user attr to cache
+             */
+
             that._storage.setItem('user', JSON.stringify(that.getAll()));            
 
             that._lg.log('DEBUG', 'authenticate#errorWrapper#attributes saved to cache: ' + JSON.stringify(that.getAll()));                
 
-            //execute caller's callback
+            /**
+             * execute caller's callback
+             */
+
             error(jqxhr, status, er);
 
             that._lg.log('TRACE', 'authenticate#errorWrapper# exit');
         };            
 
-        //Saving user attr to cache
+        /**
+         * Saving user attr to cache
+         */
+
         this._storage.setItem('user', JSON.stringify(that.getAll()));            
 
         this._lg.log('DEBUG', 'authenticate#attributes saved to cache: ' + JSON.stringify(this.getAll()));
 
-        //Send the request to authenticate
+        /**
+         * Send the request to authenticate
+         */
+
         this._req.send(
             'POST',
             'Authenticate/login',
@@ -181,6 +236,10 @@ var User = Stapes.subclass({
 
     /**
      * Change the password
+     *
+     * @param {string}   newpassword  password to be changed to  
+     * @param {function} success      success callback function
+     * @param {function} error        error callback function        
      */       
 
     changePassword : function( newpassword, success, error ) {
@@ -238,6 +297,7 @@ var User = Stapes.subclass({
 /**
  * For node-unit test
  */
+
 if (typeof node_unit != 'undefined') {
     exports.User = User;
 }
