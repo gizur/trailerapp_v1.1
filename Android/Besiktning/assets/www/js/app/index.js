@@ -1000,6 +1000,7 @@ $(document).delegate('#five', 'pageshow', function () {
     var lg = new Logger('TRACE', 'gta-page#five$pageshow'); 
     var req = new Request(Config.url);
     var usr = new User(req);
+    var language = new Language();
 
     var current_tt = JSON.parse(window.localStorage.getItem('current_tt'));
 
@@ -1218,16 +1219,17 @@ $(document).delegate('#five', 'pageshow', function () {
         };
 
         var status = function(aAttemptCount, aTotalCount){
-            $('#dialog div[data-role=content]').children().first().html('Completed ... ' + aAttemptCount + ' of ' + aTotalCount);            
+            $('#dialog div[data-role=content]').children().first().html(language.translate('Completed') + ' ... ' + aAttemptCount + ' ' + language.translate('of') + ' ' + aTotalCount);            
         };
 
         ttc.save(success, error, status);
 
-        //Show success message
-        $('#dialog div[data-role=header]').html('<h2>Sending Damage Report</h2>');
-        $('#dialog div[data-role=content]').children().first().html('Completed ... 0 of ' + ttc.size());
-        $('#dialog a[data-role=button]').hide();
-        $('#a_dialog').click();              
+        /**
+         * Show success message
+         */
+
+        $('#dialog_damage_sending div[data-role=content]').children().first().html(language.translate('Completed') + ' ... 0 ' + language.translate('of') + ' ' + ttc.size());
+        $('#a_dialog_damage_sending').click();              
 
         lg.log('TRACE', '#five #sendalldamages click end');   
     });
