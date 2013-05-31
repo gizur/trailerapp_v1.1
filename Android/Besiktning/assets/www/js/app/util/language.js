@@ -31,8 +31,20 @@ var Language = Stapes.subclass({
          */
 
         this.set( 'svenska' , {
+                "If yes click 'Ok', (you will receive a mail with the new password) else click 'Go Back'" : 'Välj i så fall Ok (ditt nya lösen kommer att mailas)',
+                'Are you sure you want to reset your password' : 'Vill du verkligen nollställa lösen',
+                'Please check your mail for the new password' : 'Ett nytt lösen har mailat',            
+                'Authenticated successfully and Cache built successfully' : 'Autensiering lyckades och cache är klar',
+                'Password has been reset successfully' : 'Lösen har nollställts',
+                'Unable to build cache' : 'Kunde inte bygga cache',
+                'Unable to change password' : 'Kunde inte ändra lösen',
+                'Unable to reset password' : 'Kunde inte nollställa lösen',
+                'Building Cache, please wait' : 'Bygger cache, vänta',
                 'Gizur Saas Client ID' : 'Gizur Saas konto',
                 'I caused the damage': 'Jag orsakade skadan',
+                'Password Changed successfully' : 'Lösen har nollställts',
+                'Survey reported successfully' : 'Survey reported successfully',
+                'No Damages Reported' : 'No Damages Reported'
                 'Previously reported damages': 'Tidigare rapporterade skador',
                 'Add more damages': 'Lägg fler skador',
                 'New found damage': 'Nyfunna skador',
@@ -46,6 +58,8 @@ var Language = Stapes.subclass({
                 'Forgot Password': 'Glömt Lösenord',
                 'Damage details': 'Skadeuppgifter',
                 'Please wait' : 'Vänta',
+                'Password Changed' : 'Lösen har ändrats',
+                'Authenticated successfully' : 'Autensiering lyckades',
                 'Trailer type' : 'Typ av trailer',                                          
                 'Back' : 'Tillbaka',
                 'Picture' : 'Foton',
@@ -61,7 +75,13 @@ var Language = Stapes.subclass({
                 'Cancel' : 'Avbryt',
                 'Delete': 'Radera',
                 'Weekday': 'Vardagar',
-                'Password' : 'Lösenord',                
+                'Password' : 'Lösenord',
+                'Success' : 'Lyckades',
+                'Authenticating' : 'Autensierar',
+                'Change' : 'Ändra',
+                'Error' : 'Fel',
+                'Completed' : 'Slutfört',
+                'of' : 'av'
             }
         );
 
