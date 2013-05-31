@@ -215,17 +215,30 @@ $(document).delegate('#one', 'pageshow', function () {
         var tt = new TroubleTicket(usr);
 
         var success = function(data){
-            //Show success pop up
-            $('#dialog div[data-role=header]').html('<h2>Success</h2>');
-            $('#dialog div[data-role=content]').children().first().html('Survey reported successfully.');
-            $('#a_dialog').click();                 
+            
+            /**
+             * Clear the cache
+             */
+
+            window.localStorage.removeItem('current_tt');
+
+            /**
+             * Removed History
+             */            
+
+            $.mobile.urlHistory.stack = [];
+            navigator.app.clearHistory();
+
+            /**
+             * Show success message
+             */
+
+            $('#a_dialog_survey_success').click();                 
         }
 
         var error = function(jqxhr, status, er) {
             //Show error pop up
-            $('#dialog div[data-role=header]').html('<h2>Error</h2>');
-            $('#dialog div[data-role=content]').children().first().html('Could not report survey.');
-            $('#a_dialog').click();                
+            $('#a_dialog_survey_error').click();             
         }
 
         var ast = new Asset();
@@ -331,14 +344,59 @@ $(document).delegate('#one', 'pageshow', function () {
 
         var success = function(data) {
 
-            lg.log('TRACE', '.bxslider-one li a click start');            
+            lg.log('TRACE', '.bxslider-one li a click start'); 
 
-            var doc = new Doc(usr);
-            doc.set(data.result.documents[0]);
+            if (typeof data.result.documents !== 'undefined') {          
 
-            //Download Images
-            var successCb = function(data) {
-                lg.log('TRACE', 'successCb Download Images start');
+                var doc = new Doc(usr);
+                doc.set(data.result.documents[0]);
+
+                /**
+                 * Download Images
+                 */
+
+                var successCb = function(data) {
+                    lg.log('TRACE', 'successCb Download Images start');
+
+                    /**
+                     * Save the page state
+                     */
+
+                    if (current_tt == null)   
+                        current_tt = {};
+
+                    current_tt.trailertype = escapeHtmlEntities($('#one #trailertype option:selected').text());
+                    current_tt.trailerid = escapeHtmlEntities($('#one #trailerid option:selected').text());
+                    current_tt.place = escapeHtmlEntities($('#one #place option:selected').text());
+                    current_tt.sealed = escapeHtmlEntities($('#one input[name=sealed]:checked').val());
+
+                    window.localStorage.setItem('current_tt', JSON.stringify(current_tt));  
+                    lg.log('TRACE', 'successCb saved current tt state');
+
+                    /**
+                     * Set initial state for page two
+                     */
+
+                    var gas = tt.getAllSanitized();
+                    gas.docs = Array();
+                    gas.docs.push({'path': doc.get('path')});              
+
+                    window.localStorage.setItem('details_tt_id', $(that).attr('id'));
+                    window.localStorage.setItem($(that).attr('id') + '_tt', JSON.stringify(gas));
+
+                    lg.log('TRACE', 'successCb saved initial state for page two');
+
+                    $.mobile.changePage('#two');
+                };
+
+                var errorCb = function(jqxhr, status, er) {
+                    lg.log('TRACE', 'errorCb Download Images start');
+                };
+
+                doc.download(successCb, errorCb);
+            } else {
+
+                lg.log('TRACE', 'no documents found : start');
 
                 /**
                  * Save the page state
@@ -352,30 +410,23 @@ $(document).delegate('#one', 'pageshow', function () {
                 current_tt.place = escapeHtmlEntities($('#one #place option:selected').text());
                 current_tt.sealed = escapeHtmlEntities($('#one input[name=sealed]:checked').val());
 
-                window.localStorage.setItem('current_tt', JSON.stringify(current_tt));  
-                lg.log('TRACE', 'successCb saved current tt state');
+                window.localStorage.setItem('current_tt', JSON.stringify(current_tt));
 
                 /**
                  * Set initial state for page two
-                 */                
+                 */
 
                 var gas = tt.getAllSanitized();
-                gas.docs = Array();
-                gas.docs.push({'path': doc.get('path')});              
+                gas.docs = Array();             
 
                 window.localStorage.setItem('details_tt_id', $(that).attr('id'));
                 window.localStorage.setItem($(that).attr('id') + '_tt', JSON.stringify(gas));
 
-                lg.log('TRACE', 'successCb saved initial state for page two');
+                lg.log('TRACE', 'no documents found : end');
 
                 $.mobile.changePage('#two');
-            };
 
-            var errorCb = function(jqxhr, status, er) {
-                lg.log('TRACE', 'errorCb Download Images start');
-            };
-
-            doc.download(successCb, errorCb);
+            }
         };
 
         var error = function() {
@@ -915,9 +966,13 @@ $(document).delegate('#two', 'pageshow', function () {
      * Load images
      */
 
-    $('.bxslider-two').html('');
-    $('.bxslider-two').append('<li><center><img id="' + tt.docs[0].path.replace('.','#') + '" style="width:200px;height:100px;" src="data:image/jpeg;base64,' + window.localStorage.getItem(tt.docs[0].path) + '"/></center></li>');
-    slider_picture.reloadSlider();    
+    if (tt.docs.length !== 0) {
+
+        $('.bxslider-two').html('');
+        $('.bxslider-two').append('<li><center><img id="' + tt.docs[0].path.replace('.','#') + '" style="width:200px;height:100px;" src="data:image/jpeg;base64,' + window.localStorage.getItem(tt.docs[0].path) + '"/></center></li>');
+        slider_picture.reloadSlider();    
+
+    }
 });
 
 /**
