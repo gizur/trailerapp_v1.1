@@ -44,7 +44,7 @@ var Language = Stapes.subclass({
                 'I caused the damage': 'Jag orsakade skadan',
                 'Password Changed successfully' : 'Lösen har nollställts',
                 'Survey reported successfully' : 'Survey reported successfully',
-                'No Damages Reported' : 'No Damages Reported'
+                'No Damages Reported' : 'No Damages Reported',
                 'Previously reported damages': 'Tidigare rapporterade skador',
                 'Add more damages': 'Lägg fler skador',
                 'New found damage': 'Nyfunna skador',
