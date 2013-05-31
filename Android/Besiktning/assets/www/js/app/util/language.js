@@ -33,7 +33,8 @@ var Language = Stapes.subclass({
         this.set( 'svenska' , {
                 "If yes click 'Ok', (you will receive a mail with the new password) else click 'Go Back'" : 'Välj i så fall Ok (ditt nya lösen kommer att mailas)',
                 'Are you sure you want to reset your password' : 'Vill du verkligen nollställa lösen',
-                'Please check your mail for the new password' : 'Ett nytt lösen har mailat',            
+                'Please check your mail for the new password' : 'Ett nytt lösen har mailat',  
+                'Please check your internet connection and try again' : 'Kontrollera internetuppkopplingen och försök igen',        
                 'Authenticated successfully and Cache built successfully' : 'Autensiering lyckades och cache är klar',
                 'Password has been reset successfully' : 'Lösen har nollställts',
                 'Unable to build cache' : 'Kunde inte bygga cache',
@@ -55,6 +56,7 @@ var Language = Stapes.subclass({
                 'No new damage' : 'Inga nya skador',
                 'Existing Damage(s)': 'Befintliga Skador',
                 'Change Password': 'Ändra Lösenord',
+                'Connection Error' : 'Kunde inte ansluta till servern',
                 'Forgot Password': 'Glömt Lösenord',
                 'Damage details': 'Skadeuppgifter',
                 'Please wait' : 'Vänta',
@@ -131,6 +133,8 @@ var Language = Stapes.subclass({
     translate : function ( word ) {
 
         var language = window.localStorage.getItem('language');
+
+        this._lg.log('DEBUG', language + ' translate ' + word + ' exists? ' + typeof this.get(language));
 
         if (this.get(language) == null || typeof this.get(language)[word] == 'undefined')
             return word;

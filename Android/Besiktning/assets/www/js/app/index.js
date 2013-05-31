@@ -16,347 +16,386 @@
  */
 
 $(document).delegate('#one', 'pageshow', function () {
-
-    /**
-     * Environment
-     */
-
-    var lg = new Logger('FATAL', 'gta-page#one$pageshow'); 
-    lg.log('TRACE', 'page loaded');
-    var req = new Request(Config.url, Config.client_id);
-    var usr = new User(req);
-    var language = new Language();
-
-    //For Debugging : The line below must be commented
-    //window.localStorage.removeItem('17x519_tt');
-
-    /**
-     * ------------------
-     * Event Bindings
-     * ------------------
-     */
-
-    /**
-     * Slider widget
-     */
-
-    var slider = $('.bxslider-one').bxSlider({
-          infiniteLoop: false,
-          hideControlOnEnd: true,
-          pager:true,
-          pagerSelector: '#pager-one',
-          pagerType: 'short',         
-          useCSS:false
-    });
-
-    /**
-     * OnChange Event for trailer type
-     * load matching assets into trailerid select menu
-     */
-
-    $('#one select#trailertype').unbind('change').change(function(){
-        lg.log('TRACE', 'trailertype change event start');
+    try {
 
         /**
-         * Create the assetcollection object
-         * this object automatically loads the cached
-         * list of assets
+         * Environment
          */
 
-        var ac = new AssetCollection(usr);
+        var lg = new Logger('DEBUG', 'gta-page#one$pageshow'); 
+        lg.log('TRACE', 'page loaded');
+        var req = new Request(Config.url, Config.client_id);
+        var usr = new User(req);
+        var language = new Language();
 
-        lg.log('TRACE', 'assets filtered START');
+        //For Debugging : The line below must be commented
+        //window.localStorage.removeItem('17x519_tt');
 
         /**
-         * Use stapes method to filter out related trailer ids
+         * ------------------
+         * Event Bindings
+         * ------------------
          */
 
-        var assets = ac.filter(function(item, key) {
-            return item.get('trailertype') === $('#one select#trailertype option:selected').html();
+        /**
+         * Slider widget
+         */
+
+        var slider = $('.bxslider-one').bxSlider({
+              infiniteLoop: false,
+              hideControlOnEnd: true,
+              pager:true,
+              pagerSelector: '#pager-one',
+              pagerType: 'short',         
+              useCSS:false
         });
 
-        lg.log('DEBUG', 'assets filtered list : ' + JSON.stringify(assets));
-        
-        lg.log('TRACE', 'assets filtered END');
-
         /**
-         * Load the filtered trailer ids into the select menu
-         * and refresh both trailer id and trailer type select menu
-         * as jquery mobile needs this, else it does not reflect 
-         * on the UI.
+         * OnChange Event for trailer type
+         * load matching assets into trailerid select menu
          */
 
-        $('#one select#trailerid').html('');
-        
-        $('#trailerid').append('<option value=""> - Select One - </option>');
-
-        for (var index in assets) {
-            $('#trailerid').append('<option value="' + assets[index].get('assetname') + '">' + assets[index].get('assetname') + '</option>');
-        }
-        $('#one select#trailerid').selectmenu('refresh');
-        $('#one select#trailertype').selectmenu('refresh');
-
-        lg.log('trailertype change event end');
-    });   
-
-    /**
-     * OnChange Event for trailer id
-     * get Damaged trouble tickets of the given trailer id
-     */
-
-    $('#one select#trailerid').unbind('change').change(function(){
-        lg.log('TRACE', 'trailerid change event start');
-
-        /**
-         * Create the assetcollection object
-         * this object automatically loads the cached
-         * list of assets
-         */
-
-        var ttc = new TroubleTicketCollection(usr);
-
-        $('#one select#trailerid').selectmenu('refresh');
-
-        var success = function(data){
-            var tts = ttc.getAll();
-
-            //A memory issue is encountered when the following 
-            //line is uncommented
-            //lg.log('DEBUG', ' tts ' + JSON.stringify(tts));
-
-            $('#one #troubleticketlist').html('');
-            tt_list = {};
-            var tt_list_html = '';
-            for (index in tts) {
-
-                lg.log('DEBUG', ' tts[index].get(id) ' + tts[index].get('id'));
-
-                var clipped_tt = tts[index].getAll();
-
-                lg.log('DEBUG', ' tts[index].asset instanceof Asset ' + (tts[index].get('asset') instanceof Asset));
-                lg.log('DEBUG', "tts[index].get('damageposition') " + tts[index].get('damageposition'));
-                lg.log('DEBUG', "tts[index].get('damagetype') " + tts[index].get('damagetype'));
-
-                clipped_tt.trailerid =  tts[index].get('asset').get('assetname');
-
-                delete clipped_tt.asset;
-                delete clipped_tt.enum_place;
-                delete clipped_tt.enum_sealed;
-
-                var li_tt = "<li><center><div style='height:60px;width:200px;'><a id='" + clipped_tt.id + "' href='javascript:void(0);'>" + tts[index].get('damageposition') + ' ' + tts[index].get('damagetype') + "</a></div></center></li>";
-
-                tt_list_html += li_tt; 
-
-                $('#one #troubleticketlist').append(li_tt);
-                window.localStorage.setItem(tts[index].get('id') + '_tt', JSON.stringify(clipped_tt));                
-            }
+        $('#one select#trailertype').unbind('change').change(function(){
+            lg.log('TRACE', 'trailertype change event start');
 
             /**
-             * Save the downloaded trouble ticket collection
+             * Create the assetcollection object
+             * this object automatically loads the cached
+             * list of assets
              */
 
-            tt_list.html = tt_list_html;
-            tt_list.position = 0;
-            window.localStorage.setItem('tt_list', JSON.stringify(tt_list));
+            var ac = new AssetCollection(usr);
 
-            slider.reloadSlider();
-        }
+            lg.log('TRACE', 'assets filtered START');
 
-        ttc.getDamagedTroubleTicketsByAsset($('#one select#trailerid option:selected').text(), success);
+            /**
+             * Use stapes method to filter out related trailer ids
+             */
 
-        lg.log('trailerid change event end');
-    });  
+            var assets = ac.filter(function(item, key) {
+                return item.get('trailertype') === $('#one select#trailertype option:selected').html();
+            });
 
-    /**
-     * OnChange Event for trailer id
-     * get Damaged trouble tickets of the given trailer id
-     */
-
-    $('#one #reportsurvey').unbind('click').click(function(){
-        lg.log('TRACE', 'reportsurvey click START');
-
-        /**
-         * Validate
-         */
-
-        if ($('#one #trailerid option:selected').length == 0) {
-            //Show success pop up
-            $('#dialog div[data-role=header]').html('<h2>Error</h2>');
-            $('#dialog a[data-role=button]').attr('href', '#one');            
-            $('#dialog div[data-role=content]').children().first().html('Please select a Trailer.');
-            $('#a_dialog').click();             
-            return;
-        }
-
-        if ($('#one #place option:selected').length == 0) {
-            //Show success pop up
-            $('#dialog div[data-role=header]').html('<h2>Error</h2>');
-            $('#dialog div[data-role=content]').children().first().html('Please select a Place.');
-            $('#dialog a[data-role=button]').attr('href', '#one');
-            $('#a_dialog').click();             
-            return;
-        }        
-
-        if ($('#one input[name=sealed]:checked').length == 0) {
-            //Show success pop up
-            $('#dialog div[data-role=header]').html('<h2>Error</h2>');
-            $('#dialog div[data-role=content]').children().first().html('Please select if sealed or not.');
-            $('#dialog a[data-role=button]').attr('href', '#one');
-            $('#a_dialog').click();             
-            return;
-        }        
-
-        /**
-         * Create the assetcollection object
-         * this object automatically loads the cached
-         * list of assets
-         */
-
-        var tt = new TroubleTicket(usr);
-
-        var success = function(data){
+            lg.log('DEBUG', 'assets filtered list : ' + JSON.stringify(assets));
             
+            lg.log('TRACE', 'assets filtered END');
+
             /**
-             * Clear the cache
+             * Load the filtered trailer ids into the select menu
+             * and refresh both trailer id and trailer type select menu
+             * as jquery mobile needs this, else it does not reflect 
+             * on the UI.
              */
 
-            window.localStorage.removeItem('current_tt');
+            $('#one select#trailerid').html('');
+            
+            $('#trailerid').append('<option value=""> - Select One - </option>');
 
-            /**
-             * Removed History
-             */            
+            for (var index in assets) {
+                $('#trailerid').append('<option value="' + assets[index].get('assetname') + '">' + assets[index].get('assetname') + '</option>');
+            }
+            $('#one select#trailerid').selectmenu('refresh');
+            $('#one select#trailertype').selectmenu('refresh');
 
-            $.mobile.urlHistory.stack = [];
-            navigator.app.clearHistory();
-
-            /**
-             * Show success message
-             */
-
-            $('#a_dialog_survey_success').click();                 
-        }
-
-        var error = function(jqxhr, status, er) {
-            //Show error pop up
-            $('#a_dialog_survey_error').click();             
-        }
-
-        var ast = new Asset();
-        ast.set('assetname', escapeHtmlEntities($('#one #trailerid option:selected').text()));
-
-        tt.set({
-            'asset' : ast,
-            'place' : escapeHtmlEntities($('#one #place option:selected').text()),
-            'sealed' : escapeHtmlEntities($('#one input[name=sealed]:checked').val())
-        });
-
-        tt.save(success, error);
-
-        lg.log('TRACE', 'reportsurvey click END');
-    });                     
-
-    /**
-     * Report damage
-     * get Damaged trouble tickets of the given trailer id
-     */
-
-    $('#one #reportdamage').unbind('click').click(function(){
-        lg.log('TRACE', 'reportdamage click START');
+            lg.log('trailertype change event end');
+        });   
 
         /**
-         * Validate
+         * OnChange Event for trailer id
+         * get Damaged trouble tickets of the given trailer id
          */
 
-        if ($('#one #trailertype option:selected').attr('value') == '') {
-            //Show success pop up
-            $('#dialog div[data-role=header]').html('<h2>Error</h2>');
-            $('#dialog div[data-role=content]').children().first().html('Please select a Trailer Type.');
-            $('#dialog a[data-role=button]').attr('href', '#one');
-            $('#a_dialog').click();             
-            return;
-        } 
+        $('#one select#trailerid').unbind('change').change(function(){
+            lg.log('TRACE', 'trailerid change event start');
 
-        if ($('#one #trailerid option:selected').attr('value') == '') {
-            //Show success pop up
-            $('#dialog div[data-role=header]').html('<h2>Error</h2>');
-            $('#dialog div[data-role=content]').children().first().html('Please select a Trailer.');
-            $('#dialog a[data-role=button]').attr('href', '#one');
-            $('#a_dialog').click();             
-            return;
-        }   
+            /**
+             * Create the assetcollection object
+             * this object automatically loads the cached
+             * list of assets
+             */
 
-        if ($('#one #place option:selected').attr('value') == '') {
-            //Show success pop up
-            $('#dialog div[data-role=header]').html('<h2>Error</h2>');
-            $('#dialog div[data-role=content]').children().first().html('Please select a Place.');
-            $('#dialog a[data-role=button]').attr('href', '#one');
-            $('#a_dialog').click();             
-            return;
-        }
+            var ttc = new TroubleTicketCollection(usr);
 
-        if ($('#one input[name=sealed]:checked').length == 0) {
-            //Show success pop up
-            $('#dialog div[data-role=header]').html('<h2>Error</h2>');
-            $('#dialog div[data-role=content]').children().first().html('Please select if sealed or not.');
-            $('#a_dialog').click();             
-            return;
-        }      
+            $('#one select#trailerid').selectmenu('refresh');
 
-        if (current_tt == null)   
-            current_tt = {};
+            var success = function(data){
+                var tts = ttc.getAll();
 
-        current_tt.trailertype = escapeHtmlEntities($('#one #trailertype option:selected').text());
-        current_tt.trailerid = escapeHtmlEntities($('#one #trailerid option:selected').text());
-        current_tt.place = escapeHtmlEntities($('#one #place option:selected').text());
-        current_tt.sealed = escapeHtmlEntities($('#one input[name=sealed]:checked').val());
+                //A memory issue is encountered when the following 
+                //line is uncommented
+                //lg.log('DEBUG', ' tts ' + JSON.stringify(tts));
 
-        window.localStorage.setItem('current_tt', JSON.stringify(current_tt));
+                $('#one #troubleticketlist').html('');
+                tt_list = {};
+                var tt_list_html = '';
+                for (index in tts) {
 
-        lg.log('TRACE', 'reportdamage current tt saved : ' + JSON.stringify(current_tt));
+                    lg.log('DEBUG', ' tts[index].get(id) ' + tts[index].get('id'));
 
-        slider.hide();
-        slider.destroySlider();
-        
-        $.mobile.changePage('#four');
+                    var clipped_tt = tts[index].getAll();
 
-        lg.log('TRACE', 'reportdamage click END');
-    });          
+                    lg.log('DEBUG', ' tts[index].asset instanceof Asset ' + (tts[index].get('asset') instanceof Asset));
+                    lg.log('DEBUG', "tts[index].get('damageposition') " + tts[index].get('damageposition'));
+                    lg.log('DEBUG', "tts[index].get('damagetype') " + tts[index].get('damagetype'));
 
-    /**
-     * OnClick of a trouble ticket in widget list
-     * 
-     */
+                    clipped_tt.trailerid =  tts[index].get('asset').get('assetname');
 
-    $('.bxslider-one li a').unbind('click').live('click', function(e){
-        e.preventDefault();
+                    delete clipped_tt.asset;
+                    delete clipped_tt.enum_place;
+                    delete clipped_tt.enum_sealed;
 
-        var that = this;
-        var tt = new TroubleTicket(usr);
+                    var li_tt = "<li><center><div style='height:60px;width:200px;'><a id='" + clipped_tt.id + "' href='javascript:void(0);'>" + tts[index].get('damageposition') + ' ' + tts[index].get('damagetype') + "</a></div></center></li>";
 
-        lg.log('TRACE', '.bxslider-one li a click start');
-        lg.log('DEBUG', " $(this).attr('id') " + $(this).attr('id'));   
+                    tt_list_html += li_tt; 
 
-        // Save the position
-
-        tt_list = JSON.parse(window.localStorage.getItem('tt_list'));
-        tt_list.position = slider.getCurrentSlide();
-        window.localStorage.setItem('tt_list', JSON.stringify(tt_list));  
-
-        var success = function(data) {
-
-            lg.log('TRACE', '.bxslider-one li a click start'); 
-
-            if (typeof data.result.documents !== 'undefined') {          
-
-                var doc = new Doc(usr);
-                doc.set(data.result.documents[0]);
+                    $('#one #troubleticketlist').append(li_tt);
+                    window.localStorage.setItem(tts[index].get('id') + '_tt', JSON.stringify(clipped_tt));                
+                }
 
                 /**
-                 * Download Images
+                 * Save the downloaded trouble ticket collection
                  */
 
-                var successCb = function(data) {
-                    lg.log('TRACE', 'successCb Download Images start');
+                tt_list.html = tt_list_html;
+                tt_list.position = 0;
+                window.localStorage.setItem('tt_list', JSON.stringify(tt_list));
+
+                slider.reloadSlider();
+            }
+
+            ttc.getDamagedTroubleTicketsByAsset($('#one select#trailerid option:selected').text(), success);
+
+            lg.log('trailerid change event end');
+        });  
+
+        /**
+         * OnChange Event for trailer id
+         * get Damaged trouble tickets of the given trailer id
+         */
+
+        $('#one #reportsurvey').unbind('click').click(function(){
+            lg.log('TRACE', 'reportsurvey click START');
+
+            /**
+             * Save the state of page one
+             */
+
+            if (current_tt == null)   
+                current_tt = {};
+
+            current_tt.trailertype = escapeHtmlEntities($('#one #trailertype option:selected').text());
+            current_tt.trailerid = escapeHtmlEntities($('#one #trailerid option:selected').text());
+            current_tt.place = escapeHtmlEntities($('#one #place option:selected').text());
+            current_tt.sealed = escapeHtmlEntities($('#one input[name=sealed]:checked').val());
+
+            window.localStorage.setItem('current_tt', JSON.stringify(current_tt));
+
+            lg.log('TRACE', 'reportsurvey current tt saved : ' + JSON.stringify(current_tt));            
+
+            /**
+             * Validate
+             */
+
+            if ($('#one #trailertype option:selected').attr('value') == '') {
+                $('#a_dialog_validation_trailertype').click();             
+                return;
+            } 
+
+            if ($('#one #trailerid option:selected').attr('value') == '') {
+                $('#a_dialog_validation_trailer').click();             
+                return;
+            }
+
+            if ($('#one #place option:selected').attr('value') == '') {
+                $('#a_dialog_validation_place').click();             
+                return;
+            }        
+
+            if ($('#one input[name=sealed]:checked').attr('value') == '') {
+                $('#a_dialog_validation_sealed').click();             
+                return;
+            }        
+
+            /**
+             * Create the assetcollection object
+             * this object automatically loads the cached
+             * list of assets
+             */
+
+            var tt = new TroubleTicket(usr);
+
+            var success = function(data){
+                
+                /**
+                 * Clear the cache
+                 */
+
+                window.localStorage.removeItem('current_tt');
+
+                /**
+                 * Removed History
+                 */            
+
+                $.mobile.urlHistory.stack = [];
+                navigator.app.clearHistory();
+
+                /**
+                 * Show success message
+                 */
+
+                $('#a_dialog_survey_success').click();                 
+            }
+
+            var error = function(jqxhr, status, er) {
+                //Show error pop up
+                $('#a_dialog_survey_error').click();             
+            }
+
+            var ast = new Asset();
+            ast.set('assetname', escapeHtmlEntities($('#one #trailerid option:selected').text()));
+
+            tt.set({
+                'asset' : ast,
+                'place' : escapeHtmlEntities($('#one #place option:selected').text()),
+                'sealed' : escapeHtmlEntities($('#one input[name=sealed]:checked').val())
+            });
+
+            tt.save(success, error);
+
+            lg.log('TRACE', 'reportsurvey click END');
+        });                     
+
+        /**
+         * Report damage
+         * get Damaged trouble tickets of the given trailer id
+         */
+
+        $('#one #reportdamage').unbind('click').click(function(){
+            lg.log('TRACE', 'reportdamage click START');
+
+            /**
+             * Save the state of page one
+             */
+
+            if (current_tt == null)   
+                current_tt = {};
+
+            current_tt.trailertype = escapeHtmlEntities($('#one #trailertype option:selected').text());
+            current_tt.trailerid = escapeHtmlEntities($('#one #trailerid option:selected').text());
+            current_tt.place = escapeHtmlEntities($('#one #place option:selected').text());
+            current_tt.sealed = escapeHtmlEntities($('#one input[name=sealed]:checked').val());
+
+            window.localStorage.setItem('current_tt', JSON.stringify(current_tt));
+
+            lg.log('TRACE', 'reportdamage current tt saved : ' + JSON.stringify(current_tt));            
+
+            /**
+             * Validate
+             */
+
+            if ($('#one #trailertype option:selected').attr('value') == '') {
+                $('#a_dialog_validation_trailertype').click();             
+                return;
+            } 
+
+            if ($('#one #trailerid option:selected').attr('value') == '') {
+                $('#a_dialog_validation_trailer').click();             
+                return;
+            }
+
+            if ($('#one #place option:selected').attr('value') == '') {
+                $('#a_dialog_validation_place').click();             
+                return;
+            }        
+
+            if ($('#one input[name=sealed]:checked').attr('value') == '') {
+                $('#a_dialog_validation_sealed').click();             
+                return;
+            }     
+
+            slider.hide();
+            slider.destroySlider();
+            
+            $.mobile.changePage('#four');
+
+            lg.log('TRACE', 'reportdamage click END');
+        });          
+
+        /**
+         * OnClick of a trouble ticket in widget list
+         * 
+         */
+
+        $('.bxslider-one li a').unbind('click').live('click', function(e){
+            e.preventDefault();
+
+            var that = this;
+            var tt = new TroubleTicket(usr);
+
+            lg.log('TRACE', '.bxslider-one li a click start');
+            lg.log('DEBUG', " $(this).attr('id') " + $(this).attr('id'));   
+
+            // Save the position
+
+            tt_list = JSON.parse(window.localStorage.getItem('tt_list'));
+            tt_list.position = slider.getCurrentSlide();
+            window.localStorage.setItem('tt_list', JSON.stringify(tt_list));  
+
+            var success = function(data) {
+
+                lg.log('TRACE', '.bxslider-one li a click start'); 
+
+                if (typeof data.result.documents !== 'undefined') {          
+
+                    var doc = new Doc(usr);
+                    doc.set(data.result.documents[0]);
+
+                    /**
+                     * Download Images
+                     */
+
+                    var successCb = function(data) {
+                        lg.log('TRACE', 'successCb Download Images start');
+
+                        /**
+                         * Save the page state
+                         */
+
+                        if (current_tt == null)   
+                            current_tt = {};
+
+                        current_tt.trailertype = escapeHtmlEntities($('#one #trailertype option:selected').text());
+                        current_tt.trailerid = escapeHtmlEntities($('#one #trailerid option:selected').text());
+                        current_tt.place = escapeHtmlEntities($('#one #place option:selected').text());
+                        current_tt.sealed = escapeHtmlEntities($('#one input[name=sealed]:checked').val());
+
+                        window.localStorage.setItem('current_tt', JSON.stringify(current_tt));  
+                        lg.log('TRACE', 'successCb saved current tt state');
+
+                        /**
+                         * Set initial state for page two
+                         */
+
+                        var gas = tt.getAllSanitized();
+                        gas.docs = Array();
+                        gas.docs.push({'path': doc.get('path')});              
+
+                        window.localStorage.setItem('details_tt_id', $(that).attr('id'));
+                        window.localStorage.setItem($(that).attr('id') + '_tt', JSON.stringify(gas));
+
+                        lg.log('TRACE', 'successCb saved initial state for page two');
+
+                        $.mobile.changePage('#two');
+                    };
+
+                    var errorCb = function(jqxhr, status, er) {
+                        lg.log('TRACE', 'errorCb Download Images start');
+                    };
+
+                    doc.download(successCb, errorCb);
+                } else {
+
+                    lg.log('TRACE', 'no documents found : start');
 
                     /**
                      * Save the page state
@@ -370,233 +409,199 @@ $(document).delegate('#one', 'pageshow', function () {
                     current_tt.place = escapeHtmlEntities($('#one #place option:selected').text());
                     current_tt.sealed = escapeHtmlEntities($('#one input[name=sealed]:checked').val());
 
-                    window.localStorage.setItem('current_tt', JSON.stringify(current_tt));  
-                    lg.log('TRACE', 'successCb saved current tt state');
+                    window.localStorage.setItem('current_tt', JSON.stringify(current_tt));
 
                     /**
                      * Set initial state for page two
                      */
 
                     var gas = tt.getAllSanitized();
-                    gas.docs = Array();
-                    gas.docs.push({'path': doc.get('path')});              
+                    gas.docs = Array();             
 
                     window.localStorage.setItem('details_tt_id', $(that).attr('id'));
                     window.localStorage.setItem($(that).attr('id') + '_tt', JSON.stringify(gas));
 
-                    lg.log('TRACE', 'successCb saved initial state for page two');
+                    lg.log('TRACE', 'no documents found : end');
 
                     $.mobile.changePage('#two');
-                };
 
-                var errorCb = function(jqxhr, status, er) {
-                    lg.log('TRACE', 'errorCb Download Images start');
-                };
+                }
+            };
 
-                doc.download(successCb, errorCb);
-            } else {
+            var error = function() {
 
-                lg.log('TRACE', 'no documents found : start');
+            };
 
-                /**
-                 * Save the page state
-                 */
+            tt.getById($(this).attr('id'), success, error);
+        });
 
-                if (current_tt == null)   
-                    current_tt = {};
+        /**
+         * -------------------
+         * Initialize the page
+         * -------------------
+         */
 
-                current_tt.trailertype = escapeHtmlEntities($('#one #trailertype option:selected').text());
-                current_tt.trailerid = escapeHtmlEntities($('#one #trailerid option:selected').text());
-                current_tt.place = escapeHtmlEntities($('#one #place option:selected').text());
-                current_tt.sealed = escapeHtmlEntities($('#one input[name=sealed]:checked').val());
+        /**
+         * Load from cache if available
+         * this cache is cleared when the Troubleticket is submitted successfully
+         */
 
-                window.localStorage.setItem('current_tt', JSON.stringify(current_tt));
+        var current_tt = JSON.parse(window.localStorage.getItem('current_tt'));
+        var selected; //text to save selected attr 
 
-                /**
-                 * Set initial state for page two
-                 */
+        lg.log('DEBUG', 'from cache current_tt : ' + JSON.stringify(current_tt));
 
-                var gas = tt.getAllSanitized();
-                gas.docs = Array();             
+        /**
+         * Create a new Asset object this object should have a cached
+         * enum list of trailer types
+         */
+        var ast = new Asset(usr);
+        var enum_trailertype = ast.get('enum_trailertype');
 
-                window.localStorage.setItem('details_tt_id', $(that).attr('id'));
-                window.localStorage.setItem($(that).attr('id') + '_tt', JSON.stringify(gas));
+        $('#one select#trailerid').html('');   
 
-                lg.log('TRACE', 'no documents found : end');
+        lg.log('DEBUG', 'enum_trailertype : ' + JSON.stringify(enum_trailertype));
 
-                $.mobile.changePage('#two');
+        /**
+         * Load the trailer types into the select menu
+         * and refresh UI.
+         */
 
+        $('#one select#trailertype').html('');
+        $('#one select#trailertype').append('<option value=""> - Select One - </option>');    
+        for (var index in enum_trailertype) {
+
+            //Load value from cache
+            selected = '';
+            if (current_tt != null && enum_trailertype[index].value == current_tt.trailertype) {
+                selected = 'selected="selected"';
+                lg.log('DEBUG', 'selected trailer type : ' + enum_trailertype[index].value);            
             }
-        };
 
-        var error = function() {
+            $('#one select#trailertype').append('<option ' + selected + ' value="' + enum_trailertype[index].value + '">' + enum_trailertype[index].label + '</option>');
+        }
+        $('#one select#trailertype').selectmenu('refresh');
 
-        };
+        /**
+         * Load the trailerids based on the trailer typ
+         *
+         */
 
-        tt.getById($(this).attr('id'), success, error);
-    });
+        var ac = new AssetCollection(usr);
+        var assets = ac.filter(function(item, key) {
+            return item.get('trailertype') === $('#one select#trailertype option:selected').text();
+        });
 
-    /**
-     * -------------------
-     * Initialize the page
-     * -------------------
-     */
+        $('#trailerid').append('<option value=""> - Select One - </option>');
 
-    /**
-     * Load from cache if available
-     * this cache is cleared when the Troubleticket is submitted successfully
-     */
+        for (var index in assets) {
 
-    var current_tt = JSON.parse(window.localStorage.getItem('current_tt'));
-    var selected; //text to save selected attr 
+            //Load value from cache
+            selected = '';
+            lg.log('DEBUG', 'loop  preload trailer id : ' + assets[index].get('assetname'));
+            lg.log('DEBUG', 'loop  preload trailer id : ' + current_tt.trailerid);
+            lg.log('DEBUG', 'loop  preload are they equal : ' + (assets[index].get('assetname') == current_tt.trailerid));
+            
+            if (current_tt != null && assets[index].get('assetname') == current_tt.trailerid) {
+                selected = 'selected="selected"';
+                lg.log('DEBUG', 'selected trailer id : ' + assets[index].get('assetname'));            
+            }
 
-    lg.log('DEBUG', 'from cache current_tt : ' + JSON.stringify(current_tt));
+            $('#trailerid').append('<option ' + selected + ' value="' + assets[index].get('assetname') + '">' + assets[index].get('assetname') + '</option>');
+        }
+        $('#one select#trailerid').selectmenu('refresh');     
 
-    /**
-     * Create a new Asset object this object should have a cached
-     * enum list of trailer types
-     */
-    var ast = new Asset(usr);
-    var enum_trailertype = ast.get('enum_trailertype');
+        /**
+         * Create a new TroubleTicket object this object should have a cached
+         * enum sealed
+         */
 
-    $('#one select#trailerid').html('');   
+        var tt = new TroubleTicket(usr);
+        var enum_sealed = tt.get('enum_sealed');
+        var enum_place = tt.get('enum_place');
 
-    lg.log('DEBUG', 'enum_trailertype : ' + JSON.stringify(enum_trailertype));
+        lg.log('DEBUG', 'enum_sealed : ' + JSON.stringify(enum_sealed));
 
-    /**
-     * Load the trailer types into the select menu
-     * and refresh UI.
-     */
+        /**
+         * Load the sealed into the select menu
+         * and refresh UI.
+         */
 
-    $('#one select#trailertype').html('');
-    $('#one select#trailertype').append('<option value=""> - Select One - </option>');    
-    for (var index in enum_trailertype) {
+        $('#one #sealed').html('');
+        $('#one #sealed').append('<legend>' + language.translate('Sealed') + '</legend>');
 
-        //Load value from cache
-        selected = '';
-        if (current_tt != null && enum_trailertype[index].value == current_tt.trailertype) {
-            selected = 'selected="selected"';
-            lg.log('DEBUG', 'selected trailer type : ' + enum_trailertype[index].value);            
+        for (var index in enum_sealed) {    
+
+            //Load value from cache
+            selected = '';
+            if (current_tt != null && enum_sealed[index].value == current_tt.sealed) {
+                selected = 'checked="checked"';
+                lg.log('DEBUG', 'selected sealed : ' + enum_sealed[index].value);                        
+            }
+
+            $('#one #sealed').append('<input ' + selected + ' id="radio' + index + '" name="sealed" value="' + enum_sealed[index].value + '" type="radio">');
+            $('#one #sealed').append('<label for="radio' + index + '">' +  enum_sealed[index].label + '</label>');
+        }
+        $('#one #sealed').trigger('create');
+        $('#one #sealed').controlgroup();   
+
+        lg.log('DEBUG', 'enum_place : ' + JSON.stringify(enum_place));
+
+        /**
+         * Load the place into the select menu
+         * and refresh UI.
+         */
+        $('#one select#place').html('');
+        $('#one select#place').append('<option value=""> - Select One - </option>');
+
+        for (var index in enum_place) {
+
+            //lg.log('DEBUG', 'enum_place value : ' + enum_place[index].value);        
+
+            //Load value from cache
+            selected = '';        
+            if (current_tt != null && enum_place[index].value == current_tt.place) {
+                selected = 'selected="selected"';
+                lg.log('DEBUG', 'selected place : ' + enum_place[index].value);                                    
+            }
+
+            $('#one select#place').append('<option ' + selected + ' value="' + enum_place[index].value + '">' + enum_place[index].label + '</option>');
         }
 
-        $('#one select#trailertype').append('<option ' + selected + ' value="' + enum_trailertype[index].value + '">' + enum_trailertype[index].label + '</option>');
-    }
-    $('#one select#trailertype').selectmenu('refresh');
+        lg.log('DEBUG', '#one select#place html : ' + $('#one select#place').html());
 
-    /**
-     * Load the trailerids based on the trailer typ
-     *
-     */
+        $('#one select#place').selectmenu('refresh');    
 
-    var ac = new AssetCollection(usr);
-    var assets = ac.filter(function(item, key) {
-        return item.get('trailertype') === $('#one select#trailertype option:selected').text();
-    });
+        /**
+         * Load the perviously fetched tt list from cache
+         * to slider
+         * 
+         */
 
-    $('#trailerid').append('<option value=""> - Select One - </option>');
+        var tt_list = JSON.parse(window.localStorage.getItem('tt_list'));
+        if (tt_list != null && current_tt != null) {
+            lg.log('DEBUG', 'reloading slider for troubleticketlist  to position ' + tt_list.position);        
 
-    for (var index in assets) {
-
-        //Load value from cache
-        selected = '';
-        lg.log('DEBUG', 'loop  preload trailer id : ' + assets[index].get('assetname'));
-        lg.log('DEBUG', 'loop  preload trailer id : ' + current_tt.trailerid);
-        lg.log('DEBUG', 'loop  preload are they equal : ' + (assets[index].get('assetname') == current_tt.trailerid));
-        
-        if (current_tt != null && assets[index].get('assetname') == current_tt.trailerid) {
-            selected = 'selected="selected"';
-            lg.log('DEBUG', 'selected trailer id : ' + assets[index].get('assetname'));            
+            $('#one #troubleticketlist').html(tt_list.html);
+            slider.reloadSlider();
+            slider.goToSlide(tt_list.position);        
+        } else {
+            $('#one #troubleticketlist').html("<li><center><div style='height:60px;width:120px;'>No TroubleTickets</div></center></li>");
+            slider.reloadSlider();       
         }
 
-        $('#trailerid').append('<option ' + selected + ' value="' + assets[index].get('assetname') + '">' + assets[index].get('assetname') + '</option>');
+        /**
+         * Only once this page is completed logger should be allowed 
+         * to send logs to server
+         */
+
+        lg.appLoadingComplete();
+
+    } catch (err) {
+
+        lg.log('FATAL', JSON.stringify(err));
+
     }
-    $('#one select#trailerid').selectmenu('refresh');     
-
-    /**
-     * Create a new TroubleTicket object this object should have a cached
-     * enum sealed
-     */
-
-    var tt = new TroubleTicket(usr);
-    var enum_sealed = tt.get('enum_sealed');
-    var enum_place = tt.get('enum_place');
-
-    lg.log('DEBUG', 'enum_sealed : ' + JSON.stringify(enum_sealed));
-
-    /**
-     * Load the sealed into the select menu
-     * and refresh UI.
-     */
-
-    $('#one #sealed').html('');
-    $('#one #sealed').append('<legend>' + language.translate('Sealed') + '</legend>');
-
-    for (var index in enum_sealed) {    
-
-        //Load value from cache
-        selected = '';
-        if (current_tt != null && enum_sealed[index].value == current_tt.sealed) {
-            selected = 'checked="checked"';
-            lg.log('DEBUG', 'selected sealed : ' + enum_sealed[index].value);                        
-        }
-
-        $('#one #sealed').append('<input ' + selected + ' id="radio' + index + '" name="sealed" value="' + enum_sealed[index].value + '" type="radio">');
-        $('#one #sealed').append('<label for="radio' + index + '">' +  enum_sealed[index].label + '</label>');
-    }
-    $('#one #sealed').trigger('create');
-    $('#one #sealed').controlgroup();   
-
-    lg.log('DEBUG', 'enum_place : ' + JSON.stringify(enum_place));
-
-    /**
-     * Load the place into the select menu
-     * and refresh UI.
-     */
-    $('#one select#place').html('');
-    $('#one select#place').append('<option value=""> - Select One - </option>');
-
-    for (var index in enum_place) {
-
-        //lg.log('DEBUG', 'enum_place value : ' + enum_place[index].value);        
-
-        //Load value from cache
-        selected = '';        
-        if (current_tt != null && enum_place[index].value == current_tt.place) {
-            selected = 'selected="selected"';
-            lg.log('DEBUG', 'selected place : ' + enum_place[index].value);                                    
-        }
-
-        $('#one select#place').append('<option ' + selected + ' value="' + enum_place[index].value + '">' + enum_place[index].label + '</option>');
-    }
-
-    lg.log('DEBUG', '#one select#place html : ' + $('#one select#place').html());
-
-    $('#one select#place').selectmenu('refresh');    
-
-    /**
-     * Load the perviously fetched tt list from cache
-     * to slider
-     * 
-     */
-
-    var tt_list = JSON.parse(window.localStorage.getItem('tt_list'));
-    if (tt_list != null && current_tt != null) {
-        lg.log('DEBUG', 'reloading slider for troubleticketlist  to position ' + tt_list.position);        
-
-        $('#one #troubleticketlist').html(tt_list.html);
-        slider.reloadSlider();
-        slider.goToSlide(tt_list.position);        
-    } else {
-        $('#one #troubleticketlist').html("<li><center><div style='height:60px;width:120px;'>No TroubleTickets</div></center></li>");
-        slider.reloadSlider();       
-    }
-
-    /**
-     * Only once this page is completed logger should be allowed 
-     * to send logs to server
-     */
-
-    lg.appLoadingComplete();
 
     lg.log('DEBUG', '#one #troubleticketlist html : ' + $('#one #troubleticketlist').html());        
 });
@@ -648,27 +653,22 @@ $(document).delegate('#four', 'pageshow', function () {
      * Click event for saving damage report
      */    
 
-    $('#four #savedamage').unbind('click').click(function() {
+    $('#four #savedamage').unbind('click').click( function( e ) {
+        e.preventDefault();
 
         lg.log('TRACE', '#four #savedamage click start');
 
         lg.log('TRACE', '#four #damagetype option:selected' + $('#four #damagetype option:selected').text());        
 
         if ($('#four #damagetype option:selected').attr('value') == '') {
-            //Show success pop up
-            $('#dialog div[data-role=header]').html('<h2>Error</h2>');
-            $('#dialog div[data-role=content]').children().first().html('Please select a damage Type.');
-            $('#a_dialog').click();             
+            $('#a_dialog_validation_damagetype').click();             
             return;
         }
 
         lg.log('TRACE', '#four #damageposition option:selected' + $('#four #damageposition option:selected').text());
 
         if ($('#four #damageposition option:selected').attr('value') == '') {
-            //Show success pop up
-            $('#dialog div[data-role=header]').html('<h2>Error</h2>');
-            $('#dialog div[data-role=content]').children().first().html('Please select a damage position.');
-            $('#a_dialog').click();             
+            $('#a_dialog_validation_damageposition').click();             
             return;
         }
 
@@ -1219,7 +1219,7 @@ $(document).delegate('#five', 'pageshow', function () {
         };
 
         var status = function(aAttemptCount, aTotalCount){
-            $('#dialog div[data-role=content]').children().first().html(language.translate('Completed') + ' ... ' + aAttemptCount + ' ' + language.translate('of') + ' ' + aTotalCount);            
+            $('#dialog_damage_sending div[data-role=content]').children().first().html(language.translate('Completed') + ' ... ' + aAttemptCount + ' ' + language.translate('of') + ' ' + aTotalCount);            
         };
 
         ttc.save(success, error, status);
@@ -1365,7 +1365,8 @@ $(document).delegate('#contact', 'pageshow', function () {
 
 $(document).delegate('#settings', 'pageshow', function () {
 
-    var lg = new Logger('TRACE','gta-page#settings$pageshow');     
+    var lg = new Logger('FATAL','gta-page#settings$pageshow');  
+    var language = new Language();   
 
     try {
         
@@ -1434,8 +1435,10 @@ $(document).delegate('#settings', 'pageshow', function () {
                  */
 
                 var temp_trace_id = window.localStorage.getItem('trace_id');
+                var temp_language = window.localStorage.getItem('language');
                 window.localStorage.clear();
                 window.localStorage.setItem('trace_id', temp_trace_id);
+                window.localStorage.setItem('language', temp_language);
  
                 /**
                  * Create event handler for cache complete
@@ -1444,7 +1447,7 @@ $(document).delegate('#settings', 'pageshow', function () {
                 usr.on('cache complete', function(status){
                     if (status.success) {
                         cacheSuccessList.push(status.name);
-                        $('#dialog_success_login div[data-role=content]').children().eq(2).html('Completed ' + cacheSuccessList.length  + ' of 7');                                          
+                        $('#dialog_success_login div[data-role=content]').children().eq(2).html(language.translate('Completed') + ' ' + cacheSuccessList.length  + ' ' + language.translate('of') + ' 7');                                          
                     } else {
                         cacheErrorList.push(status.name);
                     }
