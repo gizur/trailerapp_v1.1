@@ -27,7 +27,7 @@ var Request = Stapes.subclass({
          */
 
         this.extend({
-            _lg : new Logger('FATAL', 'request'),
+            _lg : new Logger('DEBUG', 'request'),
             _storage : window.localStorage,
             _base_url : aBaseUrl,
             _client_id : aClientId

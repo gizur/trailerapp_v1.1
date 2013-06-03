@@ -176,10 +176,13 @@ var TroubleTicketCollection = Stapes.subclass({
          */
 
         var attrs = this.getAll();
-        this._lg.log('DEBUG', 'attrs ' + JSON.stringify(attrs));        
+
+        //Uncommenting the following line crashes the app
+        //memory issue
+        //this._lg.log('DEBUG', 'attrs ' + JSON.stringify(attrs));        
+
         for (var index in attrs) {
             this._lg.log('DEBUG', 'attrs[index] instanceof TroubleTicket ' + (attrs[index] instanceof TroubleTicket));            
-            this._lg.log('DEBUG', 'attrs[index].constructor ' + (attrs[index].constructor));            
 
             if (keys.indexOf(index) == -1) {
                 attrs[index].save(success, error);

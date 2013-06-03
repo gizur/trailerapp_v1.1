@@ -193,16 +193,68 @@ var TroubleTicket = Stapes.subclass({
 
     save: function(successCb, errorCb) {
         var that = this;
+        var files = Array();
+        var new_tt_id = 0;
 
         var successCbWrapper = function(data){
-            if (typeof successCb == 'function')
-                successCb(data);
+
+            new_tt_id = data.result.id;
+
+            if (files.length > 1) {
+                if (typeof successCb == 'function')
+                    successCb(data);
+            } else {
+                successCbWrapperMultipleFile(data);
+            }
         };
 
         var errorCbWrapper = function(jqxhr, status, er){
             if (typeof errorCb == 'function')
                 errorCb(jqxhr, status, er);              
         };
+
+        /**
+         * In case there are more than one file to be attached
+         * (max 3). The following callbacks should be used.
+         */
+
+        var successCbWrapperMultipleFile = function(data){
+
+            files.splice(0,1);
+
+            if (files.length === 0) {
+                if (typeof successCb == 'function')
+                    successCb(data);
+            } else {
+                this._usr.send(
+                    'POST',
+                    'DocumentAttachment/' + new_tt_id,
+                    {},
+                    successCbWrapperMultipleFile,
+                    errorCbWrapperMultipleFile,
+                    files                
+                );
+            }
+        };
+
+        var errorCbWrapperMultipleFile = function(jqxhr, status, er){
+
+            files.splice(0,1);
+
+            if (files.length === 0){
+                if (typeof errorCb == 'function')
+                    errorCb(jqxhr, status, er);              
+            } else {
+                this._usr.send(
+                    'POST',
+                    'DocumentAttachment/' + new_tt_id,
+                    {},
+                    successCbWrapperMultipleFile,
+                    errorCbWrapperMultipleFile,
+                    files                
+                );
+            }
+        };       
 
         var ast = this.get('asset');
 
@@ -230,7 +282,6 @@ var TroubleTicket = Stapes.subclass({
 
         } else {
             var docs = this.get('damage').get('docs').getAll();
-            var files = Array();
 
             for (var index in docs) {
                 files.push(docs[index].get('path'));
@@ -250,7 +301,7 @@ var TroubleTicket = Stapes.subclass({
                 successCbWrapper,
                 errorCbWrapper,
                 files                
-            );                
+            );       
         }
     }   
 });

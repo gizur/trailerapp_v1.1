@@ -38,19 +38,6 @@ $(document).delegate('#one', 'pageshow', function () {
          */
 
         /**
-         * Slider widget
-         */
-
-        var slider = $('.bxslider-one').bxSlider({
-              infiniteLoop: false,
-              hideControlOnEnd: true,
-              pager:true,
-              pagerSelector: '#pager-one',
-              pagerType: 'short',         
-              useCSS:false
-        });
-
-        /**
          * OnChange Event for trailer type
          * load matching assets into trailerid select menu
          */
@@ -160,7 +147,7 @@ $(document).delegate('#one', 'pageshow', function () {
                 tt_list.position = 0;
                 window.localStorage.setItem('tt_list', JSON.stringify(tt_list));
 
-                slider.reloadSlider();
+                window.slider_one.reloadSlider();
             }
 
             ttc.getDamagedTroubleTicketsByAsset($('#one select#trailerid option:selected').text(), success);
@@ -294,27 +281,29 @@ $(document).delegate('#one', 'pageshow', function () {
              */
 
             if ($('#one #trailertype option:selected').attr('value') == '') {
+                lg.log('TRACE', ' trailertype not valid');
                 $('#a_dialog_validation_trailertype').click();             
                 return;
             } 
 
             if ($('#one #trailerid option:selected').attr('value') == '') {
+                lg.log('TRACE', ' trailerid not valid');
                 $('#a_dialog_validation_trailer').click();             
                 return;
             }
 
             if ($('#one #place option:selected').attr('value') == '') {
+                lg.log('TRACE', ' place not valid');
                 $('#a_dialog_validation_place').click();             
                 return;
             }        
 
-            if ($('#one input[name=sealed]:checked').attr('value') == '') {
+            if (typeof $('#one input[name=sealed]:checked').attr('value') == 'undefined'
+                || $('#one input[name=sealed]:checked').attr('value') == '') {
+                lg.log('TRACE', ' sealed not valid');
                 $('#a_dialog_validation_sealed').click();             
                 return;
             }     
-
-            slider.hide();
-            slider.destroySlider();
             
             $.mobile.changePage('#four');
 
@@ -338,7 +327,7 @@ $(document).delegate('#one', 'pageshow', function () {
             // Save the position
 
             tt_list = JSON.parse(window.localStorage.getItem('tt_list'));
-            tt_list.position = slider.getCurrentSlide();
+            tt_list.position = window.slider_one.getCurrentSlide();
             window.localStorage.setItem('tt_list', JSON.stringify(tt_list));  
 
             var success = function(data) {
@@ -583,11 +572,11 @@ $(document).delegate('#one', 'pageshow', function () {
             lg.log('DEBUG', 'reloading slider for troubleticketlist  to position ' + tt_list.position);        
 
             $('#one #troubleticketlist').html(tt_list.html);
-            slider.reloadSlider();
-            slider.goToSlide(tt_list.position);        
+            window.slider_one.reloadSlider();
+            window.slider_one.goToSlide(tt_list.position);        
         } else {
-            $('#one #troubleticketlist').html("<li><center><div style='height:60px;width:120px;'>No TroubleTickets</div></center></li>");
-            slider.reloadSlider();       
+            $('#one #troubleticketlist').html("<li><center><div style='height:60px;width:120px;'>" + language.translate('No Damages Reported') + "</div></center></li>");
+            window.slider_one.reloadSlider();       
         }
 
         /**
@@ -619,6 +608,7 @@ $(document).delegate('#four', 'pageshow', function () {
     var lg = new Logger('DEBUG', '#four$pageshow');
     var req = new Request(Config.url, Config.client_id);
     var usr = new User(req);
+    var language = new Language();
 
     var current_tt = JSON.parse(window.localStorage.getItem('current_tt'));
 
@@ -684,7 +674,7 @@ $(document).delegate('#four', 'pageshow', function () {
 
         var documents = [];
 
-        $('.four-picture img').each(function(){
+        $('.bxslider-four img').each(function(){
             lg.log('TRACE', '#four #savedamage found image ' + $(this).attr('src'));
             documents.push({ path : $(this).attr('src') });
         });
@@ -730,24 +720,63 @@ $(document).delegate('#four', 'pageshow', function () {
 
         lg.log('TRACE', '#four #takephoto click start');
 
-        lg.log('DEBUG', '#four #takephoto success $(.bxslider-four-picture).html()' + $('.bxslider-four-picture').html());       
+        lg.log('DEBUG', '#four #takephoto success $(.bxslider-four).html()' + $('.bxslider-four').html());       
+
+        if ($('.bxslider-four img').length > 2) {
+
+            var current_tt = JSON.parse(window.localStorage.getItem('current_tt'));
+
+            var damage = {
+                'damagetype' : escapeHtmlEntities($('#four #damagetype option:selected').text()),
+                'damageposition' : escapeHtmlEntities($('#four #damageposition option:selected').text()),
+                'drivercauseddamage' : escapeHtmlEntities($('#four #drivercauseddamage option:selected').attr('value'))
+            };
+
+            var documents = [];
+
+            $('.bxslider-four img').each(function(){
+                lg.log('TRACE', '#four #savedamage found image ' + $(this).attr('src'));
+                documents.push({ path : $(this).attr('src') });
+            });
+
+            damage['documents'] = documents;
+
+            if (!(current_tt['damages'] != undefined && current_tt['damages'] instanceof Array)) {
+                current_tt['damages'] = new Array();
+                current_tt['damages'].push(damage);
+            } else {
+                current_tt['damages'][latest_damage_index] = damage;
+            }
+
+            lg.log('TRACE', '#four #savedamage current_tt' + JSON.stringify(current_tt));   
+
+            window.localStorage.setItem('current_tt', JSON.stringify(current_tt));
+
+            $('#a_dialog_validation_picture').click();
+            return;
+        }
 
         var success = function (imageURL) {
         
             //Log
             lg.log('DEBUG', '#four #takephoto success' + imageURL); 
 
-            $('.four-picture').html('<img style="width:100%;height:auto;" src="' + imageURL + '"/>');
-            $('.four-picture').css('height','auto');
-            $('.four-picture').css('line-height','normal');
-            lg.log('DEBUG', '#four #takephoto success $(.bxslider-four-picture).html()' + $('.bxslider-four-picture').html());
+            if ($('.bxslider-four img').length === 0)
+                $('.bxslider-four').html('');
+
+            $('.bxslider-four').prepend('<li><img style="width:100%;height:auto;" src="' + imageURL + '"/></li>');
+            //$('.four-picture').html('<img style="width:100%;height:auto;" src="' + imageURL + '"/>');
+            //$('.four-picture').css('height','auto');
+            //$('.four-picture').css('line-height','normal');
+            window.slider_four.reloadSlider();
+            lg.log('DEBUG', '#four #takephoto success $(.bxslider-four).html()' + $('.bxslider-four').html());
         };
 
         var fail = function (message) {
         
             //Log
             lg.log('DEBUG', '#four #takephoto fail' +  message);  
-            lg.log('DEBUG', '#four #takephoto success $(.bxslider-four-picture).html()' + $('.bxslider-four-picture').html());                    
+            lg.log('DEBUG', '#four #takephoto success $(.bxslider-four).html()' + $('.bxslider-four').html());                    
 
         };
         
@@ -859,6 +888,10 @@ $(document).delegate('#four', 'pageshow', function () {
 
     if (latest_damage_index == -1 ||
         (current_tt.damages.length == 1 && latest_damage_index == 0)) {
+
+        lg.log('DEBUG', ' latest_damage_index ' + latest_damage_index);
+        lg.log('DEBUG', ' current_tt.damages.length ' + current_tt.damages.length);
+
         $('#deletedamage').hide();
     }
 
@@ -870,30 +903,30 @@ $(document).delegate('#four', 'pageshow', function () {
             lg.log('DEBUG', 'current_tt.damages[latest_damage_index].documents.length ' + current_tt.damages[latest_damage_index].documents.length );
     }
 
-    $('.four-picture').html("<center>No Picture Attached</center>");
-    $('.four-picture').css('height','100px');
-    $('.four-picture').css('line-height','100px'); 
+    $('.bxslider-four').html("<li><center><div style='height:60px;width:200px;'>" + language.translate('No Picture(s) Attached') + "</div></center></li>");
 
     //Document pictures enum loading
     if (latest_damage_index != -1 && 
         (current_tt.damages[latest_damage_index].documents instanceof Array)) {
 
         if (current_tt.damages[latest_damage_index].documents.length > 0) {
-
+            $('.bxslider-four').html('');
             for (var index in current_tt.damages[latest_damage_index].documents) {
                 lg.log('DEBUG', ' document path ' + current_tt.damages[latest_damage_index].documents[index].path);
-                $('.four-picture').html('<img style="width:100%;height:auto;" src="' + current_tt.damages[latest_damage_index].documents[index].path + '"/>');
-                $('.four-picture').css('height','auto');
-                $('.four-picture').css('line-height','normal'); 
-                break;               
+                $('.bxslider-four').append('<li><img style="width:100%;height:auto;" src="' + current_tt.damages[latest_damage_index].documents[index].path + '"/></li>');
+                //$('.four-picture').html('<img style="width:100%;height:auto;" src="' + current_tt.damages[latest_damage_index].documents[index].path + '"/>');
+                //$('.four-picture').css('height','auto');
+                //$('.four-picture').css('line-height','normal'); 
+                //break;               
             }
-
         } else {
 
             lg.log('DEBUG', ' no documents found ');
 
         }
     }
+
+    window.slider_four.reloadSlider();
 
     //Damge position enum loading to select menu
     lg.log('TRACE', 'damage caused damage start '); 
@@ -927,16 +960,7 @@ $(document).delegate('#four', 'pageshow', function () {
 $(document).delegate('#two', 'pageshow', function () {
 
     var lg = new Logger('DEBUG', '#two$pageshow');
-
-    //Your code for each page load here
-    var slider_picture = $('.bxslider-two').bxSlider({
-          infiniteLoop: false,
-          hideControlOnEnd: true,
-          pager: true,
-          pagerSelector: '#pager-two',
-          pagerType: 'short',
-          useCSS:false
-    });
+    var language = new Language();
 
     /**
      * Event Bindings
@@ -966,13 +990,20 @@ $(document).delegate('#two', 'pageshow', function () {
      * Load images
      */
 
+    lg.log('DEBUG', " tt.docs.length " + tt.docs.length);
+
     if (tt.docs.length !== 0) {
 
         $('.bxslider-two').html('');
-        $('.bxslider-two').append('<li><center><img id="' + tt.docs[0].path.replace('.','#') + '" style="width:200px;height:100px;" src="data:image/jpeg;base64,' + window.localStorage.getItem(tt.docs[0].path) + '"/></center></li>');
-        slider_picture.reloadSlider();    
 
+        for (var index in tt.docs)
+            $('.bxslider-two').append('<li><center><img id="' + tt.docs[index].path.replace('.','#') + '" style="width:100%;height:auto;" src="data:image/jpeg;base64,' + window.localStorage.getItem(tt.docs[0].path) + '"/></center></li>');   
+
+    } else {
+        $('.bxslider-two').html("<li><center><div style='height:60px;width:200px;'>" + language.translate('No Picture(s) Attached') + "</div></center></li>");
     }
+
+    window.slider_two.reloadSlider();     
 });
 
 /**
@@ -1296,7 +1327,7 @@ $(document).delegate('#five', 'pageshow', function () {
         slider_a.reloadSlider();
         slider_a.goToSlide(tt_list.position);        
     } else {
-        $('#one #troubleticketlist').html("<li><center><div style='height:60px;width:120px;'>No TroubleTickets</div></center></li>");
+        $('#one #troubleticketlist').html("<li><center><div style='height:60px;width:120px;'>" + language.translate('No Damages Reported') + "</div></center></li>");
         slider_a.reloadSlider();       
     }  
 
@@ -1819,6 +1850,39 @@ $(document).bind('pagebeforechange', function (e, data) {
  */
 
 document.addEventListener("deviceready", function(){
+
+        /**
+         * Event Bindings
+         */
+
+        window.slider_one = $('.bxslider-one').bxSlider({
+              infiniteLoop: false,
+              hideControlOnEnd: true,
+              pager:true,
+              pagerSelector: '#pager-one',
+              pagerType: 'short',         
+              useCSS:false,
+              swipeThreshold:10
+        });        
+
+        window.slider_four = $('.bxslider-four').bxSlider({
+              infiniteLoop: false,
+              hideControlOnEnd: true,
+              pager:true,
+              pagerSelector: '#pager-four',
+              pagerType: 'short',
+              useCSS:false,
+              swipeThreshold:10
+        });
+
+        window.slider_two = $('.bxslider-two').bxSlider({
+              infiniteLoop: false,
+              hideControlOnEnd: true,
+              pager: true,
+              pagerSelector: '#pager-two',
+              pagerType: 'short',
+              useCSS:false
+        });        
 
         /**
          * Localization

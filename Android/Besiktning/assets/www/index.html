@@ -90,7 +90,7 @@
 		<h3>Existing Damage(s)</h3>
 		<div data-role="fieldcontain">	
 	        <ul class="bxslider-one" id="troubleticketlist">
-	          <li><center><div style='height:60px;width:120px;'>No TroubleTickets</div></center></li>
+	          <li><center><div style='height:60px;width:120px;'>No Damages Reported</div></center></li>
 	        </ul>
 	        <p id='pager-one' style='text-align: right;'></p>
         </div>
@@ -135,11 +135,11 @@
                 </li>
             </ul>
         </div>
-		<p><a href="#one" data-rel="back" data-role="button" data-inline="true" data-icon="back">Back</a></p>
-        <h3>Information om skada</h3>
+		<p><a href="#one" data-role="button" data-inline="true" data-icon="back">Back</a></p>
+        <h3>Damage Information</h3>
         <div data-role="fieldcontain">
             <label for="damagetype">
-                Typ av skada
+                Type of damage
             </label>
             <input name="" id="damagetype" placeholder="" value="" type="text" readonly="readonly">
         </div>
@@ -149,7 +149,7 @@
             </label>
             <input name="" id="damageposition" placeholder="" value="" type="text" readonly="readonly">
         </div>
-		<h4>Foton</h4>
+		<h4>Picture</h4>
 		<div data-role="fieldcontain">
         <ul class="bxslider-two">
                 <li>
@@ -184,8 +184,8 @@
                 </li>
             </ul>
         </div>
-		<p><a href="#one" data-rel="back" data-role="button" data-inline="true" data-icon="back">Back</a></p>
-        <h3>Foton</h3>
+		<p><a data-rel="back" data-role="button" data-inline="true" data-icon="back">Back</a></p>
+        <h3>Picture</h3>
         <img src=""/>
 	</div><!-- /content -->
 </div><!-- /page three -->
@@ -232,11 +232,21 @@
             Picture
         </h3>
 		<p><a id="takephoto" href="" data-role="button">Add a picture</a></p>
-		<div data-role="fieldcontain">
+        <div data-role="fieldcontain">
+        <ul class="bxslider-four">
+                <li>
+                    <center>
+                        <div style='height:60px;width:200px;'>No Picture(s) Attached</div>
+                    </center>
+                </li>
+        </ul>   
+        <p id='pager-four' style='text-align: right;'></p>
+        </div>        
+		<!--div data-role="fieldcontain">
             <div class="four-picture" style="width:inherit;height:100px;line-height:100px;border:1px solid #BBB;padding:5px;">
-                <center>No Picture Attached</center>
+                <center>No Picture(s) Attached</center>
             </div>
-        </div>       
+        </div-->       
         <div data-role="fieldcontain">
             <label for="drivercauseddamage">
                 I caused the damage:
@@ -412,7 +422,7 @@
     </div><!-- /header -->
 
     <div data-role="content" data-theme="d">
-        <p>Please select a damage type</p>  
+        <p>Please select a damage position</p>  
         <p><a data-rel="back" data-role="button" data-inline="true" data-icon="back">Ok</a></p>
     </div><!-- /content -->
 </div><!-- /page dialog_validation_damageposition -->
@@ -471,7 +481,7 @@
 
 <!-- Start of page: #dialog_validation_sealed -->
 <a id="a_dialog_validation_sealed" href="#dialog_validation_sealed" data-rel="dialog" style="display: none;"></a> 
-<div data-role="page" id="dialog" data-transition="flip">
+<div data-role="page" id="dialog_validation_sealed" data-transition="flip">
     <div data-role="header" data-theme="e">
         <h1>Error</h1>
     </div><!-- /header -->
@@ -482,6 +492,19 @@
     </div><!-- /content -->
 </div><!-- /page dialog_validation_sealed -->
 
+<!-- Start of page: #dialog_validation_picture -->
+<a id="a_dialog_validation_picture" href="#dialog_validation_picture" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_validation_picture" data-transition="flip">
+    <div data-role="header" data-theme="e">
+        <h1>Error</h1>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>You cannot add more than 3 pictures.</p>  
+        <p><a data-rel="back" data-role="button" data-inline="true" data-icon="back">Ok</a></p>
+    </div><!-- /content -->
+</div><!-- /page dialog_validation_picture -->
+
 <!-- Start of page: #dialog_damage_sending -->
 <a id="a_dialog_damage_sending" href="#dialog_damage_sending" data-rel="dialog" style="display: none;"></a> 
 <div data-role="page" id="dialog_damage_sending" data-transition="flip">
@@ -490,7 +513,7 @@
     </div><!-- /header -->
 
     <div data-role="content" data-theme="d">
-        <p>Survey reported successfully.</p>  
+        <p></p>  
         <p><a href="#one" data-role="button" data-inline="true" data-icon="back">Ok</a></p>
     </div><!-- /content -->
 </div><!-- /page dialog_damage_sending -->
@@ -510,7 +533,7 @@
 
 <!-- Start of page: #dialog_survey_error -->
 <a id="a_dialog_survey_error" href="#dialog_survey_error" data-rel="dialog" style="display: none;"></a> 
-<div data-role="page" id="dialog" data-transition="flip">
+<div data-role="page" id="dialog_survey_error" data-transition="flip">
     <div data-role="header" data-theme="e">
         <h1>Error</h1>
     </div><!-- /header -->
