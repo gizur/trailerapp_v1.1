@@ -20,7 +20,7 @@ var Language = Stapes.subclass({
          */
 
         this.extend({
-            _lg : new Logger('DEBUG', 'app/util/language')
+            _lg : new Logger('FATAL', 'app/util/language')
         });
 
         /**

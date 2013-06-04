@@ -27,7 +27,7 @@ var Request = Stapes.subclass({
          */
 
         this.extend({
-            _lg : new Logger('DEBUG', 'request'),
+            _lg : new Logger('FATAL', 'request'),
             _storage : window.localStorage,
             _base_url : aBaseUrl,
             _client_id : aClientId
@@ -37,8 +37,11 @@ var Request = Stapes.subclass({
 
         if (attrs != null) {
             attrs = JSON.parse(attrs);
-            this._base_url = attrs.base_url;
-            this._client_id = attrs.client_id;
+            if (typeof aBaseUrl == 'undefined')
+                this._base_url = attrs.base_url;
+
+            if (typeof aClientId == 'undefined')            
+                this._client_id = attrs.client_id;
         }
 
         this._storage.setItem('request', JSON.stringify({

@@ -22,7 +22,7 @@ $(document).delegate('#one', 'pageshow', function () {
          * Environment
          */
 
-        var lg = new Logger('DEBUG', 'gta-page#one$pageshow'); 
+        var lg = new Logger('FATAL', 'gta-page#one$pageshow'); 
         lg.log('TRACE', 'page loaded');
         var req = new Request(Config.url, Config.client_id);
         var usr = new User(req);
@@ -106,13 +106,20 @@ $(document).delegate('#one', 'pageshow', function () {
             $('#one select#trailerid').selectmenu('refresh');
 
             var success = function(data){
+                lg.log('TRACE', ' fetch tt success : start ');
                 var tts = ttc.getAll();
 
                 //A memory issue is encountered when the following 
                 //line is uncommented
-                //lg.log('DEBUG', ' tts ' + JSON.stringify(tts));
+                lg.log('DEBUG', ' tts ' + JSON.stringify(tts));
+                lg.log('DEBUG', ' typeof tts ' + (typeof tts));
+                lg.log('DEBUG', ' tts.length ' + tts.length)
+                if (ttc.size() == 0)
+                    $('#one #troubleticketlist').html("<li><center><div style='height:60px;width:120px;'>" + language.translate('No Damages Reported') + "</div></center></li>");
+                else {
+                    $('#one #troubleticketlist').html('');
+                }
 
-                $('#one #troubleticketlist').html('');
                 tt_list = {};
                 var tt_list_html = '';
                 for (index in tts) {
@@ -148,6 +155,7 @@ $(document).delegate('#one', 'pageshow', function () {
                 window.localStorage.setItem('tt_list', JSON.stringify(tt_list));
 
                 window.slider_one.reloadSlider();
+                lg.log('TRACE', ' fetch tt success : end ');
             }
 
             ttc.getDamagedTroubleTicketsByAsset($('#one select#trailerid option:selected').text(), success);
@@ -334,17 +342,24 @@ $(document).delegate('#one', 'pageshow', function () {
 
                 lg.log('TRACE', '.bxslider-one li a click start'); 
 
-                if (typeof data.result.documents !== 'undefined') {          
+                if (typeof data.result.documents !== 'undefined') {   
 
-                    var doc = new Doc(usr);
-                    doc.set(data.result.documents[0]);
+                    var docc = new DocCollection();       
+
+                    for (var index in data.result.documents) {
+                        var doc = new Doc(usr);
+                        doc.set(data.result.documents[index]);
+                        docc.push(doc);
+                    }
+
+                    lg.log('DEBUG', ' documents collected docc.size ' + docc.size());
 
                     /**
                      * Download Images
                      */
 
-                    var successCb = function(data) {
-                        lg.log('TRACE', 'successCb Download Images start');
+                    var completedCb = function(success_dc) {
+                        lg.log('TRACE', 'completedCb Download Images start');
 
                         /**
                          * Save the page state
@@ -359,7 +374,7 @@ $(document).delegate('#one', 'pageshow', function () {
                         current_tt.sealed = escapeHtmlEntities($('#one input[name=sealed]:checked').val());
 
                         window.localStorage.setItem('current_tt', JSON.stringify(current_tt));  
-                        lg.log('TRACE', 'successCb saved current tt state');
+                        lg.log('TRACE', 'completedCb saved current tt state');
 
                         /**
                          * Set initial state for page two
@@ -367,21 +382,21 @@ $(document).delegate('#one', 'pageshow', function () {
 
                         var gas = tt.getAllSanitized();
                         gas.docs = Array();
-                        gas.docs.push({'path': doc.get('path')});              
+
+                        for (var index in success_dc) {
+                            lg.log('TRACE', ' path pushed ' + success_dc[index].get('path'));
+                            gas.docs.push({'path': success_dc[index].get('path')});              
+                        }
 
                         window.localStorage.setItem('details_tt_id', $(that).attr('id'));
                         window.localStorage.setItem($(that).attr('id') + '_tt', JSON.stringify(gas));
 
-                        lg.log('TRACE', 'successCb saved initial state for page two');
+                        lg.log('TRACE', 'completedCb saved initial state for page two');
 
                         $.mobile.changePage('#two');
                     };
 
-                    var errorCb = function(jqxhr, status, er) {
-                        lg.log('TRACE', 'errorCb Download Images start');
-                    };
-
-                    doc.download(successCb, errorCb);
+                    docc.download(completedCb);
                 } else {
 
                     lg.log('TRACE', 'no documents found : start');
@@ -568,7 +583,10 @@ $(document).delegate('#one', 'pageshow', function () {
          */
 
         var tt_list = JSON.parse(window.localStorage.getItem('tt_list'));
-        if (tt_list != null && current_tt != null) {
+
+        lg.log('DEBUG', 'tt_list : ' + JSON.stringify(tt_list));
+
+        if (tt_list != null && current_tt != null && tt_list.html != '') {
             lg.log('DEBUG', 'reloading slider for troubleticketlist  to position ' + tt_list.position);        
 
             $('#one #troubleticketlist').html(tt_list.html);
@@ -890,7 +908,9 @@ $(document).delegate('#four', 'pageshow', function () {
         (current_tt.damages.length == 1 && latest_damage_index == 0)) {
 
         lg.log('DEBUG', ' latest_damage_index ' + latest_damage_index);
-        lg.log('DEBUG', ' current_tt.damages.length ' + current_tt.damages.length);
+
+        if (typeof current_tt.damages != 'undefined')
+            lg.log('DEBUG', ' current_tt.damages.length ' + current_tt.damages.length);
 
         $('#deletedamage').hide();
     }
@@ -996,8 +1016,10 @@ $(document).delegate('#two', 'pageshow', function () {
 
         $('.bxslider-two').html('');
 
-        for (var index in tt.docs)
-            $('.bxslider-two').append('<li><center><img id="' + tt.docs[index].path.replace('.','#') + '" style="width:100%;height:auto;" src="data:image/jpeg;base64,' + window.localStorage.getItem(tt.docs[0].path) + '"/></center></li>');   
+        for (var index in tt.docs) {
+            lg.log('DEBUG', ' path to image file ' + tt.docs[index].path);
+            $('.bxslider-two').append('<li><center><img id="' + tt.docs[index].path.replace('.','#') + '" style="width:100%;height:auto;" src="data:image/jpeg;base64,' + window.localStorage.getItem(tt.docs[index].path) + '"/></center></li>');   
+        }
 
     } else {
         $('.bxslider-two').html("<li><center><div style='height:60px;width:200px;'>" + language.translate('No Picture(s) Attached') + "</div></center></li>");
@@ -1044,28 +1066,6 @@ $(document).delegate('#five', 'pageshow', function () {
      */
 
     /**
-     * Slider widget
-     */    
-
-    var slider_a = $('.bxslider-five-a').bxSlider({
-        infiniteLoop: false,
-        hideControlOnEnd: true,
-        pager: true,
-        pagerSelector: '#pager-five-a',
-        pagerType: 'short',
-        useCSS:false
-    });
-
-    var slider_b = $('.bxslider-five-b').bxSlider({
-        infiniteLoop: false,
-        hideControlOnEnd: true,
-        pager: true,
-        pagerSelector: '#pager-five-b',
-        pagerType: 'short',
-        useCSS:false
-    });
-
-    /**
      * Click event for report all damages
      */  
 
@@ -1087,7 +1087,7 @@ $(document).delegate('#five', 'pageshow', function () {
              */
 
             tt_list = JSON.parse(window.localStorage.getItem('tt_list'));
-            tt_list.position = slider_a.getCurrentSlide();
+            tt_list.position = window.slider_five_a.getCurrentSlide();
             window.localStorage.setItem('tt_list', JSON.stringify(tt_list)); 
 
             /**
@@ -1230,11 +1230,12 @@ $(document).delegate('#five', 'pageshow', function () {
             // Reset the cached current trouble ticket 
             var stt = ttc.getAllAsArray();
 
-            lg.log('DEBUG', ' stt[index] instanceof TroubleTicket ' + (stt[index] instanceof TroubleTicket));
-
             current_tt.damages = Array();
             
             for (var index in stt) {
+
+                lg.log('DEBUG', ' stt[index] instanceof TroubleTicket ' + (stt[index] instanceof TroubleTicket));
+
                 current_tt.damages.push(
                     JSON.parse(
                         stt[index].damage.serialize()
@@ -1293,8 +1294,8 @@ $(document).delegate('#five', 'pageshow', function () {
         e.preventDefault();
         window.localStorage.setItem('latest_damage_index', $(this).attr('id'));
 
-        slider_a.destroySlider();
-        slider_b.destroySlider();
+        window.slider_five_a.destroySlider();
+        window.slider_five_b.destroySlider();
 
         $.mobile.changePage('#four');
 
@@ -1316,19 +1317,19 @@ $(document).delegate('#five', 'pageshow', function () {
         for (index in current_tt.damages) {
             $('#five .bxslider-five-b').append("<li><center><div style='height:60px;width:200px;'><a id='" + index + "' href='javascript:void(0);'>" + current_tt.damages[index].damageposition + ' ' + current_tt.damages[index].damagetype + "</a></div></center></li>");
         }
-        slider_b.reloadSlider();  
+        window.slider_five_b.reloadSlider();  
     } 
 
     var tt_list = JSON.parse(window.localStorage.getItem('tt_list'));
-    if (tt_list != null && current_tt != null) {
+    if (tt_list != null && current_tt != null && tt_list.html != '') {
         lg.log('DEBUG', 'reloading slider for troubleticketlist  to position ' + tt_list.position);        
 
         $('.bxslider-five-a').html(tt_list.html);
-        slider_a.reloadSlider();
-        slider_a.goToSlide(tt_list.position);        
+        window.slider_five_a.reloadSlider();
+        window.slider_five_a.goToSlide(tt_list.position);        
     } else {
         $('#one #troubleticketlist').html("<li><center><div style='height:60px;width:120px;'>" + language.translate('No Damages Reported') + "</div></center></li>");
-        slider_a.reloadSlider();       
+        window.slider_five_a.reloadSlider();       
     }  
 
     /**
@@ -1374,8 +1375,10 @@ $(document).delegate('#contact', 'pageshow', function () {
         $('#contact').off('swiperight');
 
         $('#contact').on('swiperight',function(){
-            var trace_id = window.localStorage.getItem('trace_id');
-            $('<div><p style="text-align:center;">' + trace_id + '<p></div>').insertAfter('#contact div[data-role=navbar]');
+            if ($('#trace_id').length == 0) {
+                var trace_id = window.localStorage.getItem('trace_id');
+                $('<div id="trace_id"><p style="text-align:center;">' + trace_id + '<p></div>').insertAfter('#contact div[data-role=navbar]');
+            }
         });
 
         lg.log('TRACE', ' page loaded: complete');
@@ -1855,33 +1858,58 @@ document.addEventListener("deviceready", function(){
          * Event Bindings
          */
 
+        /**
+         * Slider widget
+         */    
+
+        window.slider_five_a = $('.bxslider-five-a').bxSlider({
+            infiniteLoop: false,
+            hideControlOnEnd: true,
+            pager: true,
+            pagerSelector: '#pager-five-a',
+            pagerType: 'short',
+            useCSS:false,
+            swipeThreshold:10
+        });
+
+        window.slider_five_b = $('.bxslider-five-b').bxSlider({
+            infiniteLoop: false,
+            hideControlOnEnd: true,
+            pager: true,
+            pagerSelector: '#pager-five-b',
+            pagerType: 'short',
+            useCSS:false,
+            swipeThreshold:10
+        });        
+
         window.slider_one = $('.bxslider-one').bxSlider({
-              infiniteLoop: false,
-              hideControlOnEnd: true,
-              pager:true,
-              pagerSelector: '#pager-one',
-              pagerType: 'short',         
-              useCSS:false,
-              swipeThreshold:10
+            infiniteLoop: false,
+            hideControlOnEnd: true,
+            pager:true,
+            pagerSelector: '#pager-one',
+            pagerType: 'short',         
+            useCSS:false,
+            swipeThreshold:10
         });        
 
         window.slider_four = $('.bxslider-four').bxSlider({
-              infiniteLoop: false,
-              hideControlOnEnd: true,
-              pager:true,
-              pagerSelector: '#pager-four',
-              pagerType: 'short',
-              useCSS:false,
-              swipeThreshold:10
+            infiniteLoop: false,
+            hideControlOnEnd: true,
+            pager:true,
+            pagerSelector: '#pager-four',
+            pagerType: 'short',
+            useCSS:false,
+            swipeThreshold:10
         });
 
         window.slider_two = $('.bxslider-two').bxSlider({
-              infiniteLoop: false,
-              hideControlOnEnd: true,
-              pager: true,
-              pagerSelector: '#pager-two',
-              pagerType: 'short',
-              useCSS:false
+            infiniteLoop: false,
+            hideControlOnEnd: true,
+            pager: true,
+            pagerSelector: '#pager-two',
+            pagerType: 'short',
+            useCSS:false,
+            swipeThreshold:10
         });        
 
         /**

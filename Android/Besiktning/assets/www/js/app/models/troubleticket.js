@@ -198,19 +198,33 @@ var TroubleTicket = Stapes.subclass({
 
         var successCbWrapper = function(data){
 
+            that._lg.log('TRACE', 'successCbWrapper : start');            
+
             new_tt_id = data.result.id;
 
-            if (files.length > 1) {
+            that._lg.log('DEBUG', 'successCbWrapper : new_tt_id ' + new_tt_id);  
+            that._lg.log('DEBUG', 'successCbWrapper : files.length ' + files.length);  
+
+            if (files.length <= 1) {
                 if (typeof successCb == 'function')
                     successCb(data);
             } else {
+                that._lg.log('TRACE', 'successCbWrapper : calling successCbWrapperMultipleFile'); 
                 successCbWrapperMultipleFile(data);
             }
+
+            that._lg.log('TRACE', 'successCbWrapper : end');
+
         };
 
         var errorCbWrapper = function(jqxhr, status, er){
+
+            that._lg.log('TRACE', 'errorCbWrapper : start');
+
             if (typeof errorCb == 'function')
-                errorCb(jqxhr, status, er);              
+                errorCb(jqxhr, status, er);   
+
+            that._lg.log('TRACE', 'errorCbWrapper : end');           
         };
 
         /**
@@ -220,13 +234,15 @@ var TroubleTicket = Stapes.subclass({
 
         var successCbWrapperMultipleFile = function(data){
 
+            that._lg.log('TRACE', 'successCbWrapperMultipleFile : start');
+
             files.splice(0,1);
 
             if (files.length === 0) {
                 if (typeof successCb == 'function')
                     successCb(data);
             } else {
-                this._usr.send(
+                that._usr.send(
                     'POST',
                     'DocumentAttachment/' + new_tt_id,
                     {},
@@ -235,9 +251,13 @@ var TroubleTicket = Stapes.subclass({
                     files                
                 );
             }
+
+            that._lg.log('TRACE', 'successCbWrapperMultipleFile : end');
         };
 
         var errorCbWrapperMultipleFile = function(jqxhr, status, er){
+
+            that._lg.log('TRACE', 'errorCbWrapperMultipleFile : start');
 
             files.splice(0,1);
 
@@ -254,6 +274,8 @@ var TroubleTicket = Stapes.subclass({
                     files                
                 );
             }
+
+            that._lg.log('TRACE', 'errorCbWrapperMultipleFile : end');
         };       
 
         var ast = this.get('asset');
