@@ -143,7 +143,7 @@ var TroubleTicketCollection = Stapes.subclass({
             if (keys.length === 0) {
                 newSuccessCb();
             } else {
-                newErrorCb();
+                newErrorCb(keys.length, total_count);
             }
 
             return;

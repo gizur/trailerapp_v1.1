@@ -78,17 +78,54 @@ var User = Stapes.subclass({
      */ 
 
     send : function(method, url, body, successCb, errorCb, files) {
+        var that = this;
+
         var headers = {
             'X_USERNAME': this.get('username'),
             'X_PASSWORD': this.get('password')
         };
 
-        this._req.send(method, url, headers, body, successCb, errorCb, files);
+        var successCbWrapper = function(data) {
+            if (typeof successCb == 'function') {
+                successCb(data);
+            }
+        };
+
+        var errorCbWrapper = function(jqxhr, status, er) {
+
+            try {
+                var data = JSON.parse(jqxhr.responseText);
+
+                if (data.error.message == 'Invalid Username and Password') {
+
+                    if (typeof navigator.app !== 'undefined')
+                        navigator.app.clearHistory();
+
+                    /**
+                     * Set authenticated flag off
+                     */
+
+                    that.setAuthenticated(false);
+
+                    $('#a_dialog_error_invalidcredentials').click();
+                    return;
+                }
+
+            } catch (err) {
+                that._lg.log('FATAL', JSON.stringify(err))
+            }
+
+            if (typeof errorCb == 'function') {
+                errorCb(jqxhr, status, er);
+            }
+        };
+
+        this._req.send(method, url, headers, body, successCbWrapper, errorCbWrapper, files);
     },
 
     setAuthenticated :  function (status) {
         this.set('authenticated', status);
-        this._storage.setItem('user', JSON.stringify(that.getAll()));             
+        this._storage.setItem('user', JSON.stringify(this.getAll()));             
     },
 
     /**

@@ -24,7 +24,7 @@ $(document).delegate('#one', 'pageshow', function () {
 
         var lg = new Logger('FATAL', 'gta-page#one$pageshow'); 
         lg.log('TRACE', 'page loaded');
-        var req = new Request(Config.url, Config.client_id);
+        var req = new Request(Config.url);
         var usr = new User(req);
         var language = new Language();
 
@@ -323,8 +323,9 @@ $(document).delegate('#one', 'pageshow', function () {
          * 
          */
 
-        $('.bxslider-one li a').unbind('click').live('click', function(e){
+        $('.bxslider-one li a').die('click').live('click', function(e){
             e.preventDefault();
+            e.stopPropagation();
 
             var that = this;
             var tt = new TroubleTicket(usr);
@@ -621,10 +622,15 @@ $(document).delegate('#one', 'pageshow', function () {
 
 $(document).delegate('#four', 'pageshow', function () {
 
-    navigator.app.clearCache();
+    /**
+     * Clear browser cache if any
+     */
+
+    if (typeof navigator.app !== 'undefined')
+        navigator.app.clearCache();
 
     var lg = new Logger('DEBUG', '#four$pageshow');
-    var req = new Request(Config.url, Config.client_id);
+    var req = new Request(Config.url);
     var usr = new User(req);
     var language = new Language();
 
@@ -632,8 +638,15 @@ $(document).delegate('#four', 'pageshow', function () {
 
     lg.log('DEBUG', '#four current_tt ' + window.localStorage.getItem('current_tt'));
 
-    //The index of the last damage added
+    /**
+     * The index of the last damage added
+     */
+
     var latest_damage_index = -1;
+
+    /**
+     * Check if already present in cache
+     */
 
     if (window.localStorage.getItem('latest_damage_index') == null) {
         if (current_tt != null && current_tt.damages instanceof Array) {
@@ -648,7 +661,10 @@ $(document).delegate('#four', 'pageshow', function () {
 
     lg.log('DEBUG', ' current_tt.damages instanceof Array : ' + (current_tt.damages instanceof Array));
 
-    //string var to store the selected status
+    /**
+     * string var to store the selected status
+     */
+
     var selected;
 
     /**
@@ -875,7 +891,10 @@ $(document).delegate('#four', 'pageshow', function () {
     }
     $('#four select#damagetype').selectmenu('refresh');        
 
-    //Damge position enum loading to select menu
+    /**
+     * Damge position enum loading to select menu
+     */
+
     var enum_damageposition = dmg.get('enum_damageposition');
 
     lg.log('DEBUG', 'enum_damageposition : ' + JSON.stringify(enum_damageposition));    
@@ -885,7 +904,10 @@ $(document).delegate('#four', 'pageshow', function () {
 
     for (var index in enum_damageposition) {
 
-        //Load value from cache
+        /**
+         * Load value from cache
+         */
+
         selected = '';
 
         //lg.log('DEBUG',' selected check damageposition : enum_damageposition[index].value ' + unescape(enum_damageposition[index].value) );
@@ -913,6 +935,8 @@ $(document).delegate('#four', 'pageshow', function () {
             lg.log('DEBUG', ' current_tt.damages.length ' + current_tt.damages.length);
 
         $('#deletedamage').hide();
+    } else {
+        $('#deletedamage').show();
     }
 
     if (latest_damage_index != -1) {
@@ -1174,7 +1198,13 @@ $(document).delegate('#five', 'pageshow', function () {
 
         var ttc = new TroubleTicketCollection(usr);
 
-        //De-serialize current_tt to its object
+        /**
+         * De-serialize current_tt to its object
+         * Since window.localStorage does not support
+         * saving objects. We need serialize and deserialize
+         * objects. The following is not so good solution.
+         */
+
         for ( var index in current_tt.damages ) {
             var tt = new TroubleTicket(usr);
             var dmg = new Damage();
@@ -1205,29 +1235,41 @@ $(document).delegate('#five', 'pageshow', function () {
             ttc.push(tt);
         }
 
-        //success callback
+        /**
+         * Success callback
+         */
 
         var success = function(){
 
-            //Clear the cached current trouble ticket as the
-            $.mobile.urlHistory.stack = [];
-            navigator.app.clearHistory();
+            /**
+             * Clear history in jqMobile and Android's 
+             * WebView object's history
+             * This way the user will not be able to go back
+             * to the previous page.
+             */
 
-            $('#dialog a[data-role=button]').attr('href','#one');
-            $('#dialog a[data-role=button]').show();
+            $.mobile.urlHistory.stack = [];
+
+            /** Check if device is Android **/
+
+            if (typeof navigator.app !== 'undefined')
+                navigator.app.clearHistory();
+
+            $('#a_dialog_success_damagereported').click();
 
             window.localStorage.removeItem('current_tt');
         };
 
-        //error callback
+        /**
+         * Error callback
+         */
 
-        var error = function(jqxhr, status, error){
+        var error = function(error_count, total_count){
 
             /**
              * This section need to be tested thoroughly
              */
 
-            // Reset the cached current trouble ticket 
             var stt = ttc.getAllAsArray();
 
             current_tt.damages = Array();
@@ -1236,17 +1278,28 @@ $(document).delegate('#five', 'pageshow', function () {
 
                 lg.log('DEBUG', ' stt[index] instanceof TroubleTicket ' + (stt[index] instanceof TroubleTicket));
 
+                if (stt[index] instanceof TroubleTicket &&
+                    stt[index].damage instanceof Damage)
                 current_tt.damages.push(
                     JSON.parse(
                         stt[index].damage.serialize()
                     )
                 );
             }
-            
-            $('#dialog a[data-role=button]').attr('href','#five');
-            $('#dialog a[data-role=button]').show();
 
-            window.localStorage.setItem('current_tt', JSON.stringify(current_tt));
+            window.localStorage.setItem('current_tt', JSON.stringify(current_tt));            
+
+            /**
+             * If Number of errors equals total number of damages
+             * which were sent, that means none of the damage report succeded
+             * so we show the user the 'All Error Page' else show the 'Partial Success page'
+             */
+            
+            if (error_count == total_count) {
+                $('#a_dialog_error_damagereported').click();
+            } else {
+                $('#a_dialog_partialsuccess_damagereported').click();
+            }
             
         };
 
@@ -1293,9 +1346,6 @@ $(document).delegate('#five', 'pageshow', function () {
 
         e.preventDefault();
         window.localStorage.setItem('latest_damage_index', $(this).attr('id'));
-
-        window.slider_five_a.destroySlider();
-        window.slider_five_b.destroySlider();
 
         $.mobile.changePage('#four');
 
@@ -1462,10 +1512,12 @@ $(document).delegate('#settings', 'pageshow', function () {
                  * device's back button the app exits
                  */
 
-                navigator.app.clearHistory();
+                if (typeof navigator.app !== 'undefined')
+                    navigator.app.clearHistory();
 
                 /**
                  * Clear All cache
+                 * except language and trace id
                  */
 
                 var temp_trace_id = window.localStorage.getItem('trace_id');
@@ -1523,7 +1575,10 @@ $(document).delegate('#settings', 'pageshow', function () {
                         usr.emit("cache complete", {success: false, name: name});
                     };            
 
-                    //start caching picklists
+                    /**
+                     * start caching picklists
+                     */
+
                     tt.getEnumPlace(successCb, errorCb);
                     tt.getEnumSealed(successCb, errorCb);
 
@@ -1536,44 +1591,57 @@ $(document).delegate('#settings', 'pageshow', function () {
                     ast.getEnumTrailerType(successCb, errorCb);
                     ac.getAssets(successCb, errorCb);
 
-                    //Show success message
+                    /**
+                     * Show success message
+                     */
+
                     $('#a_dialog_success_login').click();                        
                 };
 
                 var error = function( jqxhr, status, er ){
                     lg.log('TRACE', ' error start');
 
-                    lg.log('TRACE', ' jqxhr ' + jqxhr.responseText);
-                    var data = JSON.parse(jqxhr.responseText);
-                    var message;
+                    try {
 
-                    if (data.error.message == 'Invalid Username and Password') {
-                        message = data.error.message;
-                    } else {
-                        message = 'Contact Gizur Saas Account holders, details are available under \'Contact\' tab.';
+                        lg.log('TRACE', ' jqxhr ' + jqxhr.responseText);
+                        var data = JSON.parse(jqxhr.responseText);
+
+                        if (typeof navigator.app !== 'undefined')                    
+                            navigator.app.clearHistory();
+
+                        if (data.error.message == 'Invalid Username and Password') {
+                            $('#a_dialog_error_invalidcredentials').click();
+                        } else {
+                            $('a_dialog_error_general').click();
+                        }
+
+                    } catch (err) {
+
+                        lg.log('FATAL', JSON.stringify(err));
+
                     }
-
-                    $('#dialog div[data-role=header]').html('<h2>Authentication Failed</h2>');
-                    $('#dialog div[data-role=content]').children().first().html(message);
-                    $('#dialog a[data-role=button]').attr('href','#settings');
-                    $('#dialog a[data-role=button]').show();
-                    
-                    navigator.app.clearHistory();
-
-                    $('#a_dialog').click();
 
                     lg.log('TRACE', ' error end');
                 };
 
-                //Saving the client id to cache
+                /**
+                 * Saving the client id to cache
+                 */
+
                 req.setClientId($('#settings_client_id').val());
 
-                //Seting username and password for authentication
+                /**
+                 * Seting username and password for authentication
+                 */
+
                 usr.set('username', $('#settings_username').val());
                 usr.set('password', $('#settings_password').val());
 
-                //This caches both the username, password and 
-                //authenticated flag before and after authenticating
+                /**
+                 * This caches both the username, password and 
+                 * authenticated flag before and after authenticating
+                 */
+
                 usr.authenticate(success, error);
 
             } catch (err) {

@@ -59,11 +59,17 @@ var Request = Stapes.subclass({
 
     setClientId : function(aClientId) {
         this._client_id = aClientId;
+        this._lg.log('DEBUG', ' setClientId aClientId ' + aClientId);
 
         this._storage.setItem('request', JSON.stringify({
             "base_url" : this._base_url,
             "client_id" : this._client_id
         }));
+
+        var attrs = JSON.parse(this._storage.getItem('request'));
+
+        this._lg.log('DEBUG', ' setClientId attrs.client_id ' + attrs.client_id);
+
     },
 
     /**
@@ -102,15 +108,42 @@ var Request = Stapes.subclass({
 
         var errorCbWrapper = function(jqxhr, status, er){
 
-            that._lg.log('DEBUG', 'Request#send#errorCbWrapper : ' + jqxhr.status + ' status ' + status + ' er ' + er);
-            that._lg.log('DEBUG', 'Request#send#errorCbWrapper : jqxhr.responseText ' + jqxhr.responseText);
+            try {
 
-            $.mobile.loading( 'hide' );
+                that._lg.log('DEBUG', 'Request#send#errorCbWrapper : ' + jqxhr.status + ' status ' + status + ' er ' + er);
+                that._lg.log('DEBUG', 'Request#send#errorCbWrapper : jqxhr.responseText ' + jqxhr.responseText);
 
-            if (jqxhr.status == 0) {
-                $('#a_dialog_nointernet').click();
-            } else {
-                errorCb(jqxhr, status, er);
+                /**
+                 * Hide the loading GIF animation
+                 */
+
+                $.mobile.loading( 'hide' );
+
+                if (jqxhr.status == 0) {
+
+                    $('#a_dialog_nointernet').click();
+
+                } else {
+
+                    var data = JSON.parse(jqxhr.responseText);
+
+                    if (typeof data.error !== 'undefined' && 
+                        typeof data.error.message !== 'undefined' && 
+                        data.error.message === 'Client ID not found') {
+
+                        $('#a_dialog_error_clientid').click();
+
+                    } else {
+
+                        errorCb(jqxhr, status, er);
+
+                    }
+                }
+
+            } catch (err) {
+
+                that._lg.log('FATAL', JSON.stringify(err));
+
             }
             
         };

@@ -401,6 +401,58 @@
     </div><!-- /content -->
 </div><!-- /page dialog -->
 
+<!-- Start of page: #dialog_error_access -->
+<a id="a_dialog_error_access" href="#dialog_error_access" data-rel="dialog_error_access" style="display: none;"></a> 
+<div data-role="page" id="dialog_error_access" data-transition="flip">
+    <div data-role="header" data-theme="e">
+        <h1>Access Denied</h1>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>You have not been authenticated. Please enter valid credentials and click save.</p>  
+        <p><a data-role="button" data-inline="true" data-icon="back">Ok</a></p>
+    </div><!-- /content -->
+</div><!-- /page dialog -->
+
+<!-- Start of page: #dialog_error_general -->
+<a id="a_dialog_error_general" href="#dialog_error_general" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_error_general" data-transition="flip">
+    <div data-role="header" data-theme="e">
+        <h1>Error</h1>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>Contact Gizur Saas Account holders, details are available under Contact tab.</p>  
+        <p><a href="#settings" data-role="button" data-inline="true" data-icon="back">Ok</a></p>
+    </div><!-- /content -->
+</div><!-- /page dialog_error_general -->
+
+<!-- Start of page: #dialog_error_clientid -->
+<a id="a_dialog_error_clientid" href="#dialog_error_clientid" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_error_clientid" data-transition="flip">
+    <div data-role="header" data-theme="e">
+        <h1>Error</h1>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>Provided client ID is not valid.</p>  
+        <p><a href="#settings" data-role="button" data-inline="true" data-icon="back">Ok</a></p>
+    </div><!-- /content -->
+</div><!-- /page dialog_error_clientid -->
+
+<!-- Start of page: #dialog_error_invalidcredentials -->
+<a id="a_dialog_error_invalidcredentials" href="#dialog_error_invalidcredentials" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_error_invalidcredentials" data-transition="flip">
+    <div data-role="header" data-theme="e">
+        <h1>Error</h1>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>Your username and password settings are invalid. Please enter valid settings and try again.</p>  
+        <p><a href="#settings" data-role="button" data-inline="true" data-icon="back">Ok</a></p>
+    </div><!-- /content -->
+</div><!-- /page dialog_error_invalidcredentials -->
+
 <!-- Start of page: #dialog_validation_damagetype -->
 <a id="a_dialog_validation_damagetype" href="#dialog_validation_damagetype" data-rel="dialog" style="display: none;"></a> 
 <div data-role="page" id="dialog_validation_damagetype" data-transition="flip">
@@ -514,7 +566,6 @@
 
     <div data-role="content" data-theme="d">
         <p></p>  
-        <p><a href="#one" data-role="button" data-inline="true" data-icon="back">Ok</a></p>
     </div><!-- /content -->
 </div><!-- /page dialog_damage_sending -->
 
@@ -688,6 +739,46 @@
         <p><a href="#five" data-role="button" data-inline="true" data-icon="back">Ok</a></p>
     </div><!-- /content -->
 </div><!-- /page dialog_error_cache -->
+
+
+<!-- Start of page: #dialog_success_damagereported -->
+<a id="a_dialog_success_damagereported" href="#dialog_success_damagereported" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_success_damagereported" data-transition="none">
+    <div data-role="header" data-theme="e">
+        <h2>Success</h2>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>All Damages have been reported successfully.</p>
+        <p><a href="#one" data-role="button" data-inline="true" data-icon="back">Ok</a></p>
+    </div><!-- /content -->
+</div><!-- /page dialog_success_damagereported -->
+
+<!-- Start of page: #dialog_partialsuccess_damagereported -->
+<a id="a_dialog_partialsuccess_damagereported" href="#dialog_partialsuccess_damagereported" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_partialsuccess_damagereported" data-transition="none">
+    <div data-role="header" data-theme="e">
+        <h2>Success</h2>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>Only some damages have been reported successfully. Please try again, If the problem persists please contact the Gizur Saas Account holders.</p>
+        <p><a href="#five" data-role="button" data-inline="true" data-icon="back">Ok</a></p>
+    </div><!-- /content -->
+</div><!-- /page dialog_partialsuccess_damagereported -->
+
+<!-- Start of page: #dialog_error_damagereported -->
+<a id="a_dialog_error_damagereported" href="#dialog_error_damagereported" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_error_damagereported" data-transition="none">
+    <div data-role="header" data-theme="e">
+        <h2>Error</h2>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>Error while reporting damages. Please try again, If the problem persists please contact the Gizur Saas Account holders.</p>
+        <p><a href="#five" data-role="button" data-inline="true" data-icon="back">Ok</a></p>
+    </div><!-- /content -->
+</div><!-- /page dialog_error_damagereported -->
 
 <!-- Start of page: #nointernet -->
 <a id="a_dialog_nointernet" href="#dialog_nointernet" data-rel="dialog" style="display: none;"></a> 
