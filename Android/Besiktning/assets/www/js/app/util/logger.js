@@ -136,10 +136,10 @@ var Logger = (function() {
             if (this._enum_level[loglevel] >= this._level) {
                 switch(this._type) {
                     case 'console':
-                      //this._logConsole(loglevel, message);
+                      this._logConsole(loglevel, message);
                       break;
                     case 'loggly':
-                      //this._logLoggly(loglevel, message);
+                      this._logLoggly(loglevel, message);
                       break;
                     default:
                 }
