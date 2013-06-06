@@ -242,6 +242,9 @@ var TroubleTicket = Stapes.subclass({
                 if (typeof successCb == 'function')
                     successCb(data);
             } else {
+
+                that._lg.log('DEBUG', 'successCbWrapperMultipleFile : new_tt_id ' + new_tt_id);
+
                 that._usr.send(
                     'POST',
                     'DocumentAttachment/' + new_tt_id,

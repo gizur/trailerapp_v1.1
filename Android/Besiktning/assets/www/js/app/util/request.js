@@ -27,7 +27,7 @@ var Request = Stapes.subclass({
          */
 
         this.extend({
-            _lg : new Logger('FATAL', 'request'),
+            _lg : new Logger('DEBUG', 'request'),
             _storage : window.localStorage,
             _base_url : aBaseUrl,
             _client_id : aClientId
@@ -94,128 +94,137 @@ var Request = Stapes.subclass({
      */
 
     send : function(method, url, headers, body, successCb, errorCb, files) {
-        
+
         var that = this;
 
-        var successCbWrapper = function(data){
+        try {
 
-            that._lg.log('DEBUG', 'Request#send#successCbWrapper : ' + JSON.stringify(data));
+            var successCbWrapper = function(data){
 
-            $.mobile.loading( 'hide' );
-
-            successCb(data);
-        };
-
-        var errorCbWrapper = function(jqxhr, status, er){
-
-            try {
-
-                that._lg.log('DEBUG', 'Request#send#errorCbWrapper : ' + jqxhr.status + ' status ' + status + ' er ' + er);
-                that._lg.log('DEBUG', 'Request#send#errorCbWrapper : jqxhr.responseText ' + jqxhr.responseText);
-
-                /**
-                 * Hide the loading GIF animation
-                 */
+                that._lg.log('DEBUG', 'Request#send#successCbWrapper : ' + JSON.stringify(data));
 
                 $.mobile.loading( 'hide' );
 
-                if (jqxhr.status == 0) {
+                successCb(data);
+            };
 
-                    $('#a_dialog_nointernet').click();
+            var errorCbWrapper = function(jqxhr, status, er){
 
-                } else {
+                try {
 
-                    var data = JSON.parse(jqxhr.responseText);
+                    that._lg.log('DEBUG', 'Request#send#errorCbWrapper : ' + jqxhr.status + ' status ' + status + ' er ' + er);
+                    that._lg.log('DEBUG', 'Request#send#errorCbWrapper : jqxhr.responseText ' + jqxhr.responseText);
 
-                    if (typeof data.error !== 'undefined' && 
-                        typeof data.error.message !== 'undefined' && 
-                        data.error.message === 'Client ID not found') {
+                    /**
+                     * Hide the loading GIF animation
+                     */
 
-                        $('#a_dialog_error_clientid').click();
+                    $.mobile.loading( 'hide' );
+
+                    if (jqxhr.status == 0 || status == null) {
+
+                        $('#a_dialog_nointernet').click();
 
                     } else {
 
-                        errorCb(jqxhr, status, er);
+                        var data = JSON.parse(jqxhr.responseText);
 
+                        if (typeof data.error !== 'undefined' && 
+                            typeof data.error.message !== 'undefined' && 
+                            data.error.message === 'Client ID not found') {
+
+                            $('#a_dialog_error_clientid').click();
+
+                        } else {
+
+                            errorCb(jqxhr, status, er);
+
+                        }
                     }
+
+                } catch (err) {
+
+                    that._lg.log('FATAL', JSON.stringify(err));
+
                 }
+                
+            };
 
-            } catch (err) {
+            $.mobile.loading( 'show', { theme: "b", text: "Please wait...", textonly: false});
 
-                that._lg.log('FATAL', JSON.stringify(err));
+            this._lg.log('DEBUG', 'Request#send : url ' + this._base_url +  url);
+            this._lg.log('DEBUG', 'Request#send : body ' + JSON.stringify(body));
 
+            this._lg.log('DEBUG', 'Request#send : headers ' + JSON.stringify(headers));
+            this._lg.log('DEBUG', 'Request#send : client_id ' + this._client_id);
+
+            if (files == undefined || 
+                !(files instanceof Array) ||
+                files.length == 0) {
+
+                this._lg.log('TRACE', 'Request#send : no files ');
+
+                $.ajax({
+                    type: method,
+                    dataType: 'json',
+                    url: this._base_url + url,
+                    data: body,
+                    cache: false,
+                    beforeSend: function(xhr){
+                        xhr.setRequestHeader('X_CLIENTID', that._client_id);
+                        for (key in headers) {
+                            xhr.setRequestHeader(key, headers[key]);
+                        }
+                    },          
+                    success: successCbWrapper,
+                    error: errorCbWrapper
+                });
+            } else {
+
+                this._lg.log('TRACE', 'Request#send : with files ');
+
+                var ft = new FileTransfer();
+                var options = new FileUploadOptions();
+
+                options.fileKey="file";
+                options.fileName=files[0].substr(files[0].lastIndexOf('/')+1);
+                options.mimeType="image/jpeg";                
+
+                options.params = body;               
+
+                headers.X_CLIENTID = this._client_id;
+
+                options.headers = headers;
+
+                var successCbWrapperF = function(r) {
+                    var data = JSON.parse(r.response);
+                    successCbWrapper(data);
+                };
+
+                var errorCbWrapperF = function(r) {
+
+                    that._lg.log('DEBUG', 'Request#send errorCbWrapperF ' + JSON.stringify(r));
+                    errorCbWrapper({'responseText': r.body ,'status':r.code}, r.http_status, r.code);
+                };
+                
+                /**
+                 * Limitation in Apache Cordova allows sending only one file
+                 * so sending only the first one
+                 */
+                
+                ft.upload(
+                    files[0], 
+                    (this._base_url + url), 
+                    successCbWrapperF, 
+                    errorCbWrapperF, 
+                    options
+                );
             }
-            
-        };
-
-        $.mobile.loading( 'show', { theme: "b", text: "Please wait...", textonly: false});
-
-        this._lg.log('DEBUG', 'Request#send : url ' + this._base_url +  url);
-        this._lg.log('DEBUG', 'Request#send : body ' + JSON.stringify(body));
-
-        this._lg.log('DEBUG', 'Request#send : headers ' + JSON.stringify(headers));
-        this._lg.log('DEBUG', 'Request#send : client_id ' + this._client_id);
-
-        if (files == undefined || 
-            !(files instanceof Array) ||
-            files.length == 0) {
-
-            this._lg.log('TRACE', 'Request#send : no files ');
-
-            $.ajax({
-                type: method,
-                dataType: 'json',
-                url: this._base_url + url,
-                data: body,
-                cache: false,
-                beforeSend: function(xhr){
-                    xhr.setRequestHeader('X_CLIENTID', that._client_id);
-                    for (key in headers) {
-                        xhr.setRequestHeader(key, headers[key]);
-                    }
-                },          
-                success: successCbWrapper,
-                error: errorCbWrapper
-            });
-        } else {
-
-            this._lg.log('TRACE', 'Request#send : with files ');
-
-            var ft = new FileTransfer();
-            var options = new FileUploadOptions();
-
-            options.fileKey="file";
-            options.fileName=files[0].substr(files[0].lastIndexOf('/')+1);
-            options.mimeType="image/jpeg";                
-
-            options.params = body;               
-
-            headers.X_CLIENTID = this._client_id;
-
-            options.headers = headers;
-
-            var successCbWrapperF = function(r) {
-                var data = JSON.parse(r.response);
-                successCbWrapper(data);
-            };
-
-            var errorCbWrapperF = function(r) {
-                errorCbWrapper({'responseText':'{"success":"false"}','status':'none'}, r.http_status, r.code);
-            };
-            
-            /**
-             * Limitation in Apache Cordova allows sending only one file
-             * so sending only the first one
-             */
-            
-            ft.upload(
-                files[0], 
-                (this._base_url + url), 
-                successCbWrapperF, 
-                errorCbWrapperF, 
-                options
-            );
         }
+    } catch (err) {
+
+        that._lg.log('FATAL', JSON.stringify(err));
+        
     }
 });
 

@@ -696,7 +696,7 @@ $(document).delegate('#four', 'pageshow', function () {
             return;
         }
 
-        lg.log('TRACE', '#four #drivercauseddamage option:selected' + $('#four #drivercauseddamage option:selected').val());
+        lg.log('DEBUG', '#four #drivercauseddamage option:selected' + $('#four #drivercauseddamage option:selected').val());
 
         var current_tt = JSON.parse(window.localStorage.getItem('current_tt'));
 
@@ -709,17 +709,25 @@ $(document).delegate('#four', 'pageshow', function () {
         var documents = [];
 
         $('.bxslider-four img').each(function(){
-            lg.log('TRACE', '#four #savedamage found image ' + $(this).attr('src'));
+            lg.log('DEBUG', '#four #savedamage found image ' + $(this).attr('src'));
             documents.push({ path : $(this).attr('src') });
         });
 
         damage['documents'] = documents;
 
-        if (!(current_tt['damages'] != undefined && current_tt['damages'] instanceof Array)) {
+        if (!(current_tt['damages'] instanceof Array)) {
+
+            lg.log('TRACE', '#four current_tt.damages not instanceof Array');
+
             current_tt['damages'] = new Array();
             current_tt['damages'].push(damage);
         } else {
-            current_tt['damages'][latest_damage_index] = damage;
+
+            lg.log('TRACE', '#four current_tt.damages instanceof Array');
+            if (latest_damage_index !== -1)
+                current_tt['damages'][latest_damage_index] = damage;
+            else
+                current_tt['damages'].push(damage);
         }
 
         lg.log('TRACE', '#four #savedamage current_tt' + JSON.stringify(current_tt));   
@@ -876,7 +884,7 @@ $(document).delegate('#four', 'pageshow', function () {
         selected = '';
 
         if (current_tt != null && latest_damage_index != -1) {
-            lg.log('DEBUG',' selected check damagetype : enum_damagetype[index].value ' + enum_damagetype[index].value);
+            lg.log('DEBUG',' selected check damagetype : enum_damagetype[index].value ' + enum_damagetype[index].value);           
             lg.log('DEBUG',' selected check damagetype : current_tt.damages[latest_damage_index].damagetype ' + current_tt.damages[latest_damage_index].damagetype);
         }
 
@@ -1074,7 +1082,7 @@ $(document).delegate('#three', 'pageshow', function () {
 $(document).delegate('#five', 'pageshow', function () {
     
     //Environment SetUp
-    var lg = new Logger('TRACE', 'gta-page#five$pageshow'); 
+    var lg = new Logger('DEBUG', 'gta-page#five$pageshow'); 
     var req = new Request(Config.url);
     var usr = new User(req);
     var language = new Language();
@@ -1280,11 +1288,11 @@ $(document).delegate('#five', 'pageshow', function () {
 
                 if (stt[index] instanceof TroubleTicket &&
                     stt[index].damage instanceof Damage)
-                current_tt.damages.push(
-                    JSON.parse(
-                        stt[index].damage.serialize()
-                    )
-                );
+                    current_tt.damages.push(
+                        JSON.parse(
+                            stt[index].damage.serialize()
+                        )
+                    );
             }
 
             window.localStorage.setItem('current_tt', JSON.stringify(current_tt));            
@@ -1357,6 +1365,8 @@ $(document).delegate('#five', 'pageshow', function () {
      * Page Inititialize
      * -----------------
      */
+
+    lg.log('DEBUG', ' number of damages ' + current_tt.damages.length);        
 
     if ( current_tt != null &&
             current_tt.damages instanceof Array && 
