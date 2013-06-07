@@ -233,7 +233,9 @@ $(document).delegate('#one', 'pageshow', function () {
                  */            
 
                 $.mobile.urlHistory.stack = [];
-                navigator.app.clearHistory();
+
+                if (typeof navigator.app !== 'undefined')
+                    navigator.app.clearHistory();
 
                 /**
                  * Show success message
@@ -437,6 +439,11 @@ $(document).delegate('#one', 'pageshow', function () {
             var error = function() {
 
             };
+
+            /**
+             * Set return point if no internet connection is found
+             */
+            $('#dialog_nointernet a[data-role=button]').attr('href', '#one');
 
             tt.getById($(this).attr('id'), success, error);
         });
@@ -1212,6 +1219,11 @@ $(document).delegate('#five', 'pageshow', function () {
 
             };
 
+            /**
+             * Set return point if no internet connection is found
+             */
+            $('#dialog_nointernet a[data-role=button]').attr('href', '#five');
+
             tt.getById($(this).attr('id'), success, error);
 
         } catch (err) {
@@ -1849,11 +1861,16 @@ $(document).delegate('#settings', 'pageshow', function () {
 
                         if (cacheErrorList.length==0) { 
                             $('#a_dialog_success_cache').click();
-                            navigator.app.clearHistory();
+
+                            if (typeof navigator.app !== 'undefined')
+                                navigator.app.clearHistory();
+
                         } else {
                             usr.setAuthenticated(false);
                             $('#a_dialog_error_cache').click();
-                            navigator.app.clearHistory();                  
+
+                            if (typeof navigator.app !== 'undefined')
+                                navigator.app.clearHistory();                  
                         }
                         cacheSuccessList = cacheErrorList = [];
                     }
@@ -1972,12 +1989,17 @@ $(document).delegate('#settings', 'pageshow', function () {
             try {
 
                 e.preventDefault();
-                navigator.app.clearHistory();
+
+                if (typeof navigator.app !== 'undefined')
+                    navigator.app.clearHistory();
 
                 var success = function( data ){
 
                     lg.log('TRACE', ' password reset successfully ' + JSON.stringify(data));
-                    navigator.app.clearHistory();
+                    
+                    if (typeof navigator.app !== 'undefined')
+                        navigator.app.clearHistory();
+
                     $('#a_dialog_resetpassword_success').click();
 
                 };
@@ -1985,7 +2007,10 @@ $(document).delegate('#settings', 'pageshow', function () {
                 var error = function( jqxhr, status, er ){
 
                     lg.log('TRACE', ' error reset password ' + jqxhr.responseText);
-                    navigator.app.clearHistory();
+
+                    if (typeof navigator.app !== 'undefined')
+                        navigator.app.clearHistory();
+
                     $('#a_dialog_resetpassword_error').click();                    
 
                 };                
@@ -2022,12 +2047,17 @@ $(document).delegate('#settings', 'pageshow', function () {
             try {
 
                 e.preventDefault();
-                navigator.app.clearHistory();
+
+                if (typeof navigator.app !== 'undefined')
+                    navigator.app.clearHistory();
 
                 var success = function( data ){
 
                     lg.log('TRACE', ' password changed successfully ' + JSON.stringify(data));
-                    navigator.app.clearHistory();
+
+                    if (typeof navigator.app !== 'undefined')
+                        navigator.app.clearHistory();
+
                     $('#a_dialog_changepassword_success').click();
 
                 };
@@ -2035,7 +2065,10 @@ $(document).delegate('#settings', 'pageshow', function () {
                 var error = function( jqxhr, status, er ){
 
                     lg.log('TRACE', ' error changing password ' + jqxhr.responseText);
-                    navigator.app.clearHistory();
+
+                    if (typeof navigator.app !== 'undefined')
+                        navigator.app.clearHistory();
+
                     $('#a_dialog_changepassword_error').click();                    
 
                 };
@@ -2287,6 +2320,7 @@ document.addEventListener("deviceready", function(){
          * Localization
          */
 
+        if (typeof navigator.globalization !== 'undefined')
         navigator.globalization.getPreferredLanguage(
             function (lang) {
                 var language = new Language(lang.value);
@@ -2329,7 +2363,9 @@ document.addEventListener("deviceready", function(){
                  */                
 
                 $.mobile.changePage('#one');
-                navigator.app.clearHistory();
+
+                if (typeof navigator.app !== 'undefined')
+                    navigator.app.clearHistory();
             },
 
             /**
