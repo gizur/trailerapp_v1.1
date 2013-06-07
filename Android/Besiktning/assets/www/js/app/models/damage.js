@@ -163,15 +163,16 @@ var Damage = Stapes.subclass({
 
     serialize : function() {
         var sdmg = this.getAll();
-        sdmg.docs = sdmg.docs.getAllAsArray();
+        sdmg.documents = sdmg.docs.getAllAsArray();
 
-        for (var index in dmg.docs) {
-            sdmg.docs[index] = dmg.docs[index].getAll();
+        for (var index in sdmg.documents) {
+            sdmg.documents[index] = sdmg.documents[index].getAll();
         }
 
-        delete dmg.enum_drivercauseddamage;
-        delete dmg.enum_damageposition;
-        delete dmg.enum_damagetype;
+        delete sdmg.docs;
+        delete sdmg.enum_drivercauseddamage;
+        delete sdmg.enum_damageposition;
+        delete sdmg.enum_damagetype;
 
         return JSON.stringify(sdmg);
     }

@@ -32,6 +32,7 @@ var Language = Stapes.subclass({
 
         this.set( 'svenska' , {
                 "If yes click 'Ok', (you will receive a mail with the new password) else click 'Go Back'" : 'Välj i så fall Ok (ditt nya lösen kommer att mailas)',
+                'Please try again, If the problem persists please contact the Gizur Saas Account holders' : 'Försök igen, Kontakta Gizur SaaS support om problemet kvarstår',
                 'Are you sure you want to reset your password' : 'Vill du verkligen nollställa lösen',
                 'Please check your mail for the new password' : 'Ett nytt lösen har mailat',  
                 'Please check your internet connection and try again' : 'Kontrollera internetuppkopplingen och försök igen',        

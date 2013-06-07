@@ -187,11 +187,13 @@ var TroubleTicket = Stapes.subclass({
      * Saves 'this' object to server
      *
      * @param  {function} successCb success callback executed in case of success
-     * @param  {function} errorCb   executed in case of error     
+     * @param  {function} errorCb   executed in case of error   
+     * @param  {boolean}  silent    checks if internet connection error message has to be shown or not       
      * @return {void}
      */
 
-    save: function(successCb, errorCb) {
+    save: function(successCb, errorCb, silent) {
+
         var that = this;
         var files = Array();
         var new_tt_id = 0;
@@ -251,7 +253,8 @@ var TroubleTicket = Stapes.subclass({
                     {},
                     successCbWrapperMultipleFile,
                     errorCbWrapperMultipleFile,
-                    files                
+                    files,
+                    silent                
                 );
             }
 
@@ -262,7 +265,28 @@ var TroubleTicket = Stapes.subclass({
 
             that._lg.log('TRACE', 'errorCbWrapperMultipleFile : start');
 
-            files.splice(0,1);
+            /**
+             * Store unsent files
+             */
+
+            var unsent_files = window.localStorage.getItem('unsent_files');
+
+            if (unsent_files == null) {
+                unsent_files = [];
+            } else {
+                unsent_files = JSON.parse(unsent_files);
+            }
+
+            unsent_files.push({tt_id : new_tt_id, path : files.splice(0,1)[0]});
+
+            window.localStorage.setItem('unsent_files', JSON.stringify(unsent_files));
+
+            /**
+             * Check if files are left to be sent
+             * if no call parent callback
+             * if yes send the file to server for
+             * attachment
+             */
 
             if (files.length === 0){
                 if (typeof errorCb == 'function')
@@ -274,7 +298,8 @@ var TroubleTicket = Stapes.subclass({
                     {},
                     successCbWrapperMultipleFile,
                     errorCbWrapperMultipleFile,
-                    files                
+                    files,
+                    silent                
                 );
             }
 
@@ -293,7 +318,7 @@ var TroubleTicket = Stapes.subclass({
         };
 
         if (!this.get('damage')) {
-            data.ticket_title = 'Survey Reported for ' + this.get('trailerid'),
+            data.ticket_title = 'Survey Reported for ' + data.trailerid, //this.get('trailerid'),
             data.ticketstatus = 'Closed';
             data.reportdamage = 'No';
 
@@ -302,7 +327,9 @@ var TroubleTicket = Stapes.subclass({
                 'HelpDesk',
                 data,
                 successCbWrapper,
-                errorCbWrapper
+                errorCbWrapper,
+                undefined,
+                silent
             );
 
         } else {
@@ -325,7 +352,8 @@ var TroubleTicket = Stapes.subclass({
                 data,
                 successCbWrapper,
                 errorCbWrapper,
-                files                
+                files,
+                silent
             );       
         }
     }   

@@ -206,7 +206,8 @@ $(document).delegate('#one', 'pageshow', function () {
                 return;
             }        
 
-            if ($('#one input[name=sealed]:checked').attr('value') == '') {
+            if (typeof $('#one input[name=sealed]:checked').attr('value') == 'undefined'
+                || $('#one input[name=sealed]:checked').attr('value') == '') {
                 $('#a_dialog_validation_sealed').click();             
                 return;
             }        
@@ -629,7 +630,7 @@ $(document).delegate('#four', 'pageshow', function () {
     if (typeof navigator.app !== 'undefined')
         navigator.app.clearCache();
 
-    var lg = new Logger('DEBUG', '#four$pageshow');
+    var lg = new Logger('FATAL', '#four$pageshow');
     var req = new Request(Config.url);
     var usr = new User(req);
     var language = new Language();
@@ -744,6 +745,7 @@ $(document).delegate('#four', 'pageshow', function () {
         lg.log('TRACE', '#four #deletedamage start');   
 
         e.preventDefault();
+
         if (current_tt != null && latest_damage_index != -1) {
 
             lg.log('DEBUG', '#four #deletedamage latest_damage_index ' + latest_damage_index);  
@@ -752,7 +754,26 @@ $(document).delegate('#four', 'pageshow', function () {
 
             window.localStorage.setItem('current_tt', JSON.stringify(current_tt));
 
-            $.mobile.changePage('#five');
+            if (current_tt.damages.length == 0) {
+
+                lg.log('TRACE', '#four #deletedamage refresh current page ');
+
+                $.mobile.changePage(
+                    '#four',
+                    {
+                        allowSamePageTransition : true,
+                        transition              : 'none',
+                        showLoadMsg             : false,
+                        reloadPage              : false
+                    }
+                );
+
+            } else {
+
+                lg.log('TRACE', '#four #deletedamage redirect to screen five ');
+
+                $.mobile.changePage('#five');
+            }
         }    
 
         lg.log('TRACE', '#four #deletedamage end');      
@@ -934,8 +955,11 @@ $(document).delegate('#four', 'pageshow', function () {
     }
     $('#four select#damageposition').selectmenu('refresh');
 
-    if (latest_damage_index == -1 ||
-        (current_tt.damages.length == 1 && latest_damage_index == 0)) {
+    /**
+     * Show the delete button or not
+     */ 
+
+    if (latest_damage_index == -1) {
 
         lg.log('DEBUG', ' latest_damage_index ' + latest_damage_index);
 
@@ -957,20 +981,21 @@ $(document).delegate('#four', 'pageshow', function () {
 
     $('.bxslider-four').html("<li><center><div style='height:60px;width:200px;'>" + language.translate('No Picture(s) Attached') + "</div></center></li>");
 
-    //Document pictures enum loading
+    /**
+     * Document pictures enum loading
+     */
+
     if (latest_damage_index != -1 && 
         (current_tt.damages[latest_damage_index].documents instanceof Array)) {
 
         if (current_tt.damages[latest_damage_index].documents.length > 0) {
+
             $('.bxslider-four').html('');
             for (var index in current_tt.damages[latest_damage_index].documents) {
                 lg.log('DEBUG', ' document path ' + current_tt.damages[latest_damage_index].documents[index].path);
-                $('.bxslider-four').append('<li><img style="width:100%;height:auto;" src="' + current_tt.damages[latest_damage_index].documents[index].path + '"/></li>');
-                //$('.four-picture').html('<img style="width:100%;height:auto;" src="' + current_tt.damages[latest_damage_index].documents[index].path + '"/>');
-                //$('.four-picture').css('height','auto');
-                //$('.four-picture').css('line-height','normal'); 
-                //break;               
+                $('.bxslider-four').append('<li><img style="width:100%;height:auto;" src="' + current_tt.damages[latest_damage_index].documents[index].path + '"/></li>');               
             }
+
         } else {
 
             lg.log('DEBUG', ' no documents found ');
@@ -1249,6 +1274,8 @@ $(document).delegate('#five', 'pageshow', function () {
 
         var success = function(){
 
+            lg.log('TRACE', '#five #sendalldamages success start');
+
             /**
              * Clear history in jqMobile and Android's 
              * WebView object's history
@@ -1263,16 +1290,142 @@ $(document).delegate('#five', 'pageshow', function () {
             if (typeof navigator.app !== 'undefined')
                 navigator.app.clearHistory();
 
-            $('#a_dialog_success_damagereported').click();
+            var unsent_files = window.localStorage.getItem('unsent_files');
+
+            if (unsent_files == null || !(unsent_files instanceof Array))
+                unsent_files = [];  
+            
+            if (unsent_files.length == 0) {
+
+                lg.log('TRACE', '#five #sendalldamages success no unsent_files ');
+
+                $('#a_dialog_success_damagereported').click();
+
+            } else {
+
+                lg.log('DEBUG', '#five #sendalldamages success unsent_files ' + unsent_files.length);
+
+                /**
+                 * Attach events for retry and cancel
+                 */
+
+                $('#dialog_success_damagereported_unsentfiles a:contains(Retry)').unbind('click').bind('click', function(e){
+
+                    lg.log('TRACE', '#five #sendalldamages success #dialog_success_damagereported_unsentfiles a:contains(Retry) START ');
+                    
+                    e.preventDefault();
+
+                    var new_unsent_files = [];
+
+                    var successCbMultipleFile = function() {
+
+                        lg.log('TRACE', '#five #sendalldamages success #dialog_success_damagereported_unsentfiles a:contains(Retry) successCbMultipleFile START ');
+
+                        unsent_files.splice(0,1);
+
+                        if (unsent_files.length !== 0) {
+
+                            usr.send(
+                                'POST',
+                                'DocumentAttachment/' + unsent_files[0].tt_id,
+                                {},
+                                successCbMultipleFile,
+                                errorCbMultipleFile,
+                                [unsent_files[0].path]                
+                            );      
+
+                        } else if (new_unsent_files.length !== 0) {
+
+                            window.localStorage.setItem('unsent_files', JSON.stringify(new_unsent_files));
+
+                            $('#a_dialog_success_damagereported_unsentfiles').click();
+
+                        } else {
+
+                            $('#a_dialog_success_unsentfiles').click();
+
+                        }
+
+                        lg.log('TRACE', '#five #sendalldamages success #dialog_success_damagereported_unsentfiles a:contains(Retry) successCbMultipleFile END ');                        
+
+                    };
+
+                    var errorCbMultipleFile = function() {
+
+                        lg.log('TRACE', '#five #sendalldamages success #dialog_success_damagereported_unsentfiles a:contains(Retry) errorCbMultipleFile START ');                        
+
+                        new_unsent_files.push(unsent_files.splice(0,1)[0]);
+
+                        if (unsent_files.length !== 0) {
+                            
+                            usr.send(
+                                'POST',
+                                'DocumentAttachment/' + unsent_files[0].tt_id,
+                                {},
+                                successCbMultipleFile,
+                                errorCbMultipleFile,
+                                [unsent_files[0].path]                
+                            );      
+
+                        } else {
+
+                            window.localStorage.setItem('unsent_files', JSON.stringify(new_unsent_files));
+
+                            $('#dialog_success_damagereported_unsentfiles[data-role=content] p span').html(new_unsent_files.length);                                
+
+                            $('#a_dialog_success_damagereported_unsentfiles').click();
+
+                        }
+
+                        lg.log('TRACE', '#five #sendalldamages success #dialog_success_damagereported_unsentfiles a:contains(Retry) errorCbMultipleFile END ');                        
+
+                    };
+
+                    usr.send(
+                        'POST',
+                        'DocumentAttachment/' + unsent_files[0].tt_id,
+                        {},
+                        successCbMultipleFile,
+                        errorCbMultipleFile,
+                        [unsent_files[0].path]                
+                    );
+
+                    lg.log('TRACE', '#five #sendalldamages success #dialog_success_damagereported_unsentfiles a:contains(Retry) END ');                    
+
+                });
+
+                $('#dialog_success_damagereported_unsentfiles a:contains(No)').unbind('click').bind('click', function(e){
+
+                    lg.log('TRACE', '#five #sendalldamages success #dialog_success_damagereported_unsentfiles a:contains(No) START ');                    
+
+                    e.preventDefault();
+
+                    window.localStorage.removeItem('unsent_files');
+
+                    $.mobile.changePage('#one');
+
+                    lg.log('TRACE', '#five #sendalldamages success #dialog_success_damagereported_unsentfiles a:contains(No) END ');
+
+                });
+
+                $('#dialog_success_damagereported_unsentfiles[data-role=content] p span').html(unsent_files.length);
+
+                $('#a_dialog_success_damagereported_unsentfiles').click();
+            }          
 
             window.localStorage.removeItem('current_tt');
+
+            lg.log('TRACE', '#five #sendalldamages success end');
+
         };
 
         /**
          * Error callback
          */
 
-        var error = function(error_count, total_count){
+        var error = function(error_count, total_count) {
+
+            lg.log('TRACE', '#five #sendalldamages error start');
 
             /**
              * This section need to be tested thoroughly
@@ -1285,15 +1438,19 @@ $(document).delegate('#five', 'pageshow', function () {
             for (var index in stt) {
 
                 lg.log('DEBUG', ' stt[index] instanceof TroubleTicket ' + (stt[index] instanceof TroubleTicket));
+                lg.log('DEBUG', ' stt[index].damage instanceof Damage ' + (stt[index].get('damage') instanceof Damage));
+
 
                 if (stt[index] instanceof TroubleTicket &&
-                    stt[index].damage instanceof Damage)
+                    stt[index].get('damage') instanceof Damage)
                     current_tt.damages.push(
                         JSON.parse(
-                            stt[index].damage.serialize()
+                            stt[index].get('damage').serialize()
                         )
                     );
             }
+
+            lg.log('DEBUG', ' current_tt ' + JSON.stringify(current_tt));
 
             window.localStorage.setItem('current_tt', JSON.stringify(current_tt));            
 
@@ -1304,27 +1461,163 @@ $(document).delegate('#five', 'pageshow', function () {
              */
             
             if (error_count == total_count) {
+
+                lg.log('TRACE', '#five #sendalldamages error launching popup for a_dialog_error_damagereported');
+
+                $.mobile.urlHistory.stack = [];
+
+                if (typeof navigator.app !== 'undefined')
+                    navigator.app.clearHistory();
+
                 $('#a_dialog_error_damagereported').click();
+
+                return;
+
             } else {
-                $('#a_dialog_partialsuccess_damagereported').click();
+                /*
+                var unsent_files = window.localStorage.getItem('unsent_files');
+
+                if (unsent_files == null || !(unsent_files instanceof Array))
+                    unsent_files = [];  
+                
+                if (unsent_files.length == 0) {
+
+                    lg.log('TRACE', '#five #sendalldamages error no unsent_files');
+
+                    $('#a_dialog_partialsuccess_damagereported').click();
+
+                } else {
+
+                    lg.log('DEBUG', '#five #sendalldamages error unsent_files ' + unsent_files.length);
+                */
+                    /**
+                     * Attach events for retry and cancel
+                     */
+                /*
+                    $('#dialog_partialsuccess_damagereported_unsentfiles a:contains(Retry)').unbind('click').bind('click', function(e){
+
+                        lg.log('TRACE', '#five #sendalldamages error #dialog_partialsuccess_damagereported_unsentfiles a:contains(Retry) START');
+
+                        e.preventDefault();
+
+                        var new_unsent_files = [];
+
+                        var successCbMultipleFile = function() {
+
+                            lg.log('TRACE', '#five #sendalldamages error #dialog_partialsuccess_damagereported_unsentfiles a:contains(Retry) successCbMultipleFile START');                            
+
+                            unsent_files.splice(0,1);
+
+                            if (unsent_files.length !== 0) {
+
+                                usr.send(
+                                    'POST',
+                                    'DocumentAttachment/' + unsent_files[0].tt_id,
+                                    {},
+                                    successCbMultipleFile,
+                                    errorCbMultipleFile,
+                                    [unsent_files[0].path]                
+                                );      
+
+                            } else if (new_unsent_files.length !== 0) {
+
+                                window.localStorage.setItem('unsent_files', JSON.stringify(new_unsent_files));
+
+                                $('#a_dialog_partialsuccess_damagereported_unsentfiles').click();
+
+                            } else {
+
+                                $('#a_dialog_success_unsentfiles').click();
+
+                            }
+
+                            lg.log('TRACE', '#five #sendalldamages error #dialog_partialsuccess_damagereported_unsentfiles a:contains(Retry) successCbMultipleFile END');                                                        
+
+                        };
+
+                        var errorCbMultipleFile = function() {
+
+                            lg.log('TRACE', '#five #sendalldamages error #dialog_partialsuccess_damagereported_unsentfiles a:contains(Retry) errorCbMultipleFile START');
+
+                            new_unsent_files.push(unsent_files.splice(0,1)[0]);
+
+                            if (unsent_files.length !== 0) {
+                                
+                                usr.send(
+                                    'POST',
+                                    'DocumentAttachment/' + unsent_files[0].tt_id,
+                                    {},
+                                    successCbMultipleFile,
+                                    errorCbMultipleFile,
+                                    [unsent_files[0].path]                
+                                );      
+
+                            } else {
+
+                                window.localStorage.setItem('unsent_files', JSON.stringify(new_unsent_files));
+
+                                $('#dialog_partialsuccess_damagereported_unsentfiles[data-role=content] p span').html(new_unsent_files.length);                                
+
+                                $('#a_dialog_partialsuccess_damagereported_unsentfiles').click();
+
+                            }
+
+                            lg.log('TRACE', '#five #sendalldamages error #dialog_partialsuccess_damagereported_unsentfiles a:contains(Retry) errorCbMultipleFile END');                            
+
+                        };
+
+                        usr.send(
+                            'POST',
+                            'DocumentAttachment/' + unsent_files[0].tt_id,
+                            {},
+                            successCbMultipleFile,
+                            errorCbMultipleFile,
+                            [unsent_files[0].path]                
+                        );
+
+                        lg.log('TRACE', '#five #sendalldamages error #dialog_partialsuccess_damagereported_unsentfiles a:contains(Retry) END');                        
+
+                    });
+
+                    $('#dialog_partialsuccess_damagereported_unsentfiles a:contains(No)').unbind('click').bind('click', function(e){
+
+                        lg.log('TRACE', '#five #sendalldamages error #dialog_partialsuccess_damagereported_unsentfiles a:contains(No) START');                        
+
+                        e.preventDefault();
+
+                        window.localStorage.removeItem('unsent_files');
+
+                        $.mobile.changePage('#five');
+
+                        lg.log('TRACE', '#five #sendalldamages error #dialog_partialsuccess_damagereported_unsentfiles a:contains(No) END');                                                
+
+                    });
+
+                    $('#dialog_partialsuccess_damagereported_unsentfiles[data-role=content] p span').html(unsent_files.length);
+
+                    $('#a_dialog_partialsuccess_damagereported_unsentfiles').click();
+                
+                }
+                */
             }
-            
+
+            lg.log('TRACE', '#five #sendalldamages error end');
         };
 
         var status = function(aAttemptCount, aTotalCount){
             $('#dialog_damage_sending div[data-role=content]').children().first().html(language.translate('Completed') + ' ... ' + aAttemptCount + ' ' + language.translate('of') + ' ' + aTotalCount);            
         };
 
-        ttc.save(success, error, status);
-
         /**
          * Show success message
          */
 
         $('#dialog_damage_sending div[data-role=content]').children().first().html(language.translate('Completed') + ' ... 0 ' + language.translate('of') + ' ' + ttc.size());
-        $('#a_dialog_damage_sending').click();              
+        $('#a_dialog_damage_sending').click(); 
 
-        lg.log('TRACE', '#five #sendalldamages click end');   
+        lg.log('TRACE', '#five #sendalldamages click end'); 
+
+        ttc.save(success, error, status);
     });
 
     /**

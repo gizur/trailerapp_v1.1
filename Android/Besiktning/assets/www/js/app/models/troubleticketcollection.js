@@ -116,7 +116,7 @@ var TroubleTicketCollection = Stapes.subclass({
         }
 
         /**
-         * Number of times this save function has been called
+         * List of unsuccessfully sent troubletickets
          */
 
         if (!(keys instanceof Array)) {
@@ -136,15 +136,18 @@ var TroubleTicketCollection = Stapes.subclass({
 
         if (attempt_count == total_count) {
 
-            this._lg.log('DEBUG', ' attempt_count : total_count -> ' + attempt_count + ' : ' + total_count);            
-
+            this._lg.log('DEBUG', ' attempt_count : total_count -> ' + attempt_count + ' : ' + total_count);
             this._lg.log('DEBUG', ' attempt_count == total_count : keys.length ' + keys.length);
 
             if (keys.length === 0) {
-                newSuccessCb();
+                if (typeof newSuccessCb == 'function')
+                    newSuccessCb();
             } else {
-                newErrorCb(keys.length, total_count);
+                if (typeof newErrorCb == 'function')
+                    newErrorCb(keys.length, total_count);
             }
+
+            this._lg.log('TRACE', ' save called parent callbacks ');
 
             return;
         }
@@ -156,7 +159,10 @@ var TroubleTicketCollection = Stapes.subclass({
         var success = function() {
             that.remove(current_key);
             ++attempt_count;
-            newStatusCb(attempt_count, total_count);
+
+            if (typeof newStatusCb == 'function')
+                newStatusCb(attempt_count, total_count);
+
             that.save(newSuccessCb, newErrorCb, newStatusCb, attempt_count, keys, total_count);
         };
 
@@ -167,7 +173,10 @@ var TroubleTicketCollection = Stapes.subclass({
         var error = function(jqxhr, status, er) {
             keys.push(current_key);            
             ++attempt_count;
-            newStatusCb(attempt_count, total_count);            
+
+            if (typeof newStatusCb == 'function')
+                newStatusCb(attempt_count, total_count);
+
             that.save(newSuccessCb, newErrorCb, newStatusCb, attempt_count, keys, total_count);
         };
 
@@ -185,7 +194,7 @@ var TroubleTicketCollection = Stapes.subclass({
             this._lg.log('DEBUG', 'attrs[index] instanceof TroubleTicket ' + (attrs[index] instanceof TroubleTicket));            
 
             if (keys.indexOf(index) == -1) {
-                attrs[index].save(success, error);
+                attrs[index].save(success, error, true); //boolean true for silent
                 current_key = index;
                 break;
             }

@@ -74,10 +74,11 @@ var User = Stapes.subclass({
      * @param {string}   body      request body
      * @param {function} successCb success callback function
      * @param {function} errorCb   error callback function
-     * @param {array}    files     array of files to be sent     
+     * @param {array}    files     array of files to be sent 
+     * @param {boolean}  silent    checks if internet connection error message has to be shown or not
      */ 
 
-    send : function(method, url, body, successCb, errorCb, files) {
+    send : function(method, url, body, successCb, errorCb, files, silent) {
         var that = this;
 
         var headers = {
@@ -94,9 +95,17 @@ var User = Stapes.subclass({
         var errorCbWrapper = function(jqxhr, status, er) {
 
             try {
-                var data = JSON.parse(jqxhr.responseText);
 
-                if (data.error.message == 'Invalid Username and Password') {
+                try {
+                    var data = JSON.parse(jqxhr.responseText);
+                } catch (err) {
+                    data = null;
+                }
+
+                if (data != null &&
+                    typeof data.error !== 'undefined' &&
+                    typeof data.error.message !== 'undefined' &&
+                    data.error.message == 'Invalid Username and Password') {
 
                     if (typeof navigator.app !== 'undefined')
                         navigator.app.clearHistory();
@@ -120,7 +129,7 @@ var User = Stapes.subclass({
             }
         };
 
-        this._req.send(method, url, headers, body, successCbWrapper, errorCbWrapper, files);
+        this._req.send(method, url, headers, body, successCbWrapper, errorCbWrapper, files, silent);
     },
 
     setAuthenticated :  function (status) {

@@ -91,11 +91,15 @@ var Request = Stapes.subclass({
      * @param {function} successCb success callback function
      * @param {function} errorCb   error callback function
      * @param {array}    files     array of files to be sent
+     * @param {boolean}  silent    checks if internet connection error message has to be shown or not
      */
 
-    send : function(method, url, headers, body, successCb, errorCb, files) {
+    send : function (method, url, headers, body, successCb, errorCb, files, silent) {
 
         var that = this;
+
+        if (typeof silent ==  'undefined')
+            silent = false;
 
         try {
 
@@ -105,7 +109,8 @@ var Request = Stapes.subclass({
 
                 $.mobile.loading( 'hide' );
 
-                successCb(data);
+                if (typeof successCb == 'function')
+                    successCb(data);
             };
 
             var errorCbWrapper = function(jqxhr, status, er){
@@ -121,15 +126,20 @@ var Request = Stapes.subclass({
 
                     $.mobile.loading( 'hide' );
 
-                    if (jqxhr.status == 0 || status == null) {
+                    if ((jqxhr.status == 0 || status == null) && !silent) {
 
                         $('#a_dialog_nointernet').click();
 
                     } else {
 
-                        var data = JSON.parse(jqxhr.responseText);
+                        try {
+                            var data = JSON.parse(jqxhr.responseText);
+                        } catch (err) {
+                            data = null;
+                        }
 
-                        if (typeof data.error !== 'undefined' && 
+                        if ( data !== null &&
+                            typeof data.error !== 'undefined' && 
                             typeof data.error.message !== 'undefined' && 
                             data.error.message === 'Client ID not found') {
 
@@ -137,7 +147,8 @@ var Request = Stapes.subclass({
 
                         } else {
 
-                            errorCb(jqxhr, status, er);
+                            if (typeof errorCb == 'function')
+                                errorCb(jqxhr, status, er);
 
                         }
                     }
@@ -220,11 +231,11 @@ var Request = Stapes.subclass({
                     options
                 );
             }
-        }
-    } catch (err) {
+        } catch (err) {
 
-        that._lg.log('FATAL', JSON.stringify(err));
-        
+            that._lg.log('FATAL', JSON.stringify(err));
+
+        }
     }
 });
 
