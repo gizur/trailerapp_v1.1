@@ -28,7 +28,7 @@ var Doc = Stapes.subclass({
 
         this.extend({
             _usr :  aUsr,
-            _lg : new Logger('FATAL', 'js/models/doc')
+            _lg : new Logger('TRACE', 'js/models/doc')
         });
 
         this.set({

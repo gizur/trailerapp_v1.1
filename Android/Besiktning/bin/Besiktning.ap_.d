@@ -44,6 +44,8 @@
 /home/adminess/TrailerApp/Android/Besiktning/assets/www/res/screen \
 /home/adminess/TrailerApp/Android/Besiktning/assets/www/res/icon/android \
 /home/adminess/TrailerApp/Android/Besiktning/assets/www/res/icon/android/icon-72-hdpi.png \
+/home/adminess/TrailerApp/Android/Besiktning/assets/www/res/icon/android/57.png \
+/home/adminess/TrailerApp/Android/Besiktning/assets/www/res/icon/android/114.png \
 /home/adminess/TrailerApp/Android/Besiktning/assets/www/res/icon/android/icon-96-xhdpi.png \
 /home/adminess/TrailerApp/Android/Besiktning/assets/www/res/icon/android/icon-48-mdpi.png \
 /home/adminess/TrailerApp/Android/Besiktning/assets/www/res/icon/android/icon-36-ldpi.png \

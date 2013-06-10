@@ -22,7 +22,7 @@ $(document).delegate('#one', 'pageshow', function () {
          * Environment
          */
 
-        var lg = new Logger('FATAL', 'gta-page#one$pageshow'); 
+        var lg = new Logger('TRACE', 'gta-page#one$pageshow'); 
         lg.log('TRACE', 'page loaded');
         var req = new Request(Config.url);
         var usr = new User(req);
@@ -398,7 +398,7 @@ $(document).delegate('#one', 'pageshow', function () {
                         window.localStorage.setItem($(that).attr('id') + '_tt', JSON.stringify(gas));
 
                         lg.log('TRACE', 'completedCb saved initial state for page two');
-
+                        $('#two a[data-icon="back"]').attr('href', '#one');
                         $.mobile.changePage('#two');
                     };
 
@@ -640,7 +640,7 @@ $(document).delegate('#four', 'pageshow', function () {
     if (typeof navigator.app !== 'undefined')
         navigator.app.clearCache();
 
-    var lg = new Logger('DEBUG', '#four$pageshow');
+    var lg = new Logger('TRACE', '#four$pageshow');
     var req = new Request(Config.url);
     var usr = new User(req);
     var language = new Language();
@@ -707,7 +707,12 @@ $(document).delegate('#four', 'pageshow', function () {
             return;
         }
 
-        lg.log('DEBUG', '#four #drivercauseddamage option:selected' + $('#four #drivercauseddamage option:selected').val());
+        lg.log('DEBUG', '#four #drivercauseddamage option:selected' + $('#four #drivercauseddamage option:selected').attr('value'));
+
+        if ($('#four #drivercauseddamage option:selected').attr('value') == '') {
+            $('#a_dialog_validation_drivercauseddamage').click();             
+            return;
+        }        
 
         var current_tt = JSON.parse(window.localStorage.getItem('current_tt'));
 
@@ -1047,7 +1052,7 @@ $(document).delegate('#four', 'pageshow', function () {
 
 $(document).delegate('#two', 'pageshow', function () {
 
-    var lg = new Logger('DEBUG', '#two$pageshow');
+    var lg = new Logger('TRACE', '#two$pageshow');
     var language = new Language();
 
     /**
@@ -1118,7 +1123,7 @@ $(document).delegate('#three', 'pageshow', function () {
 $(document).delegate('#five', 'pageshow', function () {
     
     //Environment SetUp
-    var lg = new Logger('DEBUG', 'gta-page#five$pageshow'); 
+    var lg = new Logger('TRACE', 'gta-page#five$pageshow'); 
     var req = new Request(Config.url);
     var usr = new User(req);
     var language = new Language();
@@ -1208,7 +1213,7 @@ $(document).delegate('#five', 'pageshow', function () {
                     window.localStorage.setItem($(that).attr('id') + '_tt', JSON.stringify(gas));
 
                     lg.log('TRACE', 'successCb saved initial state for page two');
-
+                    $('#two a[data-icon="back"]').attr('href', '#five');
                     $.mobile.changePage('#two');
                 };
 
@@ -1718,7 +1723,7 @@ $(document).delegate('#five', 'pageshow', function () {
 
 $(document).delegate('#contact', 'pageshow', function () {
     //Environment SetUp
-    var lg = new Logger('DEBUG', 'gta-page#contact$pageshow'); 
+    var lg = new Logger('TRACE', 'gta-page#contact$pageshow'); 
     try {
 
         lg.log('TRACE',' page loaded: ');
@@ -1769,7 +1774,7 @@ $(document).delegate('#contact', 'pageshow', function () {
 
 $(document).delegate('#settings', 'pageshow', function () {
 
-    var lg = new Logger('FATAL','gta-page#settings$pageshow');  
+    var lg = new Logger('TRACE','gta-page#settings$pageshow');  
     var language = new Language();   
 
     try {
@@ -1903,7 +1908,7 @@ $(document).delegate('#settings', 'pageshow', function () {
                     /**
                      * start caching picklists
                      */
-
+                    $('#dialog_success_login div[data-role=content]').children().eq(2).html(language.translate('Completed') + ' 0 ' + language.translate('of') + ' 7');
                     tt.getEnumPlace(successCb, errorCb);
                     tt.getEnumSealed(successCb, errorCb);
 
@@ -2069,6 +2074,7 @@ $(document).delegate('#settings', 'pageshow', function () {
                     if (typeof navigator.app !== 'undefined')
                         navigator.app.clearHistory();
 
+                    $('#dialog_changepassword #newpassword').val('');
                     $('#a_dialog_changepassword_success').click();
 
                 };
@@ -2080,6 +2086,7 @@ $(document).delegate('#settings', 'pageshow', function () {
                     if (typeof navigator.app !== 'undefined')
                         navigator.app.clearHistory();
 
+                    $('#dialog_changepassword #newpassword').val('');
                     $('#a_dialog_changepassword_error').click();                    
 
                 };
@@ -2117,7 +2124,7 @@ $(document).bind('pagebeforechange', function (e, data) {
          * Environment SetUp
          */
 
-        var lg = new Logger('FATAL', 'gta-page$pagebeforechange'); 
+        var lg = new Logger('TRACE', 'gta-page$pagebeforechange'); 
         var req = new Request(Config.url);
         var usr = new User(req);
 

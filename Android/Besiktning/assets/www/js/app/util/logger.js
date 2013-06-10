@@ -41,7 +41,7 @@ var Logger = (function() {
 
             this.extend({
                  _level : 1,
-                 _type : (typeof aType == 'undefined')?'console':aType,
+                 _type : (typeof aType == 'undefined')?'loggly':aType,
                  _type_config : {
                     loggly : {
                         key : 'a631e820-9cec-418e-950b-1a3132c6b03a',

@@ -36,7 +36,7 @@ var TroubleTicket = Stapes.subclass({
          */        
 
         this.extend({
-            _lg : new Logger('DEBUG', 'js/models/troubleticket'),
+            _lg : new Logger('TRACE', 'js/models/troubleticket'),
             _storage : window.localStorage,
             _usr : aUsr
         });

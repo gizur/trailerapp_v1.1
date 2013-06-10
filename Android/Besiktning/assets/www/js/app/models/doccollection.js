@@ -17,7 +17,7 @@ var DocCollection = Stapes.subclass({
     constructor : function() {
 
         this.extend({
-            _lg : new Logger('DEBUG', 'app/model/DocCollection')
+            _lg : new Logger('TRACE', 'app/model/DocCollection')
         });
 
     },
