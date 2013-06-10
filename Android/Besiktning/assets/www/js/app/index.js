@@ -158,6 +158,8 @@ $(document).delegate('#one', 'pageshow', function () {
                 lg.log('TRACE', ' fetch tt success : end ');
             }
 
+            $('#dialog_nointernet a[data-role=button]').attr('href', '#one');
+
             ttc.getDamagedTroubleTicketsByAsset($('#one select#trailerid option:selected').text(), success);
 
             lg.log('trailerid change event end');
@@ -443,6 +445,7 @@ $(document).delegate('#one', 'pageshow', function () {
             /**
              * Set return point if no internet connection is found
              */
+
             $('#dialog_nointernet a[data-role=button]').attr('href', '#one');
 
             tt.getById($(this).attr('id'), success, error);
@@ -637,7 +640,7 @@ $(document).delegate('#four', 'pageshow', function () {
     if (typeof navigator.app !== 'undefined')
         navigator.app.clearCache();
 
-    var lg = new Logger('FATAL', '#four$pageshow');
+    var lg = new Logger('DEBUG', '#four$pageshow');
     var req = new Request(Config.url);
     var usr = new User(req);
     var language = new Language();
@@ -850,7 +853,7 @@ $(document).delegate('#four', 'pageshow', function () {
 
         };
         
-        navigator.camera.getPicture(success, fail, { quality: 25,
+        navigator.camera.getPicture(success, fail, { quality: 15,
             destinationType: Camera.DestinationType.FILE_URL
         }); 
     });
@@ -1012,13 +1015,14 @@ $(document).delegate('#four', 'pageshow', function () {
 
     window.slider_four.reloadSlider();
 
-    //Damge position enum loading to select menu
+    //Driver caused enum loading to select menu
     lg.log('TRACE', 'damage caused damage start '); 
     var enum_drivercauseddamage = dmg.get('enum_drivercauseddamage');
 
     lg.log('DEBUG', 'enum_drivercauseddamage : ' + JSON.stringify(enum_drivercauseddamage));    
 
     $('#four select#drivercauseddamage').html('');
+    $('#four select#drivercauseddamage').append('<option value=""> - Select One - </option>');      
     for (var index in enum_drivercauseddamage) {
 
         $('#four select#drivercauseddamage').append('<option value="' + enum_drivercauseddamage[index].value + '">' + enum_drivercauseddamage[index].label + '</option>');
@@ -1222,6 +1226,7 @@ $(document).delegate('#five', 'pageshow', function () {
             /**
              * Set return point if no internet connection is found
              */
+
             $('#dialog_nointernet a[data-role=button]').attr('href', '#five');
 
             tt.getById($(this).attr('id'), success, error);
@@ -1958,6 +1963,12 @@ $(document).delegate('#settings', 'pageshow', function () {
                 usr.set('password', $('#settings_password').val());
 
                 /**
+                 * Set return point if no internet connection is found
+                 */
+
+                $('#dialog_nointernet a[data-role=button]').attr('href', '#settings');                
+
+                /**
                  * This caches both the username, password and 
                  * authenticated flag before and after authenticating
                  */
@@ -2267,7 +2278,7 @@ document.addEventListener("deviceready", function(){
          */    
 
         window.slider_five_a = $('.bxslider-five-a').bxSlider({
-            infiniteLoop: false,
+            infiniteLoop: true,
             hideControlOnEnd: true,
             pager: true,
             pagerSelector: '#pager-five-a',
@@ -2277,7 +2288,7 @@ document.addEventListener("deviceready", function(){
         });
 
         window.slider_five_b = $('.bxslider-five-b').bxSlider({
-            infiniteLoop: false,
+            infiniteLoop: true,
             hideControlOnEnd: true,
             pager: true,
             pagerSelector: '#pager-five-b',
@@ -2287,7 +2298,7 @@ document.addEventListener("deviceready", function(){
         });        
 
         window.slider_one = $('.bxslider-one').bxSlider({
-            infiniteLoop: false,
+            infiniteLoop: true,
             hideControlOnEnd: true,
             pager:true,
             pagerSelector: '#pager-one',

@@ -292,7 +292,7 @@ var TroubleTicket = Stapes.subclass({
                 if (typeof errorCb == 'function')
                     errorCb(jqxhr, status, er);              
             } else {
-                this._usr.send(
+                that._usr.send(
                     'POST',
                     'DocumentAttachment/' + new_tt_id,
                     {},
