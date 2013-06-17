@@ -41,13 +41,8 @@ var Logger = (function() {
 
             this.extend({
                  _level : 1,
-                 _type : (typeof aType == 'undefined')?'loggly':aType,
-                 _type_config : {
-                    loggly : {
-                        key : 'a631e820-9cec-418e-950b-1a3132c6b03a',
-                        buffer_size : (10 * 1024) //10kB
-                    }
-                 },
+                 _type : (typeof aType == 'undefined')?'console':aType,
+                 _type_config : aTypeConfig,
                  _trace_id : '',
                  _prefix : aPrefix,
                  _enum_level : {
@@ -56,16 +51,6 @@ var Logger = (function() {
                     "FATAL": 3
                  }             
             });
-
-            /**
-             * set private vars
-             */
-
-            if (typeof aType !== 'undefined') 
-                this._type = aType;
-
-            if (typeof aTypeConfig !== 'undefined')
-                this._type_config = aTypeConfig;
 
             /**
              * set the current level of log
@@ -155,7 +140,7 @@ var Logger = (function() {
 
         _logConsole : function(loglevel, message) {
             console.log(loglevel + ' : ' + (new Date()).toString()  + ' : ' + this._trace_id);                  
-            console.log((new Error()).stack.split("\n")[4]); 
+            console.log((new Error()).stack); 
             if (typeof message == 'object') 
                 message = JSON.stringify(message);                 
             console.log(this._prefix + ' : ' + message);

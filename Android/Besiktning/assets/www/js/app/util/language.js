@@ -10,7 +10,7 @@
  */
 
 var Language = Stapes.subclass({
-    constructor : function( language ) {
+    constructor : function( language, aLogConfig ) {
 
         /**
          * Set pseudo private vars
@@ -19,8 +19,25 @@ var Language = Stapes.subclass({
          * Arggghh Stapes!!!!
          */
 
+        if (typeof aLogConfig == 'undefined') {
+            aLogConfig = {
+                level  : 'FATAL',
+                type   : 'console',
+                config : {}
+            };
+        } else {
+            if (typeof aLogConfig.level == 'undefined')
+                aLogConfig.level = 'FATAL';
+
+            if (typeof aLogConfig.level == 'undefined')
+                aLogConfig.type = 'console';
+
+            if (typeof aLogConfig.config == 'undefined')
+                aLogConfig.config = {};            
+        }
+
         this.extend({
-            _lg : new Logger('FATAL', 'app/util/language')
+            _lg : new Logger(aLogConfig.level, 'js/util/language', aLogConfig.type, aLogConfig.config)
         });
 
         /**

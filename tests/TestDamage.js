@@ -38,8 +38,8 @@ User = require('../Android/Besiktning/assets/www/js/app/models/user.js').User;
 req = new Request(Config.url, Config.client_id);
 
 usr = new User(req);
-usr.set('username', 'mobile_user@gizur.com');
-usr.set('password', 'ivry34aq');
+usr.set('username', Config.username);
+usr.set('password', Config.password);
 
 exports.Damage = {
     "has properties" : function(test){

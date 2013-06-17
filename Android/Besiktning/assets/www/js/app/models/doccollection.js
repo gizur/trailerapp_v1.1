@@ -13,11 +13,29 @@ var DocCollection = Stapes.subclass({
 
     /**
      * @constructor
+     * @param {object} aLogConfig object containing the log configuration     
      */ 
-    constructor : function() {
+    constructor : function(aLogConfig) {
+
+        if (typeof aLogConfig == 'undefined') {
+            aLogConfig = {
+                level  : 'FATAL',
+                type   : 'console',
+                config : {}
+            };
+        } else {
+            if (typeof aLogConfig.level == 'undefined')
+                aLogConfig.level = 'FATAL';
+
+            if (typeof aLogConfig.level == 'undefined')
+                aLogConfig.type = 'console';
+
+            if (typeof aLogConfig.config == 'undefined')
+                aLogConfig.config = {};            
+        }
 
         this.extend({
-            _lg : new Logger('TRACE', 'app/model/DocCollection')
+            _lg : new Logger(aLogConfig.level, 'js/models/doccollection', aLogConfig.type, aLogConfig.config)
         });
 
     },

@@ -3,7 +3,7 @@
 /**
  * Model Class for Trouble ticket
  * 
- * @fileoverview Class definition of a collection of TroubleTickets
+ * @fileoverview Class definition of a TroubleTickets
  * @author anshuk.kumar@essindia.co.in (Anshuk Kumar)
  * @license Commercial - Copyright 2013 Gizur AB
  * @see http://google-styleguide.googlecode.com/svn/trunk/javascriptguide.xml
@@ -22,21 +22,38 @@ var TroubleTicket = Stapes.subclass({
     /**
      * Creates Object of TroubleTicket Class
      *
-     * @param aReq Request Class instance, the API and client to make request to
      * @param aUsr User Class instance, the user who is making the request
+     * @param {object} aLogConfig object containing the log configuration     
      */   
 
-    constructor : function(aUsr) {
+    constructor : function(aUsr, aLogConfig) {
 
         /**
          * Set pseudo private vars
          * please dont change this using <objname>._privatevarname
          * method from outside of here.
          * Arggghh Stapes!!!!
-         */        
+         */
+
+        if (typeof aLogConfig == 'undefined') {
+            aLogConfig = {
+                level  : 'FATAL',
+                type   : 'console',
+                config : {}
+            };
+        } else {
+            if (typeof aLogConfig.level == 'undefined')
+                aLogConfig.level = 'FATAL';
+
+            if (typeof aLogConfig.level == 'undefined')
+                aLogConfig.type = 'console';
+
+            if (typeof aLogConfig.config == 'undefined')
+                aLogConfig.config = {};            
+        }  
 
         this.extend({
-            _lg : new Logger('TRACE', 'js/models/troubleticket'),
+            _lg : new Logger(aLogConfig.level,'js/models/troubleticket', aLogConfig.type, aLogConfig.config),
             _storage : window.localStorage,
             _usr : aUsr
         });
@@ -281,6 +298,8 @@ var TroubleTicket = Stapes.subclass({
 
             window.localStorage.setItem('unsent_files', JSON.stringify(unsent_files));
 
+            that._lg.log('DEBUG', 'errorCbWrapperMultipleFile : unsent_files.length ' + unsent_files.length);
+
             /**
              * Check if files are left to be sent
              * if no call parent callback
@@ -289,8 +308,8 @@ var TroubleTicket = Stapes.subclass({
              */
 
             if (files.length === 0){
-                if (typeof errorCb == 'function')
-                    errorCb(jqxhr, status, er);              
+                if (typeof successCb == 'function')
+                    successCb(jqxhr, status, er);              
             } else {
                 that._usr.send(
                     'POST',

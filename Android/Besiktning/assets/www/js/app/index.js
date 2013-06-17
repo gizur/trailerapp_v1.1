@@ -22,11 +22,11 @@ $(document).delegate('#one', 'pageshow', function () {
          * Environment
          */
 
-        var lg = new Logger('TRACE', 'gta-page#one$pageshow'); 
+        var lg = new Logger(Config.log.level, 'gta-page#one$pageshow', Config.log.type, Config.log.config); 
         lg.log('TRACE', 'page loaded');
-        var req = new Request(Config.url);
-        var usr = new User(req);
-        var language = new Language();
+        var req = new Request(Config.url, undefined, Config.log);
+        var usr = new User(req, Config.log);
+        var language = new Language(undefined, Config.log);
 
         //For Debugging : The line below must be commented
         //window.localStorage.removeItem('17x519_tt');
@@ -51,7 +51,7 @@ $(document).delegate('#one', 'pageshow', function () {
              * list of assets
              */
 
-            var ac = new AssetCollection(usr);
+            var ac = new AssetCollection(usr, Config.log);
 
             lg.log('TRACE', 'assets filtered START');
 
@@ -101,7 +101,7 @@ $(document).delegate('#one', 'pageshow', function () {
              * list of assets
              */
 
-            var ttc = new TroubleTicketCollection(usr);
+            var ttc = new TroubleTicketCollection(usr, Config.log);
 
             $('#one select#trailerid').selectmenu('refresh');
 
@@ -111,7 +111,7 @@ $(document).delegate('#one', 'pageshow', function () {
 
                 //A memory issue is encountered when the following 
                 //line is uncommented
-                lg.log('DEBUG', ' tts ' + JSON.stringify(tts));
+                //lg.log('DEBUG', ' tts ' + JSON.stringify(tts));
                 lg.log('DEBUG', ' typeof tts ' + (typeof tts));
                 lg.log('DEBUG', ' tts.length ' + tts.length)
                 if (ttc.size() == 0)
@@ -220,7 +220,7 @@ $(document).delegate('#one', 'pageshow', function () {
              * list of assets
              */
 
-            var tt = new TroubleTicket(usr);
+            var tt = new TroubleTicket(usr, Config.log);
 
             var success = function(data){
                 
@@ -251,7 +251,7 @@ $(document).delegate('#one', 'pageshow', function () {
                 $('#a_dialog_survey_error').click();             
             }
 
-            var ast = new Asset();
+            var ast = new Asset(undefined, Config.log);
             ast.set('assetname', escapeHtmlEntities($('#one #trailerid option:selected').text()));
 
             tt.set({
@@ -333,7 +333,7 @@ $(document).delegate('#one', 'pageshow', function () {
             e.stopPropagation();
 
             var that = this;
-            var tt = new TroubleTicket(usr);
+            var tt = new TroubleTicket(usr, Config.log);
 
             lg.log('TRACE', '.bxslider-one li a click start');
             lg.log('DEBUG', " $(this).attr('id') " + $(this).attr('id'));   
@@ -350,10 +350,10 @@ $(document).delegate('#one', 'pageshow', function () {
 
                 if (typeof data.result.documents !== 'undefined') {   
 
-                    var docc = new DocCollection();       
+                    var docc = new DocCollection(Config.log);       
 
                     for (var index in data.result.documents) {
-                        var doc = new Doc(usr);
+                        var doc = new Doc(usr, Config.log);
                         doc.set(data.result.documents[index]);
                         docc.push(doc);
                     }
@@ -471,7 +471,7 @@ $(document).delegate('#one', 'pageshow', function () {
          * Create a new Asset object this object should have a cached
          * enum list of trailer types
          */
-        var ast = new Asset(usr);
+        var ast = new Asset(usr, Config.log);
         var enum_trailertype = ast.get('enum_trailertype');
 
         $('#one select#trailerid').html('');   
@@ -503,7 +503,7 @@ $(document).delegate('#one', 'pageshow', function () {
          *
          */
 
-        var ac = new AssetCollection(usr);
+        var ac = new AssetCollection(usr, Config.log);
         var assets = ac.filter(function(item, key) {
             return item.get('trailertype') === $('#one select#trailertype option:selected').text();
         });
@@ -532,7 +532,7 @@ $(document).delegate('#one', 'pageshow', function () {
          * enum sealed
          */
 
-        var tt = new TroubleTicket(usr);
+        var tt = new TroubleTicket(usr, Config.log);
         var enum_sealed = tt.get('enum_sealed');
         var enum_place = tt.get('enum_place');
 
@@ -640,10 +640,10 @@ $(document).delegate('#four', 'pageshow', function () {
     if (typeof navigator.app !== 'undefined')
         navigator.app.clearCache();
 
-    var lg = new Logger('TRACE', '#four$pageshow');
-    var req = new Request(Config.url);
-    var usr = new User(req);
-    var language = new Language();
+    var lg = new Logger(Config.log.level, '#four$pageshow', Config.log.type, Config.log.config);
+    var req = new Request(Config.url, undefined, Config.log);
+    var usr = new User(req, Config.log);
+    var language = new Language(undefined, Config.log);
 
     var current_tt = JSON.parse(window.localStorage.getItem('current_tt'));
 
@@ -696,6 +696,39 @@ $(document).delegate('#four', 'pageshow', function () {
         lg.log('TRACE', '#four #damagetype option:selected' + $('#four #damagetype option:selected').text());        
 
         if ($('#four #damagetype option:selected').attr('value') == '') {
+
+            /**
+             * Save the current state of page
+             */            
+
+            var current_tt = JSON.parse(window.localStorage.getItem('current_tt'));
+
+            var damage = {
+                'damagetype' : escapeHtmlEntities($('#four #damagetype option:selected').text()),
+                'damageposition' : escapeHtmlEntities($('#four #damageposition option:selected').text()),
+                'drivercauseddamage' : escapeHtmlEntities($('#four #drivercauseddamage option:selected').attr('value'))
+            };
+
+            var documents = [];
+
+            $('.bxslider-four img').each(function(){
+                lg.log('TRACE', '#four #savedamage found image ' + $(this).attr('src'));
+                documents.push({ path : $(this).attr('src') });
+            });
+
+            damage['documents'] = documents;
+
+            if (!(current_tt['damages'] != undefined && current_tt['damages'] instanceof Array)) {
+                current_tt['damages'] = new Array();
+                current_tt['damages'].push(damage);
+            } else {
+                current_tt['damages'][latest_damage_index] = damage;
+            }
+
+            lg.log('TRACE', '#four #savedamage current_tt' + JSON.stringify(current_tt));   
+
+            window.localStorage.setItem('current_tt', JSON.stringify(current_tt));
+
             $('#a_dialog_validation_damagetype').click();             
             return;
         }
@@ -703,6 +736,39 @@ $(document).delegate('#four', 'pageshow', function () {
         lg.log('TRACE', '#four #damageposition option:selected' + $('#four #damageposition option:selected').text());
 
         if ($('#four #damageposition option:selected').attr('value') == '') {
+
+            /**
+             * Save the current state of page
+             */
+
+            var current_tt = JSON.parse(window.localStorage.getItem('current_tt'));
+
+            var damage = {
+                'damagetype' : escapeHtmlEntities($('#four #damagetype option:selected').text()),
+                'damageposition' : escapeHtmlEntities($('#four #damageposition option:selected').text()),
+                'drivercauseddamage' : escapeHtmlEntities($('#four #drivercauseddamage option:selected').attr('value'))
+            };
+
+            var documents = [];
+
+            $('.bxslider-four img').each(function(){
+                lg.log('TRACE', '#four #savedamage found image ' + $(this).attr('src'));
+                documents.push({ path : $(this).attr('src') });
+            });
+
+            damage['documents'] = documents;
+
+            if (!(current_tt['damages'] != undefined && current_tt['damages'] instanceof Array)) {
+                current_tt['damages'] = new Array();
+                current_tt['damages'].push(damage);
+            } else {
+                current_tt['damages'][latest_damage_index] = damage;
+            }
+
+            lg.log('TRACE', '#four #savedamage current_tt' + JSON.stringify(current_tt));   
+
+            window.localStorage.setItem('current_tt', JSON.stringify(current_tt));
+
             $('#a_dialog_validation_damageposition').click();             
             return;
         }
@@ -710,6 +776,39 @@ $(document).delegate('#four', 'pageshow', function () {
         lg.log('DEBUG', '#four #drivercauseddamage option:selected' + $('#four #drivercauseddamage option:selected').attr('value'));
 
         if ($('#four #drivercauseddamage option:selected').attr('value') == '') {
+
+            /**
+             * Save the current state of page
+             */            
+
+            var current_tt = JSON.parse(window.localStorage.getItem('current_tt'));
+
+            var damage = {
+                'damagetype' : escapeHtmlEntities($('#four #damagetype option:selected').text()),
+                'damageposition' : escapeHtmlEntities($('#four #damageposition option:selected').text()),
+                'drivercauseddamage' : escapeHtmlEntities($('#four #drivercauseddamage option:selected').attr('value'))
+            };
+
+            var documents = [];
+
+            $('.bxslider-four img').each(function(){
+                lg.log('TRACE', '#four #savedamage found image ' + $(this).attr('src'));
+                documents.push({ path : $(this).attr('src') });
+            });
+
+            damage['documents'] = documents;
+
+            if (!(current_tt['damages'] != undefined && current_tt['damages'] instanceof Array)) {
+                current_tt['damages'] = new Array();
+                current_tt['damages'].push(damage);
+            } else {
+                current_tt['damages'][latest_damage_index] = damage;
+            }
+
+            lg.log('TRACE', '#four #savedamage current_tt' + JSON.stringify(current_tt));   
+
+            window.localStorage.setItem('current_tt', JSON.stringify(current_tt));
+
             $('#a_dialog_validation_drivercauseddamage').click();             
             return;
         }        
@@ -858,7 +957,7 @@ $(document).delegate('#four', 'pageshow', function () {
 
         };
         
-        navigator.camera.getPicture(success, fail, { quality: 15,
+        navigator.camera.getPicture(success, fail, { quality: 35,
             destinationType: Camera.DestinationType.FILE_URL
         }); 
     });
@@ -867,7 +966,7 @@ $(document).delegate('#four', 'pageshow', function () {
 
         lg.log('TRACE', ' start loading dependency');
 
-        var dmg = new Damage();       
+        var dmg = new Damage(undefined, Config.log);       
         var picklist = dmg.get('enum_damagetype');
 
         for (var index in picklist) {
@@ -907,8 +1006,9 @@ $(document).delegate('#four', 'pageshow', function () {
 
     lg.log('TRACE', 'start loading values to select menu');
 
-    var dmg = new Damage(usr);
+    var dmg = new Damage(usr, Config.log);
     var enum_damagetype =  dmg.get('enum_damagetype');
+    var enum_damageposition;
 
     lg.log('DEBUG', 'enum_damagetype : ' + JSON.stringify(enum_damagetype));
 
@@ -921,13 +1021,24 @@ $(document).delegate('#four', 'pageshow', function () {
 
         if (current_tt != null && latest_damage_index != -1) {
             lg.log('DEBUG',' selected check damagetype : enum_damagetype[index].value ' + enum_damagetype[index].value);           
-            lg.log('DEBUG',' selected check damagetype : current_tt.damages[latest_damage_index].damagetype ' + current_tt.damages[latest_damage_index].damagetype);
+            lg.log('DEBUG',' selected check damagetype- : current_tt.damages[latest_damage_index].damagetype ' + current_tt.damages[latest_damage_index].damagetype);
         }
 
         if (current_tt != null && 
             latest_damage_index != -1 && 
             enum_damagetype[index].value == current_tt.damages[latest_damage_index].damagetype) {
             selected = 'selected="selected"';
+
+            lg.log('DEBUG', ' typeof enum_damagetype[index].dependency.damageposition ' + typeof enum_damagetype[index].dependency.damageposition);
+
+            if (typeof enum_damagetype[index].dependency !== 'undefined' &&
+                typeof enum_damagetype[index].dependency.damageposition !== 'undefined') {
+
+                lg.log('DEBUG', ' JSON.stringify(enum_damagetype[index].dependency.damageposition) ' + JSON.stringify(enum_damagetype[index].dependency.damageposition));
+
+                enum_damageposition = enum_damagetype[index].dependency.damageposition;
+            }
+
             lg.log('DEBUG', 'selected damagetype : ' + enum_damagetype[index].value);                        
         }
 
@@ -939,7 +1050,9 @@ $(document).delegate('#four', 'pageshow', function () {
      * Damge position enum loading to select menu
      */
 
-    var enum_damageposition = dmg.get('enum_damageposition');
+    if (typeof enum_damageposition == 'undefined') {
+        enum_damageposition = dmg.get('enum_damageposition');
+    }
 
     lg.log('DEBUG', 'enum_damageposition : ' + JSON.stringify(enum_damageposition));    
 
@@ -1052,8 +1165,8 @@ $(document).delegate('#four', 'pageshow', function () {
 
 $(document).delegate('#two', 'pageshow', function () {
 
-    var lg = new Logger('TRACE', '#two$pageshow');
-    var language = new Language();
+    var lg = new Logger(Config.log.level, '#two$pageshow', Config.log.type, Config.log.config);
+    var language = new Language(undefined, Config.log);
 
     /**
      * Event Bindings
@@ -1123,10 +1236,10 @@ $(document).delegate('#three', 'pageshow', function () {
 $(document).delegate('#five', 'pageshow', function () {
     
     //Environment SetUp
-    var lg = new Logger('TRACE', 'gta-page#five$pageshow'); 
-    var req = new Request(Config.url);
-    var usr = new User(req);
-    var language = new Language();
+    var lg = new Logger(Config.log.level, 'gta-page#five$pageshow', Config.log.type, Config.log.config); 
+    var req = new Request(Config.url, undefined, Config.log);
+    var usr = new User(req, Config.log);
+    var language = new Language(undefined, Config.log);
 
     var current_tt = JSON.parse(window.localStorage.getItem('current_tt'));
 
@@ -1147,7 +1260,7 @@ $(document).delegate('#five', 'pageshow', function () {
             e.preventDefault();
 
             var that = this;
-            var tt = new TroubleTicket(usr);
+            var tt = new TroubleTicket(usr, Config.log);
 
             lg.log('TRACE', '.bxslider-five-a li a click start');
             lg.log('DEBUG', " $(this).attr('id') " + $(this).attr('id'));   
@@ -1176,7 +1289,7 @@ $(document).delegate('#five', 'pageshow', function () {
                  * Create Document object for the document details received
                  */
 
-                var doc = new Doc(usr);
+                var doc = new Doc(usr, Config.log);
                 doc.set(data.result.documents[0]);
 
                 /**
@@ -1251,7 +1364,7 @@ $(document).delegate('#five', 'pageshow', function () {
 
         lg.log('TRACE', '#five #sendalldamages click start');
 
-        var ttc = new TroubleTicketCollection(usr);
+        var ttc = new TroubleTicketCollection(usr, Config.log);
 
         /**
          * De-serialize current_tt to its object
@@ -1261,13 +1374,13 @@ $(document).delegate('#five', 'pageshow', function () {
          */
 
         for ( var index in current_tt.damages ) {
-            var tt = new TroubleTicket(usr);
-            var dmg = new Damage();
-            var ast = new Asset();
-            var dc = new DocCollection();
+            var tt = new TroubleTicket(usr, Config.log);
+            var dmg = new Damage(undefined, Config.log);
+            var ast = new Asset(undefined, Config.log);
+            var dc = new DocCollection(Config.log);
 
             for ( var docindex in current_tt.damages[index].documents) {
-                var doc = new Doc();
+                var doc = new Doc(undefined, Config.log);
                 doc.set('path', current_tt.damages[index].documents[docindex].path);
                 dc.push(doc);
             }
@@ -1314,6 +1427,8 @@ $(document).delegate('#five', 'pageshow', function () {
 
             var unsent_files = window.localStorage.getItem('unsent_files');
 
+            lg.log('DEBUG', '#five #sendalldamages success unsent_files ' + unsent_files.length);
+
             if (unsent_files == null || !(unsent_files instanceof Array))
                 unsent_files = [];  
             
@@ -1324,8 +1439,6 @@ $(document).delegate('#five', 'pageshow', function () {
                 $('#a_dialog_success_damagereported').click();
 
             } else {
-
-                lg.log('DEBUG', '#five #sendalldamages success unsent_files ' + unsent_files.length);
 
                 /**
                  * Attach events for retry and cancel
@@ -1496,7 +1609,7 @@ $(document).delegate('#five', 'pageshow', function () {
                 return;
 
             } else {
-                /*
+
                 var unsent_files = window.localStorage.getItem('unsent_files');
 
                 if (unsent_files == null || !(unsent_files instanceof Array))
@@ -1511,11 +1624,11 @@ $(document).delegate('#five', 'pageshow', function () {
                 } else {
 
                     lg.log('DEBUG', '#five #sendalldamages error unsent_files ' + unsent_files.length);
-                */
+
                     /**
                      * Attach events for retry and cancel
                      */
-                /*
+
                     $('#dialog_partialsuccess_damagereported_unsentfiles a:contains(Retry)').unbind('click').bind('click', function(e){
 
                         lg.log('TRACE', '#five #sendalldamages error #dialog_partialsuccess_damagereported_unsentfiles a:contains(Retry) START');
@@ -1620,7 +1733,7 @@ $(document).delegate('#five', 'pageshow', function () {
                     $('#a_dialog_partialsuccess_damagereported_unsentfiles').click();
                 
                 }
-                */
+
             }
 
             lg.log('TRACE', '#five #sendalldamages error end');
@@ -1722,8 +1835,13 @@ $(document).delegate('#five', 'pageshow', function () {
  */
 
 $(document).delegate('#contact', 'pageshow', function () {
-    //Environment SetUp
-    var lg = new Logger('TRACE', 'gta-page#contact$pageshow'); 
+
+    /**
+     * Environment SetUp
+     */
+
+    var lg = new Logger(Config.log.level, 'gta-page#contact$pageshow', Config.log.type, Config.log.config);
+    
     try {
 
         lg.log('TRACE',' page loaded: ');
@@ -1745,6 +1863,9 @@ $(document).delegate('#contact', 'pageshow', function () {
         } else {
             $('#contact div[data-role=navbar]').siblings().remove();
             $('<div>' + contact_html + '</div>').insertAfter('#contact div[data-role=navbar]');
+
+            $('#contact div[data-role=navbar]').siblings().find('a')
+
         }
 
         $('#contact').off('swiperight');
@@ -1774,8 +1895,8 @@ $(document).delegate('#contact', 'pageshow', function () {
 
 $(document).delegate('#settings', 'pageshow', function () {
 
-    var lg = new Logger('TRACE','gta-page#settings$pageshow');  
-    var language = new Language();   
+    var lg = new Logger(Config.log.level, 'gta-page#settings$pageshow', Config.log.type, Config.log.config);  
+    var language = new Language(Config.log);   
 
     try {
         
@@ -1783,8 +1904,8 @@ $(document).delegate('#settings', 'pageshow', function () {
          * Environment SetUp
          */
 
-        var req = new Request(Config.url);
-        var usr = new User(req);
+        var req = new Request(Config.url, undefined, Config.log);
+        var usr = new User(req, Config.log);
 
         lg.log('TRACE', 'page loaded');
 
@@ -1890,10 +2011,10 @@ $(document).delegate('#settings', 'pageshow', function () {
                 var success = function(data){
                     lg.log('TRACE', ' successfully authenticated');
 
-                    var tt = new TroubleTicket(usr);
-                    var dmg = new Damage(usr);
-                    var ast = new Asset(usr);
-                    var ac = new AssetCollection(usr);
+                    var tt = new TroubleTicket(usr, Config.log);
+                    var dmg = new Damage(usr, Config.log);
+                    var ast = new Asset(usr, Config.log);
+                    var ac = new AssetCollection(usr, Config.log);
 
                     lg.log('TRACE', ' starting to cache');
 
@@ -2124,9 +2245,9 @@ $(document).bind('pagebeforechange', function (e, data) {
          * Environment SetUp
          */
 
-        var lg = new Logger('TRACE', 'gta-page$pagebeforechange'); 
-        var req = new Request(Config.url);
-        var usr = new User(req);
+        var lg = new Logger(Config.log.level, 'gta-page$pagebeforechange', Config.log.type, Config.log.config); 
+        var req = new Request(Config.url, undefined, Config.log);
+        var usr = new User(req, Config.log);
 
         var to = data.toPage,
             from = data.options.fromPage;
@@ -2341,7 +2462,7 @@ document.addEventListener("deviceready", function(){
         if (typeof navigator.globalization !== 'undefined')
         navigator.globalization.getPreferredLanguage(
             function (lang) {
-                var language = new Language(lang.value);
+                var language = new Language(lang.value, Config.log);
 
                 /**
                  * Check if the language exists; if yes

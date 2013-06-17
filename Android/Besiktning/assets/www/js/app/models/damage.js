@@ -15,19 +15,37 @@ var Damage = Stapes.subclass({
      * @constructor
      *
      * @param {user} aUsr the user who will send requests
+     * @param {object} aLogConfig object containing the log configuration     
      */ 
 
-    constructor : function(aUsr) {
+    constructor : function(aUsr, aLogConfig) {
 
         /**
          * Set pseudo private vars
          * please dont change this using <objname>._privatevarname
          * method from outside of here.
          * Arggghh Stapes!!!!
-         */        
+         */      
+
+        if (typeof aLogConfig == 'undefined') {
+            aLogConfig = {
+                level  : 'FATAL',
+                type   : 'console',
+                config : {}
+            };
+        } else {
+            if (typeof aLogConfig.level == 'undefined')
+                aLogConfig.level = 'FATAL';
+
+            if (typeof aLogConfig.level == 'undefined')
+                aLogConfig.type = 'console';
+
+            if (typeof aLogConfig.config == 'undefined')
+                aLogConfig.config = {};            
+        }  
 
         this.extend({
-            _lg: new Logger('TRACE', 'app/model/damage'),
+            _lg: new Logger(aLogConfig.level,'js/models/damage', aLogConfig.type, aLogConfig.config),
             _usr: aUsr,
             _storage: window.localStorage
         });

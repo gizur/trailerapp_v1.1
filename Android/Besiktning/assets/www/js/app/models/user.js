@@ -18,9 +18,10 @@ var User = Stapes.subclass({
      *
      * @param {request} aReq request class object which the user with use to send
      *                       requests to the API.
+     * @param {object} aLogConfig object containing the log configuration     
      */
 
-    constructor : function(aReq) {
+    constructor : function(aReq, aLogConfig) {
 
         /**
          * Set pseudo private vars
@@ -29,8 +30,25 @@ var User = Stapes.subclass({
          * Arggghh Stapes!!!!
          */
 
+        if (typeof aLogConfig == 'undefined') {
+            aLogConfig = {
+                level  : 'FATAL',
+                type   : 'console',
+                config : {}
+            };
+        } else {
+            if (typeof aLogConfig.level == 'undefined')
+                aLogConfig.level = 'FATAL';
+
+            if (typeof aLogConfig.level == 'undefined')
+                aLogConfig.type = 'console';
+
+            if (typeof aLogConfig.config == 'undefined')
+                aLogConfig.config = {};            
+        }
+
         this.extend({
-            _lg : new Logger('TRACE','js/models/user'),
+            _lg : new Logger(aLogConfig.level,'js/models/user', aLogConfig.type, aLogConfig.config),
             _req : aReq,
             _storage : window.localStorage
         });

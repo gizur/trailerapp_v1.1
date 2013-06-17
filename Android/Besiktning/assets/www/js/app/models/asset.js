@@ -14,10 +14,11 @@ var Asset = Stapes.subclass({
     /**
      * @constructor
      *
-     * @param {user} aUsr the user who is making calls to server
+     * @param {user}   aUsr       the user who is making calls to server
+     * @param {object} aLogConfig object containing the log configuration
      */
 
-    constructor : function(aUsr) {
+    constructor : function(aUsr, aLogConfig) {
 
         /**
          * Set pseudo private vars
@@ -26,8 +27,25 @@ var Asset = Stapes.subclass({
          * Arggghh Stapes!!!!
          */        
 
+        if (typeof aLogConfig == 'undefined') {
+            aLogConfig = {
+                level  : 'FATAL',
+                type   : 'console',
+                config : {}
+            };
+        } else {
+            if (typeof aLogConfig.level == 'undefined')
+                aLogConfig.level = 'FATAL';
+
+            if (typeof aLogConfig.level == 'undefined')
+                aLogConfig.type = 'console';
+
+            if (typeof aLogConfig.config == 'undefined')
+                aLogConfig.config = {};            
+        }
+
         this.extend({
-            _lg : new Logger('TRACE','js/model/asset'),
+            _lg : new Logger(aLogConfig.level, 'js/models/asset', aLogConfig.type, aLogConfig.config),
             _storage : window.localStorage,
             _usr : aUsr
         });

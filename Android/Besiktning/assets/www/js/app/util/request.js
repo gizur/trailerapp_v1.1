@@ -15,9 +15,11 @@ var Request = Stapes.subclass({
      * @constructor
      *
      * @param {string} aBaseUrl base url for the api
+     * @param {string} aClientId the client id
+     * @param {object} aLogConfig object containing the log configuration     
      */
 
-    constructor : function(aBaseUrl, aClientId) {
+    constructor : function(aBaseUrl, aClientId, aLogConfig) {
 
         /**
          * Set pseudo private vars
@@ -26,8 +28,25 @@ var Request = Stapes.subclass({
          * Arggghh Stapes!!!!
          */
 
+        if (typeof aLogConfig == 'undefined') {
+            aLogConfig = {
+                level  : 'FATAL',
+                type   : 'console',
+                config : {}
+            };
+        } else {
+            if (typeof aLogConfig.level == 'undefined')
+                aLogConfig.level = 'FATAL';
+
+            if (typeof aLogConfig.level == 'undefined')
+                aLogConfig.type = 'console';
+
+            if (typeof aLogConfig.config == 'undefined')
+                aLogConfig.config = {};            
+        }        
+
         this.extend({
-            _lg : new Logger('DEBUG', 'request'),
+            _lg : new Logger(aLogConfig.level, 'js/util/request', aLogConfig.type, aLogConfig.config),
             _storage : window.localStorage,
             _base_url : aBaseUrl,
             _client_id : aClientId
@@ -115,7 +134,7 @@ var Request = Stapes.subclass({
 
             var errorCbWrapper = function(jqxhr, status, er){
 
-                try {
+                //try {
 
                     that._lg.log('DEBUG', 'Request#send#errorCbWrapper : ' + jqxhr.status + ' status ' + status + ' er ' + er);
                     that._lg.log('DEBUG', 'Request#send#errorCbWrapper : jqxhr.responseText ' + jqxhr.responseText);
@@ -152,12 +171,12 @@ var Request = Stapes.subclass({
 
                         }
                     }
-
+                /*
                 } catch (err) {
 
                     that._lg.log('FATAL', JSON.stringify(err));
 
-                }
+                }*/
                 
             };
 
@@ -233,7 +252,7 @@ var Request = Stapes.subclass({
             }
         } catch (err) {
 
-            that._lg.log('FATAL', JSON.stringify(err));
+            this._lg.log('FATAL', JSON.stringify(err));
 
         }
     }
