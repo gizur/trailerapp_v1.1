@@ -16,6 +16,7 @@
  */
 
 $(document).delegate('#one', 'pageshow', function () {
+
     try {
 
         /**
@@ -2169,6 +2170,7 @@ $(document).delegate('#settings', 'pageshow', function () {
 
             try {
 
+                $('#dialog_changepassword input').val('');
                 $('#a_dialog_changepassword').click();
 
             } catch (err) {
@@ -2290,6 +2292,19 @@ $(document).bind('pagebeforechange', function (e, data) {
             lg.log('DEBUG', 'usr.authenticated: ' + usr.get('authenticated'));
             lg.log('DEBUG', ' to.attr(id): ' + to.attr('id'));
 
+            if (to.attr('id') === 'settings') {  
+
+                $('#' + to.attr('id') + ' div[data-role=navbar] li a[href$=settings]').addClass('ui-btn-active');
+
+            }
+
+            if (to.attr('id') === 'contact') {  
+
+                $('#' + to.attr('id') + ' div[data-role=navbar] li a[href$=contact]').addClass('ui-btn-active');
+
+            }
+
+
             if (!usr.get('authenticated')){
 
                 /**
@@ -2326,6 +2341,16 @@ $(document).bind('pagebeforechange', function (e, data) {
                  * If user is authenticated
                  */ 
 
+                if (to.attr('id') === 'one' || 
+                        to.attr('id') === 'two' || 
+                        to.attr('id') == 'three' || 
+                        to.attr('id') == 'four' || 
+                        to.attr('id') == 'five') {  
+
+                    $('#' + to.attr('id') + ' div[data-role=navbar] li a[href$=one]').addClass('ui-btn-active');
+
+                }
+
                 if (to.attr('id') === 'four' || 
                         to.attr('id') === 'five') {
 
@@ -2340,6 +2365,7 @@ $(document).bind('pagebeforechange', function (e, data) {
                         return;
                     }
                 }
+
             }
 
         }
