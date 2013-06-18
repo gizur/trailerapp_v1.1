@@ -3,11 +3,11 @@ all:
 gizur:
 	@echo "=================================================="
 	@echo "                                                  "
-	@echo "    ***** ***** ***** *   * *****  ***** *****    "
+	@echo "     **** ***** ***** *   * ****   ****  ****    "
 	@echo "    *       *      *  *   * *   *  *   * *   *    "
 	@echo "    *  **   *     *   *   * *****  ***** *****    "
 	@echo "    *   *   *    *    *   * * *    *   * *   *    "
-	@echo "    ***** ***** ***** ***** *  **  *   * *****    "
+	@echo "     **** ***** *****  ***  *  **  *   * ****     "
 	@echo "                                                  "
 	@echo "=================================================="
 iOS-clean: gizur
@@ -19,7 +19,7 @@ iOS-clean: gizur
 	rm -fr ../iOS/Besiktning/www/img
 	rm -fr ../iOS/Besiktning/www/js
 	@echo "Cleaned ../iOS/Besiktning/www/"
-iOS-build: gizur iOS-clean
+iOS-prepare: gizur iOS-clean
 	@echo "***********************************************************************"
 	@echo "Coping from ../Android/Besiktning/assets/www/ to ../iOS/Besiktning/www/"
 	@echo "***********************************************************************"
