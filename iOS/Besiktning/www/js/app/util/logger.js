@@ -139,8 +139,11 @@ var Logger = (function() {
          */
 
         _logConsole : function(loglevel, message) {
-            console.log(loglevel + ' : ' + (new Date()).toString()  + ' : ' + this._trace_id);                  
-            console.log((new Error()).stack); 
+            console.log(loglevel + ' : ' + (new Date()).toString()  + ' : ' + this._trace_id);  
+            
+            if (typeof (new Error()).stack !== 'undefined')                
+                console.log((new Error()).stack); 
+
             if (typeof message == 'object') 
                 message = JSON.stringify(message);                 
             console.log(this._prefix + ' : ' + message);
@@ -154,8 +157,10 @@ var Logger = (function() {
          */
 
         _logLoggly : function(loglevel, message) {
-            console.log(loglevel + ' : ' + (new Date()).toString()  + ' : ' + this._trace_id);            
-            console.log($.trim((new Error()).stack.split("\n")[4]).replace('at ',''));
+            console.log(loglevel + ' : ' + (new Date()).toString()  + ' : ' + this._trace_id); 
+
+            if (typeof (new Error()).stack !== 'undefined')            
+                console.log($.trim((new Error()).stack.split("\n")[4]).replace('at ',''));
 
             /**
              * Check if message is an object or a string
@@ -170,13 +175,18 @@ var Logger = (function() {
              * Create the body which needs to be sent; teh Payload
              */
 
+            var error_info = '';
+
+            if (typeof (new Error()).stack !== 'undefined') 
+                error_info = $.trim((new Error()).stack.split("\n")[4]).replace('at ','');
+
             var that = this;
             var body = {
                 loglevel : loglevel,
                 timestamp : (new Date()).toString(),
                 trace : this._trace_id,
                 prefix : this._prefix,
-                callee : $.trim((new Error()).stack.split("\n")[4]).replace('at ',''),
+                callee : error_info,
                 message : message
             };
 
