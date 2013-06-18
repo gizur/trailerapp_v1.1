@@ -12,7 +12,7 @@
  var Config = {
  	url       : 'https://api.gizur.com/api/', //'http://c2.gizur.com/api/',
  	log       : {
- 		type : 'console',
+ 		type : 'loggly',
  		config : {
 			loggly : {
 	            key : 'a631e820-9cec-418e-950b-1a3132c6b03a',

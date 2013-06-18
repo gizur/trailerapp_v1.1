@@ -140,10 +140,7 @@ var Logger = (function() {
 
         _logConsole : function(loglevel, message) {
             console.log(loglevel + ' : ' + (new Date()).toString()  + ' : ' + this._trace_id);                  
-            
-            if (typeof (new Error()).stack != 'undefined')
-                console.log((new Error()).stack);
-            
+            console.log((new Error()).stack); 
             if (typeof message == 'object') 
                 message = JSON.stringify(message);                 
             console.log(this._prefix + ' : ' + message);
@@ -158,9 +155,7 @@ var Logger = (function() {
 
         _logLoggly : function(loglevel, message) {
             console.log(loglevel + ' : ' + (new Date()).toString()  + ' : ' + this._trace_id);            
-            
-            if (typeof (new Error()).stack != 'undefined')
-                console.log($.trim((new Error()).stack.split("\n")[4]).replace('at ',''));
+            console.log($.trim((new Error()).stack.split("\n")[4]).replace('at ',''));
 
             /**
              * Check if message is an object or a string
