@@ -1428,6 +1428,7 @@ $(document).delegate('#five', 'pageshow', function () {
 
             var unsent_files = window.localStorage.getItem('unsent_files');
 
+            if (unsent_files instanceof Array)
             lg.log('DEBUG', '#five #sendalldamages success unsent_files ' + unsent_files.length);
 
             if (unsent_files == null || !(unsent_files instanceof Array))
@@ -2004,7 +2005,6 @@ $(document).delegate('#settings', 'pageshow', function () {
                             if (typeof navigator.app !== 'undefined')
                                 navigator.app.clearHistory();                  
                         }
-                        cacheSuccessList = cacheErrorList = [];
                     }
                 });
                 
@@ -2031,6 +2031,7 @@ $(document).delegate('#settings', 'pageshow', function () {
                      * start caching picklists
                      */
                     $('#dialog_success_login div[data-role=content]').children().eq(2).html(language.translate('Completed') + ' 0 ' + language.translate('of') + ' 7');
+                    cacheSuccessList = cacheErrorList = [];
                     tt.getEnumPlace(successCb, errorCb);
                     tt.getEnumSealed(successCb, errorCb);
 
