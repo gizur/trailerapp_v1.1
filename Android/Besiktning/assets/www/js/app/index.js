@@ -2005,6 +2005,7 @@ $(document).delegate('#settings', 'pageshow', function () {
                             if (typeof navigator.app !== 'undefined')
                                 navigator.app.clearHistory();                  
                         }
+                        cacheSuccessList = cacheErrorList = [];
                     }
                 });
                 
@@ -2031,7 +2032,7 @@ $(document).delegate('#settings', 'pageshow', function () {
                      * start caching picklists
                      */
                     $('#dialog_success_login div[data-role=content]').children().eq(2).html(language.translate('Completed') + ' 0 ' + language.translate('of') + ' 7');
-                    cacheSuccessList = cacheErrorList = [];
+                    //cacheSuccessList = cacheErrorList = [];
                     tt.getEnumPlace(successCb, errorCb);
                     tt.getEnumSealed(successCb, errorCb);
 
