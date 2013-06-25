@@ -1,4 +1,9 @@
-/* jshint undef: true, unused: true, strict: true, vars: true */
+/*jshint forin:true, noarg:true, noempty:true, eqeqeq:true, 
+         bitwise:true, strict:true, undef:false, unused:true, 
+         curly:true, browser:true, indent:4, maxerr:50 */
+
+/*global node_unit:true, Stapes:true, 
+         Logger:true, window:true, exports:false*/
 
 /**
  * Utility Class Language
@@ -12,6 +17,8 @@
 var Language = Stapes.subclass({
     constructor : function( language, aLogConfig ) {
 
+        "use strict";
+
         /**
          * Set pseudo private vars
          * please dont change this using <objname>._privatevarname
@@ -19,21 +26,24 @@ var Language = Stapes.subclass({
          * Arggghh Stapes!!!!
          */
 
-        if (typeof aLogConfig == 'undefined') {
+        if (typeof aLogConfig === 'undefined') {
             aLogConfig = {
                 level  : 'FATAL',
                 type   : 'console',
                 config : {}
             };
         } else {
-            if (typeof aLogConfig.level == 'undefined')
+            if (typeof aLogConfig.level === 'undefined') {
                 aLogConfig.level = 'FATAL';
+            }
 
-            if (typeof aLogConfig.level == 'undefined')
+            if (typeof aLogConfig.level === 'undefined') {
                 aLogConfig.type = 'console';
+            }
 
-            if (typeof aLogConfig.config == 'undefined')
+            if (typeof aLogConfig.config === 'undefined') {
                 aLogConfig.config = {};            
+            }
         }
 
         this.extend({
@@ -92,7 +102,6 @@ var Language = Stapes.subclass({
                 'Back' : 'Tillbaka',
                 'Picture' : 'Foton',
                 'Save' : 'Spara',            
-                'Survey' : 'Kontrollbesiktning',
                 'Contact' : 'Kontakt',
                 'Survey' : 'Besiktning',
                 'Settings' : 'Inställningar',
@@ -113,8 +122,8 @@ var Language = Stapes.subclass({
             }
         );
 
-        if (typeof language != 'undefined') {
-            this.setLanguage(language)
+        if (typeof language !== 'undefined') {
+            this.setLanguage(language);
         }
     },
 
@@ -126,6 +135,8 @@ var Language = Stapes.subclass({
      */ 
 
     setLanguage : function ( language ) {
+
+        "use strict";
 
         this._lg.log('DEBUG', ' setLanguage language ' + language);
         window.localStorage.setItem('language', language);
@@ -139,13 +150,16 @@ var Language = Stapes.subclass({
      */ 
 
     hasLanguage : function ( language ) {
-        if (typeof language == 'undefined') {
+
+        "use strict";
+
+        if (typeof language === 'undefined') {
             this._lg.log('DEBUG', ' hasLanguage (window.localStorage.getItem(language)) ' + (window.localStorage.getItem('language')));                        
-            this._lg.log('DEBUG', ' hasLanguage (this.get(window.localStorage.getItem(language)) != null) ' + (this.get(window.localStorage.getItem('language')) != null));            
-            return (this.get(window.localStorage.getItem('language')) != null);
+            this._lg.log('DEBUG', ' hasLanguage (this.get(window.localStorage.getItem(language)) != null) ' + (this.get(window.localStorage.getItem('language')) !== null));            
+            return (this.get(window.localStorage.getItem('language')) !== null);
         } else {
-            this._lg.log('DEBUG', ' hasLanguage (this.get(language) != null) ' + (this.get(language) != null) );
-            return (this.get(language) != null);
+            this._lg.log('DEBUG', ' hasLanguage (this.get(language) != null) ' + (this.get(language) !== null) );
+            return (this.get(language) !== null);
         }
     },
 
@@ -158,14 +172,17 @@ var Language = Stapes.subclass({
 
     translate : function ( word ) {
 
+        "use strict";
+
         var language = window.localStorage.getItem('language');
 
         this._lg.log('DEBUG', language + ' translate ' + word + ' exists? ' + typeof this.get(language));
 
-        if (this.get(language) == null || typeof this.get(language)[word] == 'undefined')
+        if (this.get(language) === null || typeof this.get(language)[word] === 'undefined') {
             return word;
-        else
+        } else {
             return this.get(language)[word];
+        }
     }  
 });
 
@@ -173,6 +190,6 @@ var Language = Stapes.subclass({
  * For node-unit test
  */
 
-if (typeof node_unit != 'undefined') {
+if (typeof node_unit !== 'undefined') {
     exports.Language = Language;
 }

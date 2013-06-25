@@ -1,4 +1,10 @@
-/* jshint undef: true, unused: true, strict: true, vars: true */
+/*jshint forin:true, noarg:true, noempty:true, eqeqeq:true, 
+         bitwise:true, strict:true, undef:false, unused:true, 
+         curly:true, browser:true, indent:4, maxerr:50 */
+
+/*global $:true, node_unit:true, Stapes:true, 
+         Logger:true, LocalStorage:true, Asset:true,
+         require:false, window:true, exports:false*/
 
 /**
  * Node Unit Test file for TroubleTicket Collection
@@ -45,6 +51,9 @@ usr.set('password', Config.password);
 
 exports.troubleticketcollection = {
     "has properties" : function(test){
+
+        "use strict";
+
         var ttc = new TroubleTicketCollection();
 
         test.expect(1);
@@ -54,6 +63,9 @@ exports.troubleticketcollection = {
         test.done();
     },
     "has method" : function(test) {
+
+        "use strict";
+
         var ttc = new TroubleTicketCollection();
         var tt = new TroubleTicket();
 
@@ -63,30 +75,44 @@ exports.troubleticketcollection = {
 
         test.expect(1 + ttc.size());
 
-        test.ok(typeof ttc.getDamagedTroubleTicketsByAsset == 'function' , "getDamagedTroubleTicketsByAsset not defined");
+        test.ok(typeof ttc.getDamagedTroubleTicketsByAsset === 'function' , "getDamagedTroubleTicketsByAsset not defined");
 
         for (var index in ttc_attr) {
-            test.ok(ttc_attr[index] instanceof TroubleTicket , "Collection item not of type TroubleTicket " + index);
+            if (ttc_attr.hasOwnProperty(index)) {
+                test.ok(ttc_attr[index] instanceof TroubleTicket , "Collection item not of type TroubleTicket " + index);
+            }
         }
 
         test.done();
     },
     "got Trouble Ticket by Asset" : function(test) {
+
+        "use strict";
+
         var ac = new AssetCollection(usr);
         var ttc = new TroubleTicketCollection(usr);
 
         test.expect(1);
 
         var success = function(data){
+
+            data = undefined;
+
             var asts = ac.getAllAsArray();
 
             if (asts.length > 0){
                 var scb = function(data){
+
+                    data = undefined;
+
                     test.ok(true);
                     test.done();
                 };
 
                 var ecb = function(jqxhr, status, er){
+
+                    jqxhr = status = er = undefined;
+
                     var data = JSON.parse(jqxhr.responseText);
                     test.ok(false, "Unable to fetch troubleticket list : " + data.error.trace_id + " : " + data.error.message);
                     test.done();
@@ -102,8 +128,11 @@ exports.troubleticketcollection = {
         };
  
         var error = function(jqxhr, status, er){
-                test.ok(false, "problem fetching asset list");
-                test.done();
+
+            jqxhr = status = er = undefined;
+
+            test.ok(false, "problem fetching asset list");
+            test.done();
         };
 
         ac.getAssets(success, error);

@@ -1,3 +1,9 @@
+/*jshint forin:true, noarg:true, noempty:true, eqeqeq:true, 
+         bitwise:true, strict:true, undef:false, unused:true, 
+         curly:true, browser:true, indent:4, maxerr:50 */
+
+/*global window:true*/
+
 /**
  *
  * Mobile App basedon Phonegap (Apache Cordova)
@@ -5,7 +11,7 @@
  * Application works over REST API 
  * 
  * @since     20 April 2013
- * @author    Anshuk Kumar <anshuk.kumar at essindia dot co dot in>
+ * @author    anshuk.kumar@essindia.co.in (Anshuk Kumar)
  * @preserve  copyright 2013 Gizur AB 
  */
 
@@ -17,13 +23,17 @@
 
 $(document).delegate('#one', 'pageshow', function () {
 
+    "use strict";
+
+    var lg = new Logger(Config.log.level, 'gta-page#one$pageshow', Config.log.type, Config.log.config); 
+
+
     try {
 
         /**
          * Environment
          */
 
-        var lg = new Logger(Config.log.level, 'gta-page#one$pageshow', Config.log.type, Config.log.config); 
         lg.log('TRACE', 'page loaded');
         var req = new Request(Config.url, undefined, Config.log);
         var usr = new User(req, Config.log);
@@ -61,6 +71,9 @@ $(document).delegate('#one', 'pageshow', function () {
              */
 
             var assets = ac.filter(function(item, key) {
+
+                key = undefined;
+
                 return item.get('trailertype') === $('#one select#trailertype option:selected').html();
             });
 
@@ -80,7 +93,9 @@ $(document).delegate('#one', 'pageshow', function () {
             $('#trailerid').append('<option value=""> - Select One - </option>');
 
             for (var index in assets) {
-                $('#trailerid').append('<option value="' + assets[index].get('assetname') + '">' + assets[index].get('assetname') + '</option>');
+                if (assets.hasOwnProperty(index)) {
+                    $('#trailerid').append('<option value="' + assets[index].get('assetname') + '">' + assets[index].get('assetname') + '</option>');
+                }
             }
             $('#one select#trailerid').selectmenu('refresh');
             $('#one select#trailertype').selectmenu('refresh');
@@ -107,6 +122,9 @@ $(document).delegate('#one', 'pageshow', function () {
             $('#one select#trailerid').selectmenu('refresh');
 
             var success = function(data){
+
+                data = undefined;
+
                 lg.log('TRACE', ' fetch tt success : start ');
                 var tts = ttc.getAll();
 
@@ -114,37 +132,40 @@ $(document).delegate('#one', 'pageshow', function () {
                 //line is uncommented
                 //lg.log('DEBUG', ' tts ' + JSON.stringify(tts));
                 lg.log('DEBUG', ' typeof tts ' + (typeof tts));
-                lg.log('DEBUG', ' tts.length ' + tts.length)
-                if (ttc.size() == 0)
+                lg.log('DEBUG', ' tts.length ' + tts.length);
+                if (ttc.size() === 0) {
                     $('#one #troubleticketlist').html("<li><center><div style='height:60px;width:120px;'>" + language.translate('No Damages Reported') + "</div></center></li>");
-                else {
+                } else {
                     $('#one #troubleticketlist').html('');
                 }
 
                 tt_list = {};
                 var tt_list_html = '';
-                for (index in tts) {
+                for (var index in tts) {
 
-                    lg.log('DEBUG', ' tts[index].get(id) ' + tts[index].get('id'));
+                    if (tts.hasOwnProperty(index)) {
 
-                    var clipped_tt = tts[index].getAll();
+                        lg.log('DEBUG', ' tts[index].get(id) ' + tts[index].get('id'));
 
-                    lg.log('DEBUG', ' tts[index].asset instanceof Asset ' + (tts[index].get('asset') instanceof Asset));
-                    lg.log('DEBUG', "tts[index].get('damageposition') " + tts[index].get('damageposition'));
-                    lg.log('DEBUG', "tts[index].get('damagetype') " + tts[index].get('damagetype'));
+                        var clipped_tt = tts[index].getAll();
 
-                    clipped_tt.trailerid =  tts[index].get('asset').get('assetname');
+                        lg.log('DEBUG', ' tts[index].asset instanceof Asset ' + (tts[index].get('asset') instanceof Asset));
+                        lg.log('DEBUG', "tts[index].get('damageposition') " + tts[index].get('damageposition'));
+                        lg.log('DEBUG', "tts[index].get('damagetype') " + tts[index].get('damagetype'));
 
-                    delete clipped_tt.asset;
-                    delete clipped_tt.enum_place;
-                    delete clipped_tt.enum_sealed;
+                        clipped_tt.trailerid =  tts[index].get('asset').get('assetname');
 
-                    var li_tt = "<li><center><div style='height:60px;width:200px;'><a id='" + clipped_tt.id + "' href='javascript:void(0);'>" + tts[index].get('damageposition') + ' ' + tts[index].get('damagetype') + "</a></div></center></li>";
+                        delete clipped_tt.asset;
+                        delete clipped_tt.enum_place;
+                        delete clipped_tt.enum_sealed;
 
-                    tt_list_html += li_tt; 
+                        var li_tt = "<li><center><div style='height:60px;width:200px;'><a id='" + clipped_tt.id + "' href='javascript:void(0);'>" + tts[index].get('damageposition') + ' ' + tts[index].get('damagetype') + "</a></div></center></li>";
 
-                    $('#one #troubleticketlist').append(li_tt);
-                    window.localStorage.setItem(tts[index].get('id') + '_tt', JSON.stringify(clipped_tt));                
+                        tt_list_html += li_tt; 
+
+                        $('#one #troubleticketlist').append(li_tt);
+                        window.localStorage.setItem(tts[index].get('id') + '_tt', JSON.stringify(clipped_tt));                
+                    }
                 }
 
                 /**
@@ -157,7 +178,7 @@ $(document).delegate('#one', 'pageshow', function () {
 
                 window.slider_one.reloadSlider();
                 lg.log('TRACE', ' fetch tt success : end ');
-            }
+            };
 
             $('#dialog_nointernet a[data-role=button]').attr('href', '#one');
 
@@ -178,8 +199,9 @@ $(document).delegate('#one', 'pageshow', function () {
              * Save the state of page one
              */
 
-            if (current_tt == null)   
+            if (current_tt === null) { 
                 current_tt = {};
+            }
 
             current_tt.trailertype = escapeHtmlEntities($('#one #trailertype option:selected').text());
             current_tt.trailerid = escapeHtmlEntities($('#one #trailerid option:selected').text());
@@ -194,23 +216,23 @@ $(document).delegate('#one', 'pageshow', function () {
              * Validate
              */
 
-            if ($('#one #trailertype option:selected').attr('value') == '') {
+            if ($('#one #trailertype option:selected').attr('value') === '') {
                 $('#a_dialog_validation_trailertype').click();             
                 return;
             } 
 
-            if ($('#one #trailerid option:selected').attr('value') == '') {
+            if ($('#one #trailerid option:selected').attr('value') === '') {
                 $('#a_dialog_validation_trailer').click();             
                 return;
             }
 
-            if ($('#one #place option:selected').attr('value') == '') {
+            if ($('#one #place option:selected').attr('value') === '') {
                 $('#a_dialog_validation_place').click();             
                 return;
             }        
 
-            if (typeof $('#one input[name=sealed]:checked').attr('value') == 'undefined'
-                || $('#one input[name=sealed]:checked').attr('value') == '') {
+            if (typeof $('#one input[name=sealed]:checked').attr('value') === 'undefined' || 
+                $('#one input[name=sealed]:checked').attr('value') === '') {
                 $('#a_dialog_validation_sealed').click();             
                 return;
             }        
@@ -224,6 +246,8 @@ $(document).delegate('#one', 'pageshow', function () {
             var tt = new TroubleTicket(usr, Config.log);
 
             var success = function(data){
+
+                data = undefined;
                 
                 /**
                  * Clear the cache
@@ -237,20 +261,24 @@ $(document).delegate('#one', 'pageshow', function () {
 
                 $.mobile.urlHistory.stack = [];
 
-                if (typeof navigator.app !== 'undefined')
+                if (typeof navigator.app !== 'undefined') {
                     navigator.app.clearHistory();
+                }
 
                 /**
                  * Show success message
                  */
 
                 $('#a_dialog_survey_success').click();                 
-            }
+            };
 
             var error = function(jqxhr, status, er) {
+
+                jqxhr = status = er = undefined;
+
                 //Show error pop up
                 $('#a_dialog_survey_error').click();             
-            }
+            };
 
             var ast = new Asset(undefined, Config.log);
             ast.set('assetname', escapeHtmlEntities($('#one #trailerid option:selected').text()));
@@ -278,8 +306,9 @@ $(document).delegate('#one', 'pageshow', function () {
              * Save the state of page one
              */
 
-            if (current_tt == null)   
+            if (current_tt === null) {  
                 current_tt = {};
+            }
 
             current_tt.trailertype = escapeHtmlEntities($('#one #trailertype option:selected').text());
             current_tt.trailerid = escapeHtmlEntities($('#one #trailerid option:selected').text());
@@ -294,26 +323,26 @@ $(document).delegate('#one', 'pageshow', function () {
              * Validate
              */
 
-            if ($('#one #trailertype option:selected').attr('value') == '') {
+            if ($('#one #trailertype option:selected').attr('value') === '') {
                 lg.log('TRACE', ' trailertype not valid');
                 $('#a_dialog_validation_trailertype').click();             
                 return;
             } 
 
-            if ($('#one #trailerid option:selected').attr('value') == '') {
+            if ($('#one #trailerid option:selected').attr('value') === '') {
                 lg.log('TRACE', ' trailerid not valid');
                 $('#a_dialog_validation_trailer').click();             
                 return;
             }
 
-            if ($('#one #place option:selected').attr('value') == '') {
+            if ($('#one #place option:selected').attr('value') === '') {
                 lg.log('TRACE', ' place not valid');
                 $('#a_dialog_validation_place').click();             
                 return;
             }        
 
-            if (typeof $('#one input[name=sealed]:checked').attr('value') == 'undefined'
-                || $('#one input[name=sealed]:checked').attr('value') == '') {
+            if (typeof $('#one input[name=sealed]:checked').attr('value') === 'undefined' ||
+                $('#one input[name=sealed]:checked').attr('value') === '') {
                 lg.log('TRACE', ' sealed not valid');
                 $('#a_dialog_validation_sealed').click();             
                 return;
@@ -354,9 +383,11 @@ $(document).delegate('#one', 'pageshow', function () {
                     var docc = new DocCollection(Config.log);       
 
                     for (var index in data.result.documents) {
-                        var doc = new Doc(usr, Config.log);
-                        doc.set(data.result.documents[index]);
-                        docc.push(doc);
+                        if (data.result.documents.hasOwnProperty(index)) {
+                            var doc = new Doc(usr, Config.log);
+                            doc.set(data.result.documents[index]);
+                            docc.push(doc);
+                        }
                     }
 
                     lg.log('DEBUG', ' documents collected docc.size ' + docc.size());
@@ -372,8 +403,9 @@ $(document).delegate('#one', 'pageshow', function () {
                          * Save the page state
                          */
 
-                        if (current_tt == null)   
+                        if (current_tt === null) {
                             current_tt = {};
+                        }
 
                         current_tt.trailertype = escapeHtmlEntities($('#one #trailertype option:selected').text());
                         current_tt.trailerid = escapeHtmlEntities($('#one #trailerid option:selected').text());
@@ -388,11 +420,13 @@ $(document).delegate('#one', 'pageshow', function () {
                          */
 
                         var gas = tt.getAllSanitized();
-                        gas.docs = Array();
+                        gas.docs = [];
 
                         for (var index in success_dc) {
-                            lg.log('TRACE', ' path pushed ' + success_dc[index].get('path'));
-                            gas.docs.push({'path': success_dc[index].get('path')});              
+                            if (success_dc.hasOwnProperty(index)) {
+                                lg.log('TRACE', ' path pushed ' + success_dc[index].get('path'));
+                                gas.docs.push({'path': success_dc[index].get('path')});              
+                            }
                         }
 
                         window.localStorage.setItem('details_tt_id', $(that).attr('id'));
@@ -412,8 +446,9 @@ $(document).delegate('#one', 'pageshow', function () {
                      * Save the page state
                      */
 
-                    if (current_tt == null)   
+                    if (current_tt === null) {  
                         current_tt = {};
+                    }
 
                     current_tt.trailertype = escapeHtmlEntities($('#one #trailertype option:selected').text());
                     current_tt.trailerid = escapeHtmlEntities($('#one #trailerid option:selected').text());
@@ -427,7 +462,7 @@ $(document).delegate('#one', 'pageshow', function () {
                      */
 
                     var gas = tt.getAllSanitized();
-                    gas.docs = Array();             
+                    gas.docs = [];             
 
                     window.localStorage.setItem('details_tt_id', $(that).attr('id'));
                     window.localStorage.setItem($(that).attr('id') + '_tt', JSON.stringify(gas));
@@ -488,14 +523,17 @@ $(document).delegate('#one', 'pageshow', function () {
         $('#one select#trailertype').append('<option value=""> - Select One - </option>');    
         for (var index in enum_trailertype) {
 
-            //Load value from cache
-            selected = '';
-            if (current_tt != null && enum_trailertype[index].value == current_tt.trailertype) {
-                selected = 'selected="selected"';
-                lg.log('DEBUG', 'selected trailer type : ' + enum_trailertype[index].value);            
-            }
+            if (enum_trailertype.hasOwnProperty(index)) {
 
-            $('#one select#trailertype').append('<option ' + selected + ' value="' + enum_trailertype[index].value + '">' + enum_trailertype[index].label + '</option>');
+                //Load value from cache
+                selected = '';
+                if (current_tt !== null && enum_trailertype[index].value === current_tt.trailertype) {
+                    selected = 'selected="selected"';
+                    lg.log('DEBUG', 'selected trailer type : ' + enum_trailertype[index].value);            
+                }
+
+                $('#one select#trailertype').append('<option ' + selected + ' value="' + enum_trailertype[index].value + '">' + enum_trailertype[index].label + '</option>');
+            }
         }
         $('#one select#trailertype').selectmenu('refresh');
 
@@ -506,25 +544,32 @@ $(document).delegate('#one', 'pageshow', function () {
 
         var ac = new AssetCollection(usr, Config.log);
         var assets = ac.filter(function(item, key) {
+            
+            key = undefined;
+
             return item.get('trailertype') === $('#one select#trailertype option:selected').text();
         });
 
         $('#trailerid').append('<option value=""> - Select One - </option>');
 
-        for (var index in assets) {
+        for (index in assets) {
 
-            //Load value from cache
-            selected = '';
-            lg.log('DEBUG', 'loop  preload trailer id : ' + assets[index].get('assetname'));
-            lg.log('DEBUG', 'loop  preload trailer id : ' + current_tt.trailerid);
-            lg.log('DEBUG', 'loop  preload are they equal : ' + (assets[index].get('assetname') == current_tt.trailerid));
-            
-            if (current_tt != null && assets[index].get('assetname') == current_tt.trailerid) {
-                selected = 'selected="selected"';
-                lg.log('DEBUG', 'selected trailer id : ' + assets[index].get('assetname'));            
+            if (assets.hasOwnProperty(index)) {
+
+                //Load value from cache
+                selected = '';
+                lg.log('DEBUG', 'loop  preload trailer id : ' + assets[index].get('assetname'));
+                lg.log('DEBUG', 'loop  preload trailer id : ' + current_tt.trailerid);
+                lg.log('DEBUG', 'loop  preload are they equal : ' + (assets[index].get('assetname') === current_tt.trailerid));
+                
+                if (current_tt !== null && assets[index].get('assetname') === current_tt.trailerid) {
+                    selected = 'selected="selected"';
+                    lg.log('DEBUG', 'selected trailer id : ' + assets[index].get('assetname'));            
+                }
+
+                $('#trailerid').append('<option ' + selected + ' value="' + assets[index].get('assetname') + '">' + assets[index].get('assetname') + '</option>');
+
             }
-
-            $('#trailerid').append('<option ' + selected + ' value="' + assets[index].get('assetname') + '">' + assets[index].get('assetname') + '</option>');
         }
         $('#one select#trailerid').selectmenu('refresh');     
 
@@ -547,17 +592,21 @@ $(document).delegate('#one', 'pageshow', function () {
         $('#one #sealed').html('');
         $('#one #sealed').append('<legend>' + language.translate('Sealed') + '</legend>');
 
-        for (var index in enum_sealed) {    
+        for (index in enum_sealed) {    
 
-            //Load value from cache
-            selected = '';
-            if (current_tt != null && enum_sealed[index].value == current_tt.sealed) {
-                selected = 'checked="checked"';
-                lg.log('DEBUG', 'selected sealed : ' + enum_sealed[index].value);                        
+            if (enum_sealed.hasOwnProperty(index)) {
+
+                //Load value from cache
+                selected = '';
+                if (current_tt !== null && enum_sealed[index].value === current_tt.sealed) {
+                    selected = 'checked="checked"';
+                    lg.log('DEBUG', 'selected sealed : ' + enum_sealed[index].value);                        
+                }
+
+                $('#one #sealed').append('<input ' + selected + ' id="radio' + index + '" name="sealed" value="' + enum_sealed[index].value + '" type="radio">');
+                $('#one #sealed').append('<label for="radio' + index + '">' +  enum_sealed[index].label + '</label>');
+
             }
-
-            $('#one #sealed').append('<input ' + selected + ' id="radio' + index + '" name="sealed" value="' + enum_sealed[index].value + '" type="radio">');
-            $('#one #sealed').append('<label for="radio' + index + '">' +  enum_sealed[index].label + '</label>');
         }
         $('#one #sealed').trigger('create');
         $('#one #sealed').controlgroup();   
@@ -571,18 +620,21 @@ $(document).delegate('#one', 'pageshow', function () {
         $('#one select#place').html('');
         $('#one select#place').append('<option value=""> - Select One - </option>');
 
-        for (var index in enum_place) {
+        for (index in enum_place) {
 
-            //lg.log('DEBUG', 'enum_place value : ' + enum_place[index].value);        
+            if (enum_place.hasOwnProperty(index)) {
 
-            //Load value from cache
-            selected = '';        
-            if (current_tt != null && enum_place[index].value == current_tt.place) {
-                selected = 'selected="selected"';
-                lg.log('DEBUG', 'selected place : ' + enum_place[index].value);                                    
+                //lg.log('DEBUG', 'enum_place value : ' + enum_place[index].value);        
+
+                //Load value from cache
+                selected = '';        
+                if (current_tt !== null && enum_place[index].value === current_tt.place) {
+                    selected = 'selected="selected"';
+                    lg.log('DEBUG', 'selected place : ' + enum_place[index].value);                                    
+                }
+
+                $('#one select#place').append('<option ' + selected + ' value="' + enum_place[index].value + '">' + enum_place[index].label + '</option>');
             }
-
-            $('#one select#place').append('<option ' + selected + ' value="' + enum_place[index].value + '">' + enum_place[index].label + '</option>');
         }
 
         lg.log('DEBUG', '#one select#place html : ' + $('#one select#place').html());
@@ -599,7 +651,7 @@ $(document).delegate('#one', 'pageshow', function () {
 
         lg.log('DEBUG', 'tt_list : ' + JSON.stringify(tt_list));
 
-        if (tt_list != null && current_tt != null && tt_list.html != '') {
+        if (tt_list !== null && current_tt !== null && tt_list.html !== '') {
             lg.log('DEBUG', 'reloading slider for troubleticketlist  to position ' + tt_list.position);        
 
             $('#one #troubleticketlist').html(tt_list.html);
@@ -623,7 +675,7 @@ $(document).delegate('#one', 'pageshow', function () {
 
     }
 
-    lg.log('DEBUG', '#one #troubleticketlist html : ' + $('#one #troubleticketlist').html());        
+    lg.log('DEBUG', '#one #troubleticketlist html : ' + $('#one #troubleticketlist').html());       
 });
 
 /**
@@ -634,12 +686,15 @@ $(document).delegate('#one', 'pageshow', function () {
 
 $(document).delegate('#four', 'pageshow', function () {
 
+    "use strict";    
+
     /**
      * Clear browser cache if any
      */
 
-    if (typeof navigator.app !== 'undefined')
+    if (typeof navigator.app !== 'undefined') {
         navigator.app.clearCache();
+    }
 
     var lg = new Logger(Config.log.level, '#four$pageshow', Config.log.type, Config.log.config);
     var req = new Request(Config.url, undefined, Config.log);
@@ -660,8 +715,8 @@ $(document).delegate('#four', 'pageshow', function () {
      * Check if already present in cache
      */
 
-    if (window.localStorage.getItem('latest_damage_index') == null) {
-        if (current_tt != null && current_tt.damages instanceof Array) {
+    if (window.localStorage.getItem('latest_damage_index') === null) {
+        if (current_tt !== null && current_tt.damages instanceof Array) {
             latest_damage_index = current_tt.damages.length - 1;
             lg.log('DEBUG', ' latest damage index from last index : ' + latest_damage_index);
         }
@@ -690,40 +745,45 @@ $(document).delegate('#four', 'pageshow', function () {
      */    
 
     $('#four #savedamage').unbind('click').click( function( e ) {
+
+        var current_tt;
+        var damage;
+        var documents;
+
         e.preventDefault();
 
         lg.log('TRACE', '#four #savedamage click start');
 
         lg.log('TRACE', '#four #damagetype option:selected' + $('#four #damagetype option:selected').text());        
 
-        if ($('#four #damagetype option:selected').attr('value') == '') {
+        if ($('#four #damagetype option:selected').attr('value') === '') {
 
             /**
              * Save the current state of page
              */            
 
-            var current_tt = JSON.parse(window.localStorage.getItem('current_tt'));
+            current_tt = JSON.parse(window.localStorage.getItem('current_tt'));
 
-            var damage = {
+            damage = {
                 'damagetype' : escapeHtmlEntities($('#four #damagetype option:selected').text()),
                 'damageposition' : escapeHtmlEntities($('#four #damageposition option:selected').text()),
                 'drivercauseddamage' : escapeHtmlEntities($('#four #drivercauseddamage option:selected').attr('value'))
             };
 
-            var documents = [];
+            documents = [];
 
             $('.bxslider-four img').each(function(){
                 lg.log('TRACE', '#four #savedamage found image ' + $(this).attr('src'));
                 documents.push({ path : $(this).attr('src') });
             });
 
-            damage['documents'] = documents;
+            damage.documents = documents;
 
-            if (!(current_tt['damages'] != undefined && current_tt['damages'] instanceof Array)) {
-                current_tt['damages'] = new Array();
-                current_tt['damages'].push(damage);
+            if (!(current_tt.damages !== undefined && current_tt.damages instanceof Array)) {
+                current_tt.damages = [];
+                current_tt.damages.push(damage);
             } else {
-                current_tt['damages'][latest_damage_index] = damage;
+                current_tt.damages[latest_damage_index] = damage;
             }
 
             lg.log('TRACE', '#four #savedamage current_tt' + JSON.stringify(current_tt));   
@@ -736,34 +796,34 @@ $(document).delegate('#four', 'pageshow', function () {
 
         lg.log('TRACE', '#four #damageposition option:selected' + $('#four #damageposition option:selected').text());
 
-        if ($('#four #damageposition option:selected').attr('value') == '') {
+        if ($('#four #damageposition option:selected').attr('value') === '') {
 
             /**
              * Save the current state of page
              */
 
-            var current_tt = JSON.parse(window.localStorage.getItem('current_tt'));
+            current_tt = JSON.parse(window.localStorage.getItem('current_tt'));
 
-            var damage = {
+            damage = {
                 'damagetype' : escapeHtmlEntities($('#four #damagetype option:selected').text()),
                 'damageposition' : escapeHtmlEntities($('#four #damageposition option:selected').text()),
                 'drivercauseddamage' : escapeHtmlEntities($('#four #drivercauseddamage option:selected').attr('value'))
             };
 
-            var documents = [];
+            documents = [];
 
             $('.bxslider-four img').each(function(){
                 lg.log('TRACE', '#four #savedamage found image ' + $(this).attr('src'));
                 documents.push({ path : $(this).attr('src') });
             });
 
-            damage['documents'] = documents;
+            damage.documents = documents;
 
-            if (!(current_tt['damages'] != undefined && current_tt['damages'] instanceof Array)) {
-                current_tt['damages'] = new Array();
-                current_tt['damages'].push(damage);
+            if (!(current_tt.damages !== undefined && current_tt.damages instanceof Array)) {
+                current_tt.damages = [];
+                current_tt.damages.push(damage);
             } else {
-                current_tt['damages'][latest_damage_index] = damage;
+                current_tt.damages[latest_damage_index] = damage;
             }
 
             lg.log('TRACE', '#four #savedamage current_tt' + JSON.stringify(current_tt));   
@@ -776,34 +836,34 @@ $(document).delegate('#four', 'pageshow', function () {
 
         lg.log('DEBUG', '#four #drivercauseddamage option:selected' + $('#four #drivercauseddamage option:selected').attr('value'));
 
-        if ($('#four #drivercauseddamage option:selected').attr('value') == '') {
+        if ($('#four #drivercauseddamage option:selected').attr('value') === '') {
 
             /**
              * Save the current state of page
              */            
 
-            var current_tt = JSON.parse(window.localStorage.getItem('current_tt'));
+            current_tt = JSON.parse(window.localStorage.getItem('current_tt'));
 
-            var damage = {
+            damage = {
                 'damagetype' : escapeHtmlEntities($('#four #damagetype option:selected').text()),
                 'damageposition' : escapeHtmlEntities($('#four #damageposition option:selected').text()),
                 'drivercauseddamage' : escapeHtmlEntities($('#four #drivercauseddamage option:selected').attr('value'))
             };
 
-            var documents = [];
+            documents = [];
 
             $('.bxslider-four img').each(function(){
                 lg.log('TRACE', '#four #savedamage found image ' + $(this).attr('src'));
                 documents.push({ path : $(this).attr('src') });
             });
 
-            damage['documents'] = documents;
+            damage.documents = documents;
 
-            if (!(current_tt['damages'] != undefined && current_tt['damages'] instanceof Array)) {
-                current_tt['damages'] = new Array();
-                current_tt['damages'].push(damage);
+            if (!(current_tt.damages !== undefined && current_tt.damages instanceof Array)) {
+                current_tt.damages = [];
+                current_tt.damages.push(damage);
             } else {
-                current_tt['damages'][latest_damage_index] = damage;
+                current_tt.damages[latest_damage_index] = damage;
             }
 
             lg.log('TRACE', '#four #savedamage current_tt' + JSON.stringify(current_tt));   
@@ -814,36 +874,37 @@ $(document).delegate('#four', 'pageshow', function () {
             return;
         }        
 
-        var current_tt = JSON.parse(window.localStorage.getItem('current_tt'));
+        current_tt = JSON.parse(window.localStorage.getItem('current_tt'));
 
-        var damage = {
+        damage = {
             'damagetype' : escapeHtmlEntities($('#four #damagetype option:selected').text()),
             'damageposition' : escapeHtmlEntities($('#four #damageposition option:selected').text()),
             'drivercauseddamage' : escapeHtmlEntities($('#four #drivercauseddamage option:selected').attr('value'))
         };
 
-        var documents = [];
+        documents = [];
 
         $('.bxslider-four img').each(function(){
             lg.log('DEBUG', '#four #savedamage found image ' + $(this).attr('src'));
             documents.push({ path : $(this).attr('src') });
         });
 
-        damage['documents'] = documents;
+        damage.documents = documents;
 
-        if (!(current_tt['damages'] instanceof Array)) {
+        if (!(current_tt.damages instanceof Array)) {
 
             lg.log('TRACE', '#four current_tt.damages not instanceof Array');
 
-            current_tt['damages'] = new Array();
-            current_tt['damages'].push(damage);
+            current_tt.damages = [];
+            current_tt.damages.push(damage);
         } else {
 
             lg.log('TRACE', '#four current_tt.damages instanceof Array');
-            if (latest_damage_index !== -1)
-                current_tt['damages'][latest_damage_index] = damage;
-            else
-                current_tt['damages'].push(damage);
+            if (latest_damage_index !== -1) {
+                current_tt.damages[latest_damage_index] = damage;
+            } else {
+                current_tt.damages.push(damage);
+            }
         }
 
         lg.log('TRACE', '#four #savedamage current_tt' + JSON.stringify(current_tt));   
@@ -861,7 +922,7 @@ $(document).delegate('#four', 'pageshow', function () {
 
         e.preventDefault();
 
-        if (current_tt != null && latest_damage_index != -1) {
+        if (current_tt !== null && latest_damage_index !== -1) {
 
             lg.log('DEBUG', '#four #deletedamage latest_damage_index ' + latest_damage_index);  
 
@@ -869,7 +930,7 @@ $(document).delegate('#four', 'pageshow', function () {
 
             window.localStorage.setItem('current_tt', JSON.stringify(current_tt));
 
-            if (current_tt.damages.length == 0) {
+            if (current_tt.damages.length === 0) {
 
                 lg.log('TRACE', '#four #deletedamage refresh current page ');
 
@@ -917,13 +978,13 @@ $(document).delegate('#four', 'pageshow', function () {
                 documents.push({ path : $(this).attr('src') });
             });
 
-            damage['documents'] = documents;
+            damage.documents = documents;
 
-            if (!(current_tt['damages'] != undefined && current_tt['damages'] instanceof Array)) {
-                current_tt['damages'] = new Array();
-                current_tt['damages'].push(damage);
+            if (!(current_tt.damages !== undefined && current_tt.damages instanceof Array)) {
+                current_tt.damages = [];
+                current_tt.damages.push(damage);
             } else {
-                current_tt['damages'][latest_damage_index] = damage;
+                current_tt.damages[latest_damage_index] = damage;
             }
 
             lg.log('TRACE', '#four #savedamage current_tt' + JSON.stringify(current_tt));   
@@ -939,8 +1000,9 @@ $(document).delegate('#four', 'pageshow', function () {
             //Log
             lg.log('DEBUG', '#four #takephoto success' + imageURL); 
 
-            if ($('.bxslider-four img').length === 0)
+            if ($('.bxslider-four img').length === 0) {
                 $('.bxslider-four').html('');
+            }
 
             $('.bxslider-four').prepend('<li><img style="width:100%;height:auto;" src="' + imageURL + '"/></li>');
             //$('.four-picture').html('<img style="width:100%;height:auto;" src="' + imageURL + '"/>');
@@ -972,24 +1034,29 @@ $(document).delegate('#four', 'pageshow', function () {
 
         for (var index in picklist) {
 
-            lg.log('DEBUG', ' picklist[index].value ' + picklist[index].value);
+            if (picklist.hasOwnProperty(index)) {
 
-            if (picklist[index].value == escapeHtmlEntities($('#four #damagetype option:selected').attr('value'))) {
-                $('#four select#damageposition').html('');
-                $('#four select#damageposition').append('<option value=""> - Select One - </option>');                                        
+                lg.log('DEBUG', ' picklist[index].value ' + picklist[index].value);
 
-                lg.log('DEBUG', ' MATCH ' + picklist[index].value);
+                if (picklist[index].value === escapeHtmlEntities($('#four #damagetype option:selected').attr('value'))) {
+                    $('#four select#damageposition').html('');
+                    $('#four select#damageposition').append('<option value=""> - Select One - </option>');                                        
 
-                if (typeof picklist[index].dependency != 'undefined') {
+                    lg.log('DEBUG', ' MATCH ' + picklist[index].value);
 
-                    lg.log('DEBUG', ' picklist[index].dependency ' + JSON.stringify(picklist[index].dependency));
+                    if (typeof picklist[index].dependency !== 'undefined') {
 
-                    for (var depindex in picklist[index].dependency['damageposition']) {
-                        $('#four select#damageposition').append('<option value="' + picklist[index].dependency['damageposition'][depindex].value + '">' + picklist[index].dependency['damageposition'][depindex].label + '</option>');           
-                    }   
+                        lg.log('DEBUG', ' picklist[index].dependency ' + JSON.stringify(picklist[index].dependency));
+
+                        for (var depindex in picklist[index].dependency.damageposition) {
+                            if (picklist[index].dependency.damageposition.hasOwnProperty(depindex)) {
+                                $('#four select#damageposition').append('<option value="' + picklist[index].dependency.damageposition[depindex].value + '">' + picklist[index].dependency.damageposition[depindex].label + '</option>');           
+                            }
+                        }   
+                    }
+                    
+                    $('#four select#damageposition').selectmenu('refresh'); 
                 }
-                
-                $('#four select#damageposition').selectmenu('refresh'); 
             }
 
         }  
@@ -1017,41 +1084,45 @@ $(document).delegate('#four', 'pageshow', function () {
     $('#four select#damagetype').append('<option value=""> - Select One - </option>');     
     for (var index in enum_damagetype) {
 
-        //Load value from cache
-        selected = '';
+        if (enum_damagetype.hasOwnProperty(index)) {
 
-        if (current_tt != null && latest_damage_index != -1) {
-            lg.log('DEBUG',' selected check damagetype : enum_damagetype[index].value ' + enum_damagetype[index].value);           
-            lg.log('DEBUG',' selected check damagetype- : current_tt.damages[latest_damage_index].damagetype ' + current_tt.damages[latest_damage_index].damagetype);
-        }
+            //Load value from cache
+            selected = '';
 
-        if (current_tt != null && 
-            latest_damage_index != -1 && 
-            enum_damagetype[index].value == current_tt.damages[latest_damage_index].damagetype) {
-            selected = 'selected="selected"';
-
-            lg.log('DEBUG', ' typeof enum_damagetype[index].dependency.damageposition ' + typeof enum_damagetype[index].dependency.damageposition);
-
-            if (typeof enum_damagetype[index].dependency !== 'undefined' &&
-                typeof enum_damagetype[index].dependency.damageposition !== 'undefined') {
-
-                lg.log('DEBUG', ' JSON.stringify(enum_damagetype[index].dependency.damageposition) ' + JSON.stringify(enum_damagetype[index].dependency.damageposition));
-
-                enum_damageposition = enum_damagetype[index].dependency.damageposition;
+            if (current_tt !== null && latest_damage_index !== -1) {
+                lg.log('DEBUG',' selected check damagetype : enum_damagetype[index].value ' + enum_damagetype[index].value);           
+                lg.log('DEBUG',' selected check damagetype- : current_tt.damages[latest_damage_index].damagetype ' + current_tt.damages[latest_damage_index].damagetype);
             }
 
-            lg.log('DEBUG', 'selected damagetype : ' + enum_damagetype[index].value);                        
-        }
+            if (current_tt !== null && 
+                latest_damage_index !== -1 && 
+                enum_damagetype[index].value === current_tt.damages[latest_damage_index].damagetype) {
+                selected = 'selected="selected"';
 
-        $('#four select#damagetype').append('<option ' + selected + ' value="' + enum_damagetype[index].value + '">' + enum_damagetype[index].label + '</option>');
+                lg.log('DEBUG', ' typeof enum_damagetype[index].dependency.damageposition ' + typeof enum_damagetype[index].dependency.damageposition);
+
+                if (typeof enum_damagetype[index].dependency !== 'undefined' &&
+                    typeof enum_damagetype[index].dependency.damageposition !== 'undefined') {
+
+                    lg.log('DEBUG', ' JSON.stringify(enum_damagetype[index].dependency.damageposition) ' + JSON.stringify(enum_damagetype[index].dependency.damageposition));
+
+                    enum_damageposition = enum_damagetype[index].dependency.damageposition;
+                }
+
+                lg.log('DEBUG', 'selected damagetype : ' + enum_damagetype[index].value);                        
+            }
+
+            $('#four select#damagetype').append('<option ' + selected + ' value="' + enum_damagetype[index].value + '">' + enum_damagetype[index].label + '</option>');
+        }
     }
+
     $('#four select#damagetype').selectmenu('refresh');        
 
     /**
      * Damge position enum loading to select menu
      */
 
-    if (typeof enum_damageposition == 'undefined') {
+    if (typeof enum_damageposition === 'undefined') {
         enum_damageposition = dmg.get('enum_damageposition');
     }
 
@@ -1060,52 +1131,60 @@ $(document).delegate('#four', 'pageshow', function () {
     $('#four select#damageposition').html('');
     $('#four select#damageposition').append('<option value=""> - Select One - </option>');    
 
-    for (var index in enum_damageposition) {
+    for (index in enum_damageposition) {
 
-        /**
-         * Load value from cache
-         */
+        if (enum_damageposition.hasOwnProperty(index)) {
 
-        selected = '';
+            /**
+             * Load value from cache
+             */
 
-        //lg.log('DEBUG',' selected check damageposition : enum_damageposition[index].value ' + unescape(enum_damageposition[index].value) );
-        
-        //if (latest_damage_index != -1)
-        //    lg.log('DEBUG',' selected check damageposition : current_tt.damages[latest_damage_index].enum_damageposition ' + (current_tt.damages[latest_damage_index].damageposition));
+            selected = '';
 
-        if (current_tt != null && 
-            latest_damage_index != -1 &&  
-            enum_damageposition[index].value == current_tt.damages[latest_damage_index].damageposition) {
-            selected = 'selected="selected"';
-            lg.log('DEBUG', 'selected damageposition : ' + enum_damageposition[index].value);                        
+            //lg.log('DEBUG',' selected check damageposition : enum_damageposition[index].value ' + unescape(enum_damageposition[index].value) );
+            
+            //if (latest_damage_index !== -1)
+            //    lg.log('DEBUG',' selected check damageposition : current_tt.damages[latest_damage_index].enum_damageposition ' + (current_tt.damages[latest_damage_index].damageposition));
+
+            if (current_tt !== null && 
+                latest_damage_index !== -1 &&  
+                enum_damageposition[index].value === current_tt.damages[latest_damage_index].damageposition) {
+                selected = 'selected="selected"';
+                lg.log('DEBUG', 'selected damageposition : ' + enum_damageposition[index].value);                        
+            }
+
+            $('#four select#damageposition').append('<option ' + selected + ' value="' + enum_damageposition[index].value + '">' + enum_damageposition[index].label + '</option>');
+
         }
 
-        $('#four select#damageposition').append('<option ' + selected + ' value="' + enum_damageposition[index].value + '">' + enum_damageposition[index].label + '</option>');
     }
+
     $('#four select#damageposition').selectmenu('refresh');
 
     /**
      * Show the delete button or not
      */ 
 
-    if (latest_damage_index == -1) {
+    if (latest_damage_index === -1) {
 
         lg.log('DEBUG', ' latest_damage_index ' + latest_damage_index);
 
-        if (typeof current_tt.damages != 'undefined')
+        if (typeof current_tt.damages !== 'undefined') {
             lg.log('DEBUG', ' current_tt.damages.length ' + current_tt.damages.length);
+        }
 
         $('#deletedamage').hide();
     } else {
         $('#deletedamage').show();
     }
 
-    if (latest_damage_index != -1) {
+    if (latest_damage_index !== -1) {
         
         lg.log('DEBUG', '(current_tt.damages[latest_damage_index].documents instanceof Array) ' + (current_tt.damages[latest_damage_index].documents instanceof Array) );
         
-        if ((current_tt.damages[latest_damage_index].documents instanceof Array))
+        if ((current_tt.damages[latest_damage_index].documents instanceof Array)) {
             lg.log('DEBUG', 'current_tt.damages[latest_damage_index].documents.length ' + current_tt.damages[latest_damage_index].documents.length );
+        }
     }
 
     $('.bxslider-four').html("<li><center><div style='height:60px;width:200px;'>" + language.translate('No Picture(s) Attached') + "</div></center></li>");
@@ -1114,15 +1193,19 @@ $(document).delegate('#four', 'pageshow', function () {
      * Document pictures enum loading
      */
 
-    if (latest_damage_index != -1 && 
+    if (latest_damage_index !== -1 && 
         (current_tt.damages[latest_damage_index].documents instanceof Array)) {
 
         if (current_tt.damages[latest_damage_index].documents.length > 0) {
 
             $('.bxslider-four').html('');
-            for (var index in current_tt.damages[latest_damage_index].documents) {
-                lg.log('DEBUG', ' document path ' + current_tt.damages[latest_damage_index].documents[index].path);
-                $('.bxslider-four').append('<li><img style="width:100%;height:auto;" src="' + current_tt.damages[latest_damage_index].documents[index].path + '"/></li>');               
+            for (index in current_tt.damages[latest_damage_index].documents) {
+
+                if (current_tt.damages[latest_damage_index].documents.hasOwnProperty(index)) {
+                    lg.log('DEBUG', ' document path ' + current_tt.damages[latest_damage_index].documents[index].path);
+                    $('.bxslider-four').append('<li><img style="width:100%;height:auto;" src="' + current_tt.damages[latest_damage_index].documents[index].path + '"/></li>');               
+                }
+
             }
 
         } else {
@@ -1142,15 +1225,17 @@ $(document).delegate('#four', 'pageshow', function () {
 
     $('#four select#drivercauseddamage').html('');
     $('#four select#drivercauseddamage').append('<option value=""> - Select One - </option>');      
-    for (var index in enum_drivercauseddamage) {
-
-        $('#four select#drivercauseddamage').append('<option value="' + enum_drivercauseddamage[index].value + '">' + enum_drivercauseddamage[index].label + '</option>');
+    for (index in enum_drivercauseddamage) {
+        if (enum_drivercauseddamage.hasOwnProperty(index)) {
+            $('#four select#drivercauseddamage').append('<option value="' + enum_drivercauseddamage[index].value + '">' + enum_drivercauseddamage[index].label + '</option>');
+        }
     }    
 
-    if (latest_damage_index != -1) {
+    if (latest_damage_index !== -1) {
 
         lg.log('DEBUG', 'drivercauseddamage ' + current_tt.damages[latest_damage_index].drivercauseddamage);
         $("#four select#drivercauseddamage option[value='" + current_tt.damages[latest_damage_index].drivercauseddamage + "']").attr("selected","selected");
+
     }
 
     $('#four select#drivercauseddamage').selectmenu('refresh');
@@ -1165,6 +1250,8 @@ $(document).delegate('#four', 'pageshow', function () {
  */
 
 $(document).delegate('#two', 'pageshow', function () {
+
+    "use strict";    
 
     var lg = new Logger(Config.log.level, '#two$pageshow', Config.log.type, Config.log.config);
     var language = new Language(undefined, Config.log);
@@ -1204,8 +1291,12 @@ $(document).delegate('#two', 'pageshow', function () {
         $('.bxslider-two').html('');
 
         for (var index in tt.docs) {
-            lg.log('DEBUG', ' path to image file ' + tt.docs[index].path);
-            $('.bxslider-two').append('<li><center><img id="' + tt.docs[index].path.replace('.','#') + '" style="width:100%;height:auto;" src="data:image/jpeg;base64,' + window.localStorage.getItem(tt.docs[index].path) + '"/></center></li>');   
+
+            if (tt.docs.hasOwnProperty(index)){
+                lg.log('DEBUG', ' path to image file ' + tt.docs[index].path);
+                $('.bxslider-two').append('<li><center><img id="' + tt.docs[index].path.replace('.','#') + '" style="width:100%;height:auto;" src="data:image/jpeg;base64,' + window.localStorage.getItem(tt.docs[index].path) + '"/></center></li>');   
+            }
+
         }
 
     } else {
@@ -1222,6 +1313,9 @@ $(document).delegate('#two', 'pageshow', function () {
  */
 
 $(document).delegate('#three', 'pageshow', function () {
+
+    "use strict";
+
     var base64_image = window.localStorage.getItem(window.localStorage.getItem('details_doc_id'));
     $('#three img').attr('src', 'data:image/jpeg;base64,' + base64_image);
     $('#three img').css('width', ($(document).width()-20));
@@ -1235,6 +1329,8 @@ $(document).delegate('#three', 'pageshow', function () {
  */
 
 $(document).delegate('#five', 'pageshow', function () {
+
+    "use strict";    
     
     //Environment SetUp
     var lg = new Logger(Config.log.level, 'gta-page#five$pageshow', Config.log.type, Config.log.config); 
@@ -1298,14 +1394,18 @@ $(document).delegate('#five', 'pageshow', function () {
                  */
 
                 var successCb = function(data) {
+
+                    data = undefined;
+
                     lg.log('TRACE', 'successCb Download Images start');
 
                     /**
                      * Save the page state
                      */
 
-                    if (current_tt == null)   
+                    if (current_tt === null) {  
                         current_tt = {};
+                    }
 
                     current_tt.trailertype = escapeHtmlEntities($('#one #trailertype option:selected').text());
                     current_tt.trailerid = escapeHtmlEntities($('#one #trailerid option:selected').text());
@@ -1320,7 +1420,7 @@ $(document).delegate('#five', 'pageshow', function () {
                      */                
 
                     var gas = tt.getAllSanitized();
-                    gas.docs = Array();
+                    gas.docs = [];
                     gas.docs.push({'path': doc.get('path')});              
 
                     window.localStorage.setItem('details_tt_id', $(that).attr('id'));
@@ -1332,6 +1432,9 @@ $(document).delegate('#five', 'pageshow', function () {
                 };
 
                 var errorCb = function(jqxhr, status, er) {
+
+                    jqxhr = status = er = undefined;
+
                     lg.log('TRACE', 'errorCb Download Images start');
                 };
 
@@ -1375,33 +1478,37 @@ $(document).delegate('#five', 'pageshow', function () {
          */
 
         for ( var index in current_tt.damages ) {
-            var tt = new TroubleTicket(usr, Config.log);
-            var dmg = new Damage(undefined, Config.log);
-            var ast = new Asset(undefined, Config.log);
-            var dc = new DocCollection(Config.log);
+            if (current_tt.damages.hasOwnProperty(index)) {
+                var tt = new TroubleTicket(usr, Config.log);
+                var dmg = new Damage(undefined, Config.log);
+                var ast = new Asset(undefined, Config.log);
+                var dc = new DocCollection(Config.log);
 
-            for ( var docindex in current_tt.damages[index].documents) {
-                var doc = new Doc(undefined, Config.log);
-                doc.set('path', current_tt.damages[index].documents[docindex].path);
-                dc.push(doc);
+                for ( var docindex in current_tt.damages[index].documents) {
+                    if (current_tt.damages[index].documents.hasOwnProperty(docindex)){
+                        var doc = new Doc(undefined, Config.log);
+                        doc.set('path', current_tt.damages[index].documents[docindex].path);
+                        dc.push(doc);
+                    }
+                }
+
+                ast.set('assetname', current_tt.trailerid);
+
+                dmg.set('damageposition', current_tt.damages[index].damageposition);
+                dmg.set('damagetype', current_tt.damages[index].damagetype);
+                dmg.set('drivercauseddamage', current_tt.damages[index].drivercauseddamage);
+                dmg.set('docs', dc);
+
+                tt.set('sealed', current_tt.sealed);
+                tt.set('sealed', current_tt.sealed);
+                tt.set('place', current_tt.place);
+                tt.set('damage', dmg);
+                tt.set('asset', ast);
+
+                lg.log('DEBUG', 'trouble ticket');   
+
+                ttc.push(tt);
             }
-
-            ast.set('assetname', current_tt.trailerid)
-
-            dmg.set('damageposition', current_tt.damages[index].damageposition);
-            dmg.set('damagetype', current_tt.damages[index].damagetype);
-            dmg.set('drivercauseddamage', current_tt.damages[index].drivercauseddamage);
-            dmg.set('docs', dc);
-
-            tt.set('sealed', current_tt.sealed);
-            tt.set('sealed', current_tt.sealed);
-            tt.set('place', current_tt.place);
-            tt.set('damage', dmg);
-            tt.set('asset', ast);
-
-            lg.log('DEBUG', 'trouble ticket');   
-
-            ttc.push(tt);
         }
 
         /**
@@ -1423,18 +1530,21 @@ $(document).delegate('#five', 'pageshow', function () {
 
             /** Check if device is Android **/
 
-            if (typeof navigator.app !== 'undefined')
+            if (typeof navigator.app !== 'undefined') {
                 navigator.app.clearHistory();
+            }
 
             var unsent_files = window.localStorage.getItem('unsent_files');
 
-            if (unsent_files instanceof Array)
-            lg.log('DEBUG', '#five #sendalldamages success unsent_files ' + unsent_files.length);
+            if (unsent_files instanceof Array) {
+                lg.log('DEBUG', '#five #sendalldamages success unsent_files ' + unsent_files.length);
+            }
 
-            if (unsent_files == null || !(unsent_files instanceof Array))
+            if (unsent_files === null || !(unsent_files instanceof Array)) {
                 unsent_files = [];  
+            }
             
-            if (unsent_files.length == 0) {
+            if (unsent_files.length === 0) {
 
                 lg.log('TRACE', '#five #sendalldamages success no unsent_files ');
 
@@ -1570,21 +1680,25 @@ $(document).delegate('#five', 'pageshow', function () {
 
             var stt = ttc.getAllAsArray();
 
-            current_tt.damages = Array();
+            current_tt.damages = [];
             
             for (var index in stt) {
 
-                lg.log('DEBUG', ' stt[index] instanceof TroubleTicket ' + (stt[index] instanceof TroubleTicket));
-                lg.log('DEBUG', ' stt[index].damage instanceof Damage ' + (stt[index].get('damage') instanceof Damage));
+                if (stt.hasOwnProperty(index)) {
+
+                    lg.log('DEBUG', ' stt[index] instanceof TroubleTicket ' + (stt[index] instanceof TroubleTicket));
+                    lg.log('DEBUG', ' stt[index].damage instanceof Damage ' + (stt[index].get('damage') instanceof Damage));
 
 
-                if (stt[index] instanceof TroubleTicket &&
-                    stt[index].get('damage') instanceof Damage)
-                    current_tt.damages.push(
-                        JSON.parse(
-                            stt[index].get('damage').serialize()
-                        )
-                    );
+                    if (stt[index] instanceof TroubleTicket &&
+                        stt[index].get('damage') instanceof Damage) {
+                        current_tt.damages.push(
+                            JSON.parse(
+                                stt[index].get('damage').serialize()
+                            )
+                        );
+                    }
+                }
             }
 
             lg.log('DEBUG', ' current_tt ' + JSON.stringify(current_tt));
@@ -1597,14 +1711,15 @@ $(document).delegate('#five', 'pageshow', function () {
              * so we show the user the 'All Error Page' else show the 'Partial Success page'
              */
             
-            if (error_count == total_count) {
+            if (error_count === total_count) {
 
                 lg.log('TRACE', '#five #sendalldamages error launching popup for a_dialog_error_damagereported');
 
                 $.mobile.urlHistory.stack = [];
 
-                if (typeof navigator.app !== 'undefined')
+                if (typeof navigator.app !== 'undefined') {
                     navigator.app.clearHistory();
+                }
 
                 $('#a_dialog_error_damagereported').click();
 
@@ -1614,10 +1729,11 @@ $(document).delegate('#five', 'pageshow', function () {
 
                 var unsent_files = window.localStorage.getItem('unsent_files');
 
-                if (unsent_files == null || !(unsent_files instanceof Array))
+                if (unsent_files === null || !(unsent_files instanceof Array)) {
                     unsent_files = [];  
+                }
                 
-                if (unsent_files.length == 0) {
+                if (unsent_files.length === 0) {
 
                     lg.log('TRACE', '#five #sendalldamages error no unsent_files');
 
@@ -1798,20 +1914,22 @@ $(document).delegate('#five', 'pageshow', function () {
 
     lg.log('DEBUG', ' number of damages ' + current_tt.damages.length);        
 
-    if ( current_tt != null &&
+    if ( current_tt !== null &&
             current_tt.damages instanceof Array && 
             current_tt.damages.length > 0) {
 
         $('#five .bxslider-five-b').html('');
 
-        for (index in current_tt.damages) {
-            $('#five .bxslider-five-b').append("<li><center><div style='height:60px;width:200px;'><a id='" + index + "' href='javascript:void(0);'>" + current_tt.damages[index].damageposition + ' ' + current_tt.damages[index].damagetype + "</a></div></center></li>");
+        for (var index in current_tt.damages) {
+            if (current_tt.damages.hasOwnProperty(index)){
+                $('#five .bxslider-five-b').append("<li><center><div style='height:60px;width:200px;'><a id='" + index + "' href='javascript:void(0);'>" + current_tt.damages[index].damageposition + ' ' + current_tt.damages[index].damagetype + "</a></div></center></li>");
+            }
         }
         window.slider_five_b.reloadSlider();  
     } 
 
     var tt_list = JSON.parse(window.localStorage.getItem('tt_list'));
-    if (tt_list != null && current_tt != null && tt_list.html != '') {
+    if (tt_list !== null && current_tt !== null && tt_list.html !== '') {
         lg.log('DEBUG', 'reloading slider for troubleticketlist  to position ' + tt_list.position);        
 
         $('.bxslider-five-a').html(tt_list.html);
@@ -1838,6 +1956,8 @@ $(document).delegate('#five', 'pageshow', function () {
 
 $(document).delegate('#contact', 'pageshow', function () {
 
+    "use strict";    
+
     /**
      * Environment SetUp
      */
@@ -1852,7 +1972,7 @@ $(document).delegate('#contact', 'pageshow', function () {
 
         lg.log('DEBUG',' contact_html ' + contact_html);
 
-        if (contact_html == null) {
+        if (contact_html === null) {
             $('#contact div[data-role=navbar]').siblings().remove();
 
             lg.log('DEBUG', " $('#contact div[data-role=navbar]') " + $('#contact div[data-role=navbar]').length);            
@@ -1866,14 +1986,14 @@ $(document).delegate('#contact', 'pageshow', function () {
             $('#contact div[data-role=navbar]').siblings().remove();
             $('<div>' + contact_html + '</div>').insertAfter('#contact div[data-role=navbar]');
 
-            $('#contact div[data-role=navbar]').siblings().find('a')
+            $('#contact div[data-role=navbar]').siblings().find('a');
 
         }
 
         $('#contact').off('swiperight');
 
         $('#contact').on('swiperight',function(){
-            if ($('#trace_id').length == 0) {
+            if ($('#trace_id').length === 0) {
                 var trace_id = window.localStorage.getItem('trace_id');
                 $('<div id="trace_id"><p style="text-align:center;">' + trace_id + '<p></div>').insertAfter('#contact div[data-role=navbar]');
             }
@@ -1883,7 +2003,7 @@ $(document).delegate('#contact', 'pageshow', function () {
 
     } catch (err) {
 
-        lg.log('FATAL', JSON.stringify(err))
+        lg.log('FATAL', JSON.stringify(err));
 
     }
 });
@@ -1896,6 +2016,8 @@ $(document).delegate('#contact', 'pageshow', function () {
  */
 
 $(document).delegate('#settings', 'pageshow', function () {
+
+    "use strict";    
 
     var lg = new Logger(Config.log.level, 'gta-page#settings$pageshow', Config.log.type, Config.log.config);  
     var language = new Language(Config.log);   
@@ -1938,8 +2060,8 @@ $(document).delegate('#settings', 'pageshow', function () {
                  * were cache and which werent.
                  */
 
-                var cacheSuccessList = Array();
-                var cacheErrorList = Array();
+                var cacheSuccessList = [];
+                var cacheErrorList = [];
 
                 /**
                  * Log it
@@ -1960,8 +2082,9 @@ $(document).delegate('#settings', 'pageshow', function () {
                  * device's back button the app exits
                  */
 
-                if (typeof navigator.app !== 'undefined')
+                if (typeof navigator.app !== 'undefined') {
                     navigator.app.clearHistory();
+                }
 
                 /**
                  * Clear All cache
@@ -1990,20 +2113,22 @@ $(document).delegate('#settings', 'pageshow', function () {
                      * Check if all cache calls have completed
                      */
 
-                    if ((cacheSuccessList.length + cacheErrorList.length) == 7) {
+                    if ((cacheSuccessList.length + cacheErrorList.length) === 7) {
 
-                        if (cacheErrorList.length==0) { 
+                        if (cacheErrorList.length === 0) { 
                             $('#a_dialog_success_cache').click();
 
-                            if (typeof navigator.app !== 'undefined')
+                            if (typeof navigator.app !== 'undefined') {
                                 navigator.app.clearHistory();
+                            }
 
                         } else {
                             usr.setAuthenticated(false);
                             $('#a_dialog_error_cache').click();
 
-                            if (typeof navigator.app !== 'undefined')
-                                navigator.app.clearHistory();                  
+                            if (typeof navigator.app !== 'undefined') {
+                                navigator.app.clearHistory();          
+                            }        
                         }
                         cacheSuccessList = cacheErrorList = [];
                     }
@@ -2011,6 +2136,9 @@ $(document).delegate('#settings', 'pageshow', function () {
                 
 
                 var success = function(data){
+
+                    data = undefined;
+
                     lg.log('TRACE', ' successfully authenticated');
 
                     var tt = new TroubleTicket(usr, Config.log);
@@ -2053,6 +2181,9 @@ $(document).delegate('#settings', 'pageshow', function () {
                 };
 
                 var error = function( jqxhr, status, er ){
+
+                    status = er = undefined;
+
                     lg.log('TRACE', ' error start');
 
                     try {
@@ -2060,10 +2191,11 @@ $(document).delegate('#settings', 'pageshow', function () {
                         lg.log('TRACE', ' jqxhr ' + jqxhr.responseText);
                         var data = JSON.parse(jqxhr.responseText);
 
-                        if (typeof navigator.app !== 'undefined')                    
+                        if (typeof navigator.app !== 'undefined') {                  
                             navigator.app.clearHistory();
+                        }
 
-                        if (data.error.message == 'Invalid Username and Password') {
+                        if (data.error.message === 'Invalid Username and Password') {
                             $('#a_dialog_error_invalidcredentials').click();
                         } else {
                             $('a_dialog_error_general').click();
@@ -2111,7 +2243,7 @@ $(document).delegate('#settings', 'pageshow', function () {
             }            
         });
 
-        $('#forgot_password').unbind('click').bind('click', function ( e ){
+        $('#forgot_password').unbind('click').bind('click', function (){
             
             try {
 
@@ -2130,15 +2262,17 @@ $(document).delegate('#settings', 'pageshow', function () {
 
                 e.preventDefault();
 
-                if (typeof navigator.app !== 'undefined')
+                if (typeof navigator.app !== 'undefined') {
                     navigator.app.clearHistory();
+                }
 
                 var success = function( data ){
 
                     lg.log('TRACE', ' password reset successfully ' + JSON.stringify(data));
                     
-                    if (typeof navigator.app !== 'undefined')
+                    if (typeof navigator.app !== 'undefined') {
                         navigator.app.clearHistory();
+                    }
 
                     $('#a_dialog_resetpassword_success').click();
 
@@ -2146,10 +2280,13 @@ $(document).delegate('#settings', 'pageshow', function () {
 
                 var error = function( jqxhr, status, er ){
 
+                    jqxhr = status = er = undefined;
+
                     lg.log('TRACE', ' error reset password ' + jqxhr.responseText);
 
-                    if (typeof navigator.app !== 'undefined')
+                    if (typeof navigator.app !== 'undefined') {
                         navigator.app.clearHistory();
+                    }
 
                     $('#a_dialog_resetpassword_error').click();                    
 
@@ -2168,7 +2305,7 @@ $(document).delegate('#settings', 'pageshow', function () {
          * Change password call
          */
 
-        $('#change_password').unbind('click').bind( 'click', function ( e ) {
+        $('#change_password').unbind('click').bind( 'click', function () {
 
             try {
 
@@ -2189,15 +2326,17 @@ $(document).delegate('#settings', 'pageshow', function () {
 
                 e.preventDefault();
 
-                if (typeof navigator.app !== 'undefined')
+                if (typeof navigator.app !== 'undefined') {
                     navigator.app.clearHistory();
+                }
 
                 var success = function( data ){
 
                     lg.log('TRACE', ' password changed successfully ' + JSON.stringify(data));
 
-                    if (typeof navigator.app !== 'undefined')
+                    if (typeof navigator.app !== 'undefined') {
                         navigator.app.clearHistory();
+                    }
 
                     $('#dialog_changepassword #newpassword').val('');
                     $('#a_dialog_changepassword_success').click();
@@ -2206,10 +2345,13 @@ $(document).delegate('#settings', 'pageshow', function () {
 
                 var error = function( jqxhr, status, er ){
 
+                    jqxhr = status = er = undefined;
+
                     lg.log('TRACE', ' error changing password ' + jqxhr.responseText);
 
-                    if (typeof navigator.app !== 'undefined')
+                    if (typeof navigator.app !== 'undefined') {
                         navigator.app.clearHistory();
+                    }
 
                     $('#dialog_changepassword #newpassword').val('');
                     $('#a_dialog_changepassword_error').click();                    
@@ -2243,6 +2385,8 @@ $(document).delegate('#settings', 'pageshow', function () {
 
 $(document).bind('pagebeforechange', function (e, data) {
 
+    "use strict";    
+
     try {
 
         /**
@@ -2263,8 +2407,9 @@ $(document).bind('pagebeforechange', function (e, data) {
          * Clear any browser cache
          */
 
-        if (typeof navigator.app != 'undefined')
+        if (typeof navigator.app !== 'undefined') {
             navigator.app.clearCache();
+        }
 
         /**
          * The type of to is object when there is a transition from
@@ -2278,7 +2423,7 @@ $(document).bind('pagebeforechange', function (e, data) {
              * the user should be redirected to settings page
              */
 
-            if (to.attr('id') == 'one' && !usr.get('authenticated')) {
+            if (to.attr('id') === 'one' && !usr.get('authenticated')) {
                 lg.log('TRACE', ' Application loaded and user is not authenticated ');
                 e.preventDefault();
                 $.mobile.changePage('#settings');
@@ -2315,9 +2460,9 @@ $(document).bind('pagebeforechange', function (e, data) {
 
                 if (to.attr('id') === 'one' || 
                         to.attr('id') === 'two' || 
-                        to.attr('id') == 'three' || 
-                        to.attr('id') == 'four' || 
-                        to.attr('id') == 'five') {                    
+                        to.attr('id') === 'three' || 
+                        to.attr('id') === 'four' || 
+                        to.attr('id') === 'five') {                    
                     e.preventDefault();
 
                     /**
@@ -2345,9 +2490,9 @@ $(document).bind('pagebeforechange', function (e, data) {
 
                 if (to.attr('id') === 'one' || 
                         to.attr('id') === 'two' || 
-                        to.attr('id') == 'three' || 
-                        to.attr('id') == 'four' || 
-                        to.attr('id') == 'five') {  
+                        to.attr('id') === 'three' || 
+                        to.attr('id') === 'four' || 
+                        to.attr('id') === 'five') {  
 
                     $('#' + to.attr('id') + ' div[data-role=navbar] li a[href$=one]').addClass('ui-btn-active');
 
@@ -2361,8 +2506,8 @@ $(document).bind('pagebeforechange', function (e, data) {
                      * back button after sending the damages to server
                      */
 
-                    if (window.localStorage.getItem('current_tt') == null ||
-                        window.localStorage.getItem('current_tt') == false) {
+                    if (window.localStorage.getItem('current_tt') === null ||
+                        window.localStorage.getItem('current_tt') === false) {
                         $.mobile.changePage('#one');
                         return;
                     }
@@ -2380,7 +2525,10 @@ $(document).bind('pagebeforechange', function (e, data) {
         if (typeof to === 'string') {
             var u = $.mobile.path.parseUrl(to);
             to = u.hash || '#' + u.pathname.substring(1);
-            if (from) from = '#' + from.attr('id');
+
+            if (from) {
+                from = '#' + from.attr('id');
+            }
 
             lg.log('DEBUG', 'To page: ' + to);
             lg.log('DEBUG', 'usr.authenticated: ' + usr.get('authenticated'));
@@ -2397,8 +2545,8 @@ $(document).bind('pagebeforechange', function (e, data) {
                  * back button after sending the damages to server
                  */
 
-                if (window.localStorage.getItem('current_tt') == null ||
-                    window.localStorage.getItem('current_tt') == false) {
+                if (window.localStorage.getItem('current_tt') === null ||
+                    window.localStorage.getItem('current_tt') === false) {
 
                     /**
                      * Changing page to one if there is not tt in cache
@@ -2425,69 +2573,71 @@ $(document).bind('pagebeforechange', function (e, data) {
 
 document.addEventListener("deviceready", function(){
 
-        /**
-         * Event Bindings
-         */
+    "use strict";    
 
-        /**
-         * Slider widget
-         */    
+    /**
+     * Event Bindings
+     */
 
-        window.slider_five_a = $('.bxslider-five-a').bxSlider({
-            infiniteLoop: true,
-            hideControlOnEnd: true,
-            pager: true,
-            pagerSelector: '#pager-five-a',
-            pagerType: 'short',
-            useCSS:false,
-            swipeThreshold:10
-        });
+    /**
+     * Slider widget
+     */    
 
-        window.slider_five_b = $('.bxslider-five-b').bxSlider({
-            infiniteLoop: true,
-            hideControlOnEnd: true,
-            pager: true,
-            pagerSelector: '#pager-five-b',
-            pagerType: 'short',
-            useCSS:false,
-            swipeThreshold:10
-        });        
+    window.slider_five_a = $('.bxslider-five-a').bxSlider({
+        infiniteLoop: true,
+        hideControlOnEnd: true,
+        pager: true,
+        pagerSelector: '#pager-five-a',
+        pagerType: 'short',
+        useCSS:false,
+        swipeThreshold:10
+    });
 
-        window.slider_one = $('.bxslider-one').bxSlider({
-            infiniteLoop: true,
-            hideControlOnEnd: true,
-            pager:true,
-            pagerSelector: '#pager-one',
-            pagerType: 'short',         
-            useCSS:false,
-            swipeThreshold:10
-        });        
+    window.slider_five_b = $('.bxslider-five-b').bxSlider({
+        infiniteLoop: true,
+        hideControlOnEnd: true,
+        pager: true,
+        pagerSelector: '#pager-five-b',
+        pagerType: 'short',
+        useCSS:false,
+        swipeThreshold:10
+    });        
 
-        window.slider_four = $('.bxslider-four').bxSlider({
-            infiniteLoop: false,
-            hideControlOnEnd: true,
-            pager:true,
-            pagerSelector: '#pager-four',
-            pagerType: 'short',
-            useCSS:false,
-            swipeThreshold:10
-        });
+    window.slider_one = $('.bxslider-one').bxSlider({
+        infiniteLoop: true,
+        hideControlOnEnd: true,
+        pager:true,
+        pagerSelector: '#pager-one',
+        pagerType: 'short',         
+        useCSS:false,
+        swipeThreshold:10
+    });        
 
-        window.slider_two = $('.bxslider-two').bxSlider({
-            infiniteLoop: false,
-            hideControlOnEnd: true,
-            pager: true,
-            pagerSelector: '#pager-two',
-            pagerType: 'short',
-            useCSS:false,
-            swipeThreshold:10
-        });        
+    window.slider_four = $('.bxslider-four').bxSlider({
+        infiniteLoop: false,
+        hideControlOnEnd: true,
+        pager:true,
+        pagerSelector: '#pager-four',
+        pagerType: 'short',
+        useCSS:false,
+        swipeThreshold:10
+    });
 
-        /**
-         * Localization
-         */
+    window.slider_two = $('.bxslider-two').bxSlider({
+        infiniteLoop: false,
+        hideControlOnEnd: true,
+        pager: true,
+        pagerSelector: '#pager-two',
+        pagerType: 'short',
+        useCSS:false,
+        swipeThreshold:10
+    });        
 
-        if (typeof navigator.globalization !== 'undefined')
+    /**
+     * Localization
+     */
+
+    if (typeof navigator.globalization !== 'undefined') {
         navigator.globalization.getPreferredLanguage(
             function (lang) {
                 var language = new Language(lang.value, Config.log);
@@ -2505,7 +2655,7 @@ document.addEventListener("deviceready", function(){
                      */
 
                     $("*").each(function () {
-                        if ($(this).children().length == 0) {
+                        if ($(this).children().length === 0) {
 
                             /**
                              * Get all words of the language
@@ -2518,7 +2668,9 @@ document.addEventListener("deviceready", function(){
                              */
 
                             for (var english in words) {
-                                $(this).text($(this).text().replace(english, words[english]));
+                                if (words.hasOwnProperty(english)) {
+                                    $(this).text($(this).text().replace(english, words[english]));
+                                }
                             }
                         }
                     });
@@ -2531,16 +2683,10 @@ document.addEventListener("deviceready", function(){
 
                 $.mobile.changePage('#one');
 
-                if (typeof navigator.app !== 'undefined')
+                if (typeof navigator.app !== 'undefined') {
                     navigator.app.clearHistory();
-            },
-
-            /**
-             * Error handler function if language is not found
-             */
-
-            function () {
-                console.log('Error getting language\n');
+                }
             }
         );
+    }
 }, false);

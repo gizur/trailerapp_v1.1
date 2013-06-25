@@ -1,4 +1,10 @@
-/* jshint undef: true, unused: true, strict: true, vars: true */
+/*jshint forin:true, noarg:true, noempty:true, eqeqeq:true, 
+         bitwise:true, strict:true, undef:false, unused:true, 
+         curly:true, browser:true, indent:4, maxerr:50 */
+
+/*global node_unit:true, Stapes:true, 
+         Logger:true, LocalStorage:true,
+         require:false, window:true, exports:false*/
 
 /**
  * Node Unit Test file for Doc
@@ -22,12 +28,15 @@ Doc = require('../Android/Besiktning/assets/www/js/app/models/doc.js').Doc;
 
 exports.Doc = {
     "has properties" : function(test){
+
+        "use strict";
+
         var d = new Doc();
 
         test.expect(2);
         
-        test.ok(typeof d.get('id') == 'string', "id is not defined / properly");
-        test.ok(typeof d.get('path') == 'string', "path is not defined / properly");
+        test.ok(typeof d.get('id') === 'string', "id is not defined / properly");
+        test.ok(typeof d.get('path') === 'string', "path is not defined / properly");
 
         test.done();
     }

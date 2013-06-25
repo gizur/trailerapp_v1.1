@@ -1,4 +1,10 @@
-/* jshint undef: true, unused: true, strict: true, vars: true */
+/*jshint forin:true, noarg:true, noempty:true, eqeqeq:true, 
+         bitwise:true, strict:true, undef:false, unused:true, 
+         curly:true, browser:true, indent:4, maxerr:50 */
+
+/*global $:true, node_unit:true, Stapes:true, 
+         Logger:true, LocalStorage:true, Asset:true,
+         require:false, window:true, exports:false*/
 
 /**
  * Node Unit Test file for TroubleTicket
@@ -44,6 +50,9 @@ usr.set('password', Config.password);
 
 exports.troubleticket = {
     "has properties" : function(test){
+
+        "use strict";
+
         var snd_tt = new TroubleTicket();
 
         test.expect(4);
@@ -56,14 +65,23 @@ exports.troubleticket = {
         test.done();
     },
     "got picklist sealed" : function(test) {
+
+        "use strict";
+
         var tt = new TroubleTicket(usr);
 
         var success = function(data){
+
+            data = undefined;
+
             test.ok(true);
             test.done();
         };
 
         var error = function(jqxhr, status, er){
+
+            jqxhr = status = er = undefined;
+
             test.ok(false, "Unable to fetch picklist sealed : " + data.error.trace_id + " : " + data.error.message);
             test.done();
         };
@@ -71,14 +89,23 @@ exports.troubleticket = {
         tt.getEnumSealed(success, error);
     },
     "got picklist place" : function(test) {
+
+        "use strict";
+
         var tt = new TroubleTicket(usr);
 
         var success = function(data){
+
+            data = undefined;
+
             test.ok(true);
             test.done();
         };
 
         var error = function(jqxhr, status, er){
+
+            jqxhr = status = er = undefined;
+
             test.ok(false, "Unable to fetch picklist place : " + data.error.trace_id + " : " + data.error.message);
             test.done();
         };

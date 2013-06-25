@@ -1,4 +1,10 @@
-/* jshint undef: true, unused: true, strict: true, vars: true */
+/*jshint forin:true, noarg:true, noempty:true, eqeqeq:true, 
+         bitwise:true, strict:true, undef:false, unused:true, 
+         curly:true, browser:true, indent:4, maxerr:50 */
+
+/*global node_unit:true, Stapes:true, 
+         Logger:true, LocalStorage:true,
+         require:false, window:true, exports:false*/
 
 /**
  * Node Unit Test file for Doc Collection
@@ -23,6 +29,9 @@ DocCollection = require('../Android/Besiktning/assets/www/js/app/models/doccolle
 
 exports.doccollection = {
     "has properties" : function(test){
+
+        "use strict";
+
         var dc = new DocCollection();
 
         test.expect(1);
@@ -32,6 +41,9 @@ exports.doccollection = {
         test.done();
     },
     "has method" : function(test) {
+
+        "use strict";
+
         var dc = new DocCollection();
         var d = new Doc();
 
@@ -42,7 +54,9 @@ exports.doccollection = {
         test.expect(dc.size());
 
         for (var index in dc_attr) {
-            test.ok(dc_attr[index] instanceof Doc , "Collection item not of type Doc " + index);
+            if (dc_attr.hasOwnProperty(index)) {
+                test.ok(dc_attr[index] instanceof Doc , "Collection item not of type Doc " + index);
+            }
         }
 
         test.done();
