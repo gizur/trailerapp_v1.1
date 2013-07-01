@@ -47,7 +47,7 @@ var Language = Stapes.subclass({
         }
 
         this.extend({
-            _lg : new Logger(aLogConfig.level, 'js/util/language', aLogConfig.type, aLogConfig.config)
+            _lg : new Logger('DEBUG', 'js/util/language', aLogConfig.type, aLogConfig.config)
         });
 
         /**
@@ -60,11 +60,14 @@ var Language = Stapes.subclass({
         this.set( 'svenska' , {
                 "If yes click 'Ok', (you will receive a mail with the new password) else click 'Go Back'" : 'Välj i så fall Ok (ditt nya lösen kommer att mailas)',
                 'Please try again, If the problem persists please contact the Gizur Saas Account holders' : 'Försök igen, Kontakta Gizur SaaS support om problemet kvarstår',
+                'Please select, if damage was caused by driver or not' : 'Välj om skadan orsakats av chauffören eller ej',
                 'Are you sure you want to reset your password' : 'Vill du verkligen nollställa lösen',
+                'Specify the damage in the direction the trailer moves' : 'Skadan anges I trailerns färdriktning',
                 'Please check your mail for the new password' : 'Ett nytt lösen har mailat',  
                 'Please check your internet connection and try again' : 'Kontrollera internetuppkopplingen och försök igen',        
                 'Authenticated successfully and Cache built successfully' : 'Autensiering lyckades och cache är klar',
                 'Password has been reset successfully' : 'Lösen har nollställts',
+                'All Damages have been reported successfully' : 'Skadorna har rapporterats',
                 'Please select if sealed or not' : 'Ange om trailern är plomberad eller ej',
                 'Please select a damage type' : 'Ange typ av skada',
                 'Please select a damage position' : 'Ange position för skadan',                
@@ -77,17 +80,19 @@ var Language = Stapes.subclass({
                 'Building Cache, please wait' : 'Bygger cache, vänta',
                 'Gizur Saas Client ID' : 'Gizur Saas konto',
                 'I caused the damage': 'Jag orsakade skadan',
+                'Enter New Password': 'Ange nytt lösenord',
                 'No Picture(s) Attached' : 'Inga bilder har bifogats',
                 'Password Changed successfully' : 'Lösen har nollställts',
                 'Survey reported successfully' : 'Survey reported successfully',
                 'No Damages Reported' : 'Inga kontrollbesiktningar har rapporterats',
                 'Previously reported damages': 'Tidigare rapporterade skador',
-                'Add more damages' : 'Lägg fler skador',
+                'Add new damage' : 'Lägg till fler skador',
                 'New found damage' : 'Nyfunna skador',
                 'Send damage report' : 'Skicka skaderapport',                
                 'Type of damage' : 'Typ av skada',
-                'Add a picture' : 'Lägg till en bild',
+                'Add new picture' : 'Lägg till en bild',
                 'Report new damage' : 'Rapportera ny skada',
+                'Survey reported successfully' : 'Kontrollbesiktningen har rapporterats',
                 'No new damage' : 'Inga nya skador',
                 'Damage Information' : 'Information om skada',
                 'Existing Damage(s)': 'Befintliga Skador',
@@ -98,7 +103,9 @@ var Language = Stapes.subclass({
                 'Please wait' : 'Vänta',
                 'Password Changed' : 'Lösen har ändrats',
                 'Authenticated successfully' : 'Autensiering lyckades',
-                'Trailer type' : 'Typ av trailer',                                          
+                'Trailer type' : 'Typ av trailer',   
+                'Select One' : 'Välj',  
+                'Go Back' : 'Tillbaka',                                 
                 'Back' : 'Tillbaka',
                 'Picture' : 'Foton',
                 'Save' : 'Spara',            
@@ -118,7 +125,8 @@ var Language = Stapes.subclass({
                 'Change' : 'Ändra',
                 'Error' : 'Fel',
                 'Completed' : 'Slutfört',
-                'of' : 'av'
+                'of' : 'av',
+                'Sending' : 'Skickar'
             }
         );
 

@@ -111,7 +111,9 @@ var TroubleTicketCollection = Stapes.subclass({
             'HelpDesk/damaged/0000/00/' + assetname + '/all',
             '',
             successCbWrapper,
-            errorCbWrapper
+            errorCbWrapper,
+            undefined,
+            true
         );
 
         this._lg.log('TRACE', 'getDamagedTroubleTicketsByAsset END');

@@ -364,7 +364,7 @@ var TroubleTicket = Stapes.subclass({
         this._lg.log('DEBUG', ' ast instanceof Asset ' + (ast instanceof Asset));
         this._lg.log('DEBUG', ' ast.get(assetname) ' + ast.get('assetname'));
 
-        data = {
+        var data = {
             'trailerid' : ast.get('assetname'),
             'damagereportlocation' : $('<div/>').html(this.get('place')).text(),
             'sealed' : this.get('sealed')

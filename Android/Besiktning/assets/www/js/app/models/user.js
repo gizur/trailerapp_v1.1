@@ -155,11 +155,15 @@ var User = Stapes.subclass({
                 }
 
             } catch (err) {
-                that._lg.log('FATAL', JSON.stringify(err));
-            }
 
-            if (typeof errorCb === 'function') {
-                errorCb(jqxhr, status, er);
+                that._lg.log('FATAL', JSON.stringify(err));
+                
+            } finally {
+
+                if (typeof errorCb === 'function') {
+                    errorCb(jqxhr, status, er);
+                }
+
             }
         };
 

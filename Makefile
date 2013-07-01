@@ -27,6 +27,7 @@ review:
 	$(JS_HINT) ./Android/Besiktning/assets/www/js/app/models/*.js
 	$(JS_HINT) ./Android/Besiktning/assets/www/js/app/util/*.js
 	$(JS_HINT) ./Android/Besiktning/assets/www/js/app/*.js
+	$(JS_HINT) ./Android/Besiktning/assets/www/js/app/views/*.js
 
 test:
 	$(JS_TEST) ./tests/*.js
