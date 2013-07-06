@@ -83,7 +83,6 @@ var Language = Stapes.subclass({
                 'Enter New Password': 'Ange nytt lösenord',
                 'No Picture(s) Attached' : 'Inga bilder har bifogats',
                 'Password Changed successfully' : 'Lösen har nollställts',
-                'Survey reported successfully' : 'Survey reported successfully',
                 'No Damages Reported' : 'Inga kontrollbesiktningar har rapporterats',
                 'Previously reported damages': 'Tidigare rapporterade skador',
                 'Add new damage' : 'Lägg till fler skador',
