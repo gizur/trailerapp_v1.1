@@ -120,9 +120,9 @@ var AssetCollection = Stapes.subclass({
         };
 
         this._usr.send(
-            'GET', 
-            'Assets',
-            'inoperation',
+            'GET',
+            'Assets/inoperation',
+            '',
             successCbWrapper,
             errorCbWrapper
         );
