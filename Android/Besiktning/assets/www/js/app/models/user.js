@@ -193,7 +193,7 @@ var User = Stapes.subclass({
 
         var successWrapper = function(data){
 
-            that._lg.log('TRACE', 'authenticate#successWrapper# enter');                                
+            that._lg.log('TRACE', 'authenticate#successWrapper# enter' + data);                                
 
             /**
              * Set flag authenticated to true

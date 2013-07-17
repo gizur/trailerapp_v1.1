@@ -73,7 +73,8 @@ var ScreenSettingsView = Stapes.subclass({
                     $('#settings_password').val() === '' ||
                     $('#settings_client_id').val() === '') {
 
-                    $('#a_dialog_success_login').click();                    
+                    $('#a_dialog_fields_blank').click();
+                    return false;
 
                 }
                 
@@ -331,7 +332,7 @@ var ScreenSettingsView = Stapes.subclass({
 
         $('#change_password').unbind('click').bind( 'click', function () {
 
-            try {
+        	try {
 
                 $('#dialog_changepassword input').val('');
                 $('#dialog_changepassword #message').html('');
@@ -394,8 +395,8 @@ var ScreenSettingsView = Stapes.subclass({
                     $('#a_dialog_changepassword_error').click();                    
 
                 };
-
-                usr.changePassword($('#dialog_changepassword #newpassword').val(), success, error);
+                
+                that._usr.changePassword($('#dialog_changepassword #newpassword').val(), success, error);
 
             } catch (err) {
 

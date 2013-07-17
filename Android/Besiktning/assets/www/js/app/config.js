@@ -14,7 +14,7 @@
  */
 
 var Config = {
-    url : 'https://api.gizur.com/api/',//'http://c2.gizur.com/api/',
+    url : 'https://gizur.com/api/', //'http://phpapplications-env-sixmtjkbzs.elasticbeanstalk.com/api/',//'https://c2.gizur.com/api/',
     log : {
         type : 'loggly',
         config : {
@@ -23,7 +23,7 @@ var Config = {
                 buffer_size : (10 * 1024) //10kB
             }
         },
-        level : 'FATAL'
+        level : 'TRACE'
     }
 };
 

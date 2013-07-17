@@ -244,12 +244,14 @@ var TroubleTicket = Stapes.subclass({
         var that = this;
         var files = [];
         var new_tt_id = 0;
+        var new_tt_no = '';
 
         var successCbWrapper = function(data){
 
             that._lg.log('TRACE', 'successCbWrapper : start');            
 
             new_tt_id = data.result.id;
+            new_tt_no = data.result.ticket_no;
 
             that._lg.log('DEBUG', 'successCbWrapper : new_tt_id ' + new_tt_id);  
             that._lg.log('DEBUG', 'successCbWrapper : files.length ' + files.length);  
@@ -300,7 +302,7 @@ var TroubleTicket = Stapes.subclass({
                 that._usr.send(
                     'POST',
                     'DocumentAttachment/' + new_tt_id,
-                    {},
+                    {"ticket_no":new_tt_no},
                     successCbWrapperMultipleFile,
                     errorCbWrapperMultipleFile,
                     files,

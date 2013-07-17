@@ -76,6 +76,7 @@ var Language = Stapes.subclass({
                 'Please select a Place' : 'Välj en plats',
                 'Unable to build cache' : 'Kunde inte bygga cache',
                 'Unable to change password' : 'Kunde inte ändra lösen',
+                'All fields are mandatory' : 'Todos los campos son obligatorios',
                 'Unable to reset password' : 'Kunde inte nollställa lösen',
                 'Building Cache, please wait' : 'Bygger cache, vänta',
                 'Gizur Saas Client ID' : 'Gizur Saas konto',

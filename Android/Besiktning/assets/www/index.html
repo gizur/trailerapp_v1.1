@@ -106,9 +106,7 @@
         </div>
         <div data-role="fieldcontain">
             <fieldset data-role="controlgroup" data-type="vertical" id="sealed">
-                <legend>
-                    Sealed :
-                </legend>
+                <legend>Sealed :</legend>
                 <input id="radio1" name="sealed" value="Ja" type="radio">
                 <label for="radio1">
                     Yes
@@ -719,7 +717,7 @@
 
     <div data-role="content" data-theme="d">
         <p>Enter New Password</p>
-        <p><input id="newpassword" type="text"></p>
+        <p><input id="newpassword" type="text" maxlength="30"></p>
         <p id="message"></p>
         <p>
             <a id="change" data-role="button" data-inline="true" data-icon="Check">Change</a>
@@ -766,6 +764,19 @@
         <p>Completed 0 of 7</p>   
     </div><!-- /content -->
 </div><!-- /page dialog_success_login -->
+
+<!-- Start of page: #dialog_fields_blank -->
+<a id="a_dialog_fields_blank" href="#dialog_fields_blank" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_fields_blank" data-transition="none">
+    <div data-role="header" data-theme="e">
+        <h2>Error</h2>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>All fields are mandatory.</p>
+        <p><a href="#settings" data-role="button" data-inline="true" data-icon="back">Ok</a></p>
+    </div><!-- /content -->
+</div><!-- /page dialog_fields_blank -->
 
 <!-- Start of page: #dialog_error_cache -->
 <a id="a_dialog_error_cache" href="#dialog_error_cache" data-rel="dialog" style="display: none;"></a> 
