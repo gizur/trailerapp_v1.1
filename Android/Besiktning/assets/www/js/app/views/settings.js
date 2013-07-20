@@ -73,7 +73,7 @@ var ScreenSettingsView = Stapes.subclass({
                     $('#settings_password').val() === '' ||
                     $('#settings_client_id').val() === '') {
 
-                    $('#a_dialog_fields_blank').click();
+                    $('#a_dialog_error_settingvalidation').click();
                     return false;
 
                 }
