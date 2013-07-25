@@ -78,6 +78,8 @@ var ScreenSettingsView = Stapes.subclass({
 
                 }
                 
+                window.changeInPage = false;
+                
                 /**
                  * Storage place for the list of cache items which
                  * were cache and which werent.
@@ -495,10 +497,18 @@ var ScreenSettingsView = Stapes.subclass({
             this.disableChangePasswordButton();
         }
 
-        $('#settings_username').val(this._usr.get('username'));
-        $('#settings_password').val(this._usr.get('password'));
-        $('#settings_client_id').val(this._req.getClientId());
+        if (window.changeInPage === false) {
+	        $('#settings_username').val(this._usr.get('username'));
+	        $('#settings_password').val(this._usr.get('password'));
+	        $('#settings_client_id').val(this._req.getClientId());
 
+	        window.currentObj = {
+	        	'settings_username' : $('#settings_username').val(),
+	        	'settings_password' : $('#settings_password').val(),
+	        	'settings_client_id' : $('#settings_client_id').val()
+	        };
+        }
+        
         if ($('#settings_username').val() === '') {
             this.disableForgotPasswordButton();
         } else {

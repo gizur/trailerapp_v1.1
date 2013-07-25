@@ -104,5 +104,11 @@ var ScreenContactView = Stapes.subclass({
 
         }        
 
+        /**
+         * Current Object is used to 
+         * verify if user has modified anything
+         * on the page.
+         */
+        window.currentObj = {};
     }
 });

@@ -751,6 +751,20 @@ var ScreenFiveView = Stapes.subclass({
 
             $('#five .bxslider-five-b').html('');
 
+            /**
+             * Remove blank saved damages
+             */
+            for (var index in this._current_tt.damages) {
+                if (this._current_tt.damages.hasOwnProperty(index)){
+                	var str = ' - ' + this._language.translate('Select One') + ' - ';
+                	if (this._current_tt.damages[index].damageposition === str || 
+                			this._current_tt.damages[index].damagetype === str ||
+                			this._current_tt.damages[index].drivercauseddamage === '') {
+                		this._current_tt.damages.splice(index,1);
+                	}
+                }
+            }
+            
             for (var index in this._current_tt.damages) {
                 if (this._current_tt.damages.hasOwnProperty(index)){
                     $('#five .bxslider-five-b').append("<li><center><div style='height:60px;width:200px;'><a id='" + index + "' href='javascript:void(0);'>" + this._current_tt.damages[index].damageposition + ' ' + this._current_tt.damages[index].damagetype + "</a></div></center></li>");
@@ -769,7 +783,13 @@ var ScreenFiveView = Stapes.subclass({
         } else {
             $('#one #troubleticketlist').html("<li><center><div style='height:60px;width:120px;'>" + this._language.translate('No Damages Reported') + "</div></center></li>");
             window.slider_five_a.reloadSlider();       
-        }        
-
+        }
+        
+        /**
+         * Current Object is used to 
+         * verify if user has modified anything
+         * on the page.
+         */
+        window.currentObj = {};
     }
 });

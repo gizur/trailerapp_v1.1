@@ -54,7 +54,6 @@ var ScreenOneView = Stapes.subclass({
             _current_tt : current_tt,
             _tt_list : {}
         });
-
     },
 
     /**
@@ -246,6 +245,8 @@ var ScreenOneView = Stapes.subclass({
             }
 
             that._lg.log('TRACE', 'reportsurvey click START');
+            
+            window.changeInPage = false;
 
             /**
              * Save the state of page one
@@ -360,6 +361,7 @@ var ScreenOneView = Stapes.subclass({
 
             that._lg.log('TRACE', 'reportdamage click START');
 
+            window.changeInPage = false;
             /**
              * Save the state of page one
              */
@@ -608,172 +610,186 @@ var ScreenOneView = Stapes.subclass({
 
         "use strict";
 
-        /**
-         * Load from cache if available
-         * this cache is cleared when the Troubleticket is submitted successfully
-         */
-
-        var selected; //text to save selected attr 
-
-        this._lg.log('DEBUG', 'from cache current_tt : ' + JSON.stringify(this._current_tt));
-
-        /**
-         * Create a new Asset object this object should have a cached
-         * enum list of trailer types
-         */
-        var ast = new Asset(this._usr, Config.log);
-        var enum_trailertype = ast.get('enum_trailertype');
-
-        $('#one select#trailerid').html('');   
-
-        this._lg.log('DEBUG', 'enum_trailertype : ' + JSON.stringify(enum_trailertype));
-
-        /**
-         * Load the trailer types into the select menu
-         * and refresh UI.
-         */
-
-        $('#one select#trailertype').html('');
-        $('#one select#trailertype').append('<option value=""> - ' + this._language.translate('Select One') + ' - </option>');    
-        for (var index in enum_trailertype) {
-
-            if (enum_trailertype.hasOwnProperty(index)) {
-
-                //Load value from cache
-                selected = '';
-                if (this._current_tt !== null && enum_trailertype[index].value === this._current_tt.trailertype) {
-                    selected = 'selected="selected"';
-                    this._lg.log('DEBUG', 'selected trailer type : ' + enum_trailertype[index].value);            
-                }
-
-                $('#one select#trailertype').append('<option ' + selected + ' value="' + enum_trailertype[index].value + '">' + enum_trailertype[index].label + '</option>');
-            }
+        if (window.changeInPage === false) {
+	        /**
+	         * Load from cache if available
+	         * this cache is cleared when the Troubleticket is submitted successfully
+	         */
+	
+	        var selected; //text to save selected attr 
+	
+	        this._lg.log('DEBUG', 'from cache current_tt : ' + JSON.stringify(this._current_tt));
+	
+	        /**
+	         * Create a new Asset object this object should have a cached
+	         * enum list of trailer types
+	         */
+	        var ast = new Asset(this._usr, Config.log);
+	        var enum_trailertype = ast.get('enum_trailertype');
+	
+	        $('#one select#trailerid').html('');   
+	
+	        this._lg.log('DEBUG', 'enum_trailertype : ' + JSON.stringify(enum_trailertype));
+	
+	        /**
+	         * Load the trailer types into the select menu
+	         * and refresh UI.
+	         */
+	
+	        $('#one select#trailertype').html('');
+	        $('#one select#trailertype').append('<option value=""> - ' + this._language.translate('Select One') + ' - </option>');    
+	        for (var index in enum_trailertype) {
+	
+	            if (enum_trailertype.hasOwnProperty(index)) {
+	
+	                //Load value from cache
+	                selected = '';
+	                if (this._current_tt !== null && enum_trailertype[index].value === this._current_tt.trailertype) {
+	                    selected = 'selected="selected"';
+	                    this._lg.log('DEBUG', 'selected trailer type : ' + enum_trailertype[index].value);            
+	                }
+	
+	                $('#one select#trailertype').append('<option ' + selected + ' value="' + enum_trailertype[index].value + '">' + enum_trailertype[index].label + '</option>');
+	            }
+	        }
+	        $('#one select#trailertype').selectmenu('refresh');
+	
+	        /**
+	         * Load the trailerids based on the trailer typ
+	         *
+	         */
+	
+	        var ac = new AssetCollection(this._usr, Config.log);
+	        var assets = ac.filter(function(item, key) {
+	            
+	            key = undefined;
+	
+	            return item.get('trailertype') === $('#one select#trailertype option:selected').text();
+	        });
+	
+	        $('#trailerid').append('<option value=""> - ' + this._language.translate('Select One') + ' - </option>');
+	
+	        for (index in assets) {
+	
+	            if (assets.hasOwnProperty(index)) {
+	
+	                //Load value from cache
+	                selected = '';
+	                this._lg.log('DEBUG', 'loop  preload trailer id : ' + assets[index].get('assetname'));
+	                this._lg.log('DEBUG', 'loop  preload trailer id : ' + this._current_tt.trailerid);
+	                this._lg.log('DEBUG', 'loop  preload are they equal : ' + (assets[index].get('assetname') === this._current_tt.trailerid));
+	                
+	                if (this._current_tt !== null && assets[index].get('assetname') === this._current_tt.trailerid) {
+	                    selected = 'selected="selected"';
+	                    this._lg.log('DEBUG', 'selected trailer id : ' + assets[index].get('assetname'));            
+	                }
+	
+	                $('#trailerid').append('<option ' + selected + ' value="' + assets[index].get('assetname') + '">' + assets[index].get('assetname') + '</option>');
+	
+	            }
+	        }
+	        $('#one select#trailerid').selectmenu('refresh');     
+	
+	        /**
+	         * Create a new TroubleTicket object this object should have a cached
+	         * enum sealed
+	         */
+	
+	        var tt = new TroubleTicket(this._usr, Config.log);
+	        var enum_sealed = tt.get('enum_sealed');
+	        var enum_place = tt.get('enum_place');
+	
+	        this._lg.log('DEBUG', 'enum_sealed : ' + JSON.stringify(enum_sealed));
+	
+	        /**
+	         * Load the sealed into the select menu
+	         * and refresh UI.
+	         */
+	
+	        $('#one #sealed').html('');
+	        $('#one #sealed').append('<legend>' + this._language.translate('Sealed') + ' :</legend>');
+	
+	        for (index in enum_sealed) {    
+	
+	            if (enum_sealed.hasOwnProperty(index)) {
+	
+	                //Load value from cache
+	                selected = '';
+	                if (this._current_tt !== null && enum_sealed[index].value === this._current_tt.sealed) {
+	                    selected = 'checked="checked"';
+	                    this._lg.log('DEBUG', 'selected sealed : ' + enum_sealed[index].value);                        
+	                }
+	
+	                $('#one #sealed').append('<input ' + selected + ' id="radio' + index + '" name="sealed" value="' + enum_sealed[index].value + '" type="radio">');
+	                $('#one #sealed').append('<label for="radio' + index + '">' +  enum_sealed[index].label + '</label>');
+	
+	            }
+	        }
+	        $('#one #sealed').trigger('create');
+	        $('#one #sealed').controlgroup();   
+	
+	        this._lg.log('DEBUG', 'enum_place : ' + JSON.stringify(enum_place));
+	
+	        /**
+	         * Load the place into the select menu
+	         * and refresh UI.
+	         */
+	        $('#one select#place').html('');
+	        $('#one select#place').append('<option value=""> - ' + this._language.translate('Select One') + ' - </option>');
+	
+	        for (index in enum_place) {
+	
+	            if (enum_place.hasOwnProperty(index)) {
+	
+	                //this._lg.log('DEBUG', 'enum_place value : ' + enum_place[index].value);        
+	
+	                //Load value from cache
+	                selected = '';        
+	                if (this._current_tt !== null && enum_place[index].value === this._current_tt.place) {
+	                    selected = 'selected="selected"';
+	                    this._lg.log('DEBUG', 'selected place : ' + enum_place[index].value);                                    
+	                }
+	
+	                $('#one select#place').append('<option ' + selected + ' value="' + enum_place[index].value + '">' + enum_place[index].label + '</option>');
+	            }
+	        }
+	
+	        this._lg.log('DEBUG', '#one select#place html : ' + $('#one select#place').html());
+	
+	        $('#one select#place').selectmenu('refresh');    
+	
+	        /**
+	         * Load the perviously fetched tt list from cache
+	         * to slider
+	         * 
+	         */
+	
+	        this._tt_list = JSON.parse(window.localStorage.getItem('tt_list'));
+	
+	        this._lg.log('DEBUG', 'tt_list : ' + JSON.stringify(this._tt_list));
+	
+	        if (this._tt_list !== null && this._current_tt !== null && this._tt_list.html !== '') {
+	            this._lg.log('DEBUG', 'reloading slider for troubleticketlist  to position ' + this._tt_list.position);        
+	
+	            $('#one #troubleticketlist').html(this._tt_list.html);
+	            window.slider_one.reloadSlider();
+	            window.slider_one.goToSlide(this._tt_list.position);        
+	        } else {
+	            $('#one #troubleticketlist').html("<li><center><div style='height:60px;width:120px;'>" + this._language.translate('No Damages Reported') + "</div></center></li>");
+	            window.slider_one.reloadSlider();       
+	        }
+        
+	        /**
+	         * Current Object is used to 
+	         * verify if user has modified anything
+	         * on the page.
+	         */
+        	window.currentObj = {
+        		trailertype : $('#one #trailertype option:selected').text(),
+                trailerid : $('#one #trailerid option:selected').text(),
+                place : $('#one #place option:selected').text(),
+                sealed : $('#one input[name=sealed]:checked').val()
+        	};
         }
-        $('#one select#trailertype').selectmenu('refresh');
-
-        /**
-         * Load the trailerids based on the trailer typ
-         *
-         */
-
-        var ac = new AssetCollection(this._usr, Config.log);
-        var assets = ac.filter(function(item, key) {
-            
-            key = undefined;
-
-            return item.get('trailertype') === $('#one select#trailertype option:selected').text();
-        });
-
-        $('#trailerid').append('<option value=""> - ' + this._language.translate('Select One') + ' - </option>');
-
-        for (index in assets) {
-
-            if (assets.hasOwnProperty(index)) {
-
-                //Load value from cache
-                selected = '';
-                this._lg.log('DEBUG', 'loop  preload trailer id : ' + assets[index].get('assetname'));
-                this._lg.log('DEBUG', 'loop  preload trailer id : ' + this._current_tt.trailerid);
-                this._lg.log('DEBUG', 'loop  preload are they equal : ' + (assets[index].get('assetname') === this._current_tt.trailerid));
-                
-                if (this._current_tt !== null && assets[index].get('assetname') === this._current_tt.trailerid) {
-                    selected = 'selected="selected"';
-                    this._lg.log('DEBUG', 'selected trailer id : ' + assets[index].get('assetname'));            
-                }
-
-                $('#trailerid').append('<option ' + selected + ' value="' + assets[index].get('assetname') + '">' + assets[index].get('assetname') + '</option>');
-
-            }
-        }
-        $('#one select#trailerid').selectmenu('refresh');     
-
-        /**
-         * Create a new TroubleTicket object this object should have a cached
-         * enum sealed
-         */
-
-        var tt = new TroubleTicket(this._usr, Config.log);
-        var enum_sealed = tt.get('enum_sealed');
-        var enum_place = tt.get('enum_place');
-
-        this._lg.log('DEBUG', 'enum_sealed : ' + JSON.stringify(enum_sealed));
-
-        /**
-         * Load the sealed into the select menu
-         * and refresh UI.
-         */
-
-        $('#one #sealed').html('');
-        $('#one #sealed').append('<legend>' + this._language.translate('Sealed') + '</legend>');
-
-        for (index in enum_sealed) {    
-
-            if (enum_sealed.hasOwnProperty(index)) {
-
-                //Load value from cache
-                selected = '';
-                if (this._current_tt !== null && enum_sealed[index].value === this._current_tt.sealed) {
-                    selected = 'checked="checked"';
-                    this._lg.log('DEBUG', 'selected sealed : ' + enum_sealed[index].value);                        
-                }
-
-                $('#one #sealed').append('<input ' + selected + ' id="radio' + index + '" name="sealed" value="' + enum_sealed[index].value + '" type="radio">');
-                $('#one #sealed').append('<label for="radio' + index + '">' +  enum_sealed[index].label + '</label>');
-
-            }
-        }
-        $('#one #sealed').trigger('create');
-        $('#one #sealed').controlgroup();   
-
-        this._lg.log('DEBUG', 'enum_place : ' + JSON.stringify(enum_place));
-
-        /**
-         * Load the place into the select menu
-         * and refresh UI.
-         */
-        $('#one select#place').html('');
-        $('#one select#place').append('<option value=""> - ' + this._language.translate('Select One') + ' - </option>');
-
-        for (index in enum_place) {
-
-            if (enum_place.hasOwnProperty(index)) {
-
-                //this._lg.log('DEBUG', 'enum_place value : ' + enum_place[index].value);        
-
-                //Load value from cache
-                selected = '';        
-                if (this._current_tt !== null && enum_place[index].value === this._current_tt.place) {
-                    selected = 'selected="selected"';
-                    this._lg.log('DEBUG', 'selected place : ' + enum_place[index].value);                                    
-                }
-
-                $('#one select#place').append('<option ' + selected + ' value="' + enum_place[index].value + '">' + enum_place[index].label + '</option>');
-            }
-        }
-
-        this._lg.log('DEBUG', '#one select#place html : ' + $('#one select#place').html());
-
-        $('#one select#place').selectmenu('refresh');    
-
-        /**
-         * Load the perviously fetched tt list from cache
-         * to slider
-         * 
-         */
-
-        this._tt_list = JSON.parse(window.localStorage.getItem('tt_list'));
-
-        this._lg.log('DEBUG', 'tt_list : ' + JSON.stringify(this._tt_list));
-
-        if (this._tt_list !== null && this._current_tt !== null && this._tt_list.html !== '') {
-            this._lg.log('DEBUG', 'reloading slider for troubleticketlist  to position ' + this._tt_list.position);        
-
-            $('#one #troubleticketlist').html(this._tt_list.html);
-            window.slider_one.reloadSlider();
-            window.slider_one.goToSlide(this._tt_list.position);        
-        } else {
-            $('#one #troubleticketlist').html("<li><center><div style='height:60px;width:120px;'>" + this._language.translate('No Damages Reported') + "</div></center></li>");
-            window.slider_one.reloadSlider();       
-        }       
     }
 });

@@ -16,6 +16,57 @@
  */
 
 /**
+ * @function changepage
+ * 
+ * Change page by id
+ * Used in changing page having input, select and checkboxes 
+ * If changes detected in any field, it shows a alert dialog
+ * 
+ * @param {string} to page id
+ */
+
+function changepage(page) {
+	window.changeInPage = false;
+	
+	if(window.currentObj !== null) {
+		console.log(JSON.stringify(window.currentObj));
+		for (index in window.currentObj) {
+			if (window.currentObj.hasOwnProperty(index)) {
+		        console.log("Fetching " + index);
+		        
+		        var val = $('#' + window.prevPage + " #" + index).val();
+		        
+		        if($('#' + window.prevPage + " #" + index).is('select'))
+		        	val = $('#' + window.prevPage + " #" + index + " option:selected").text();
+		        
+		        if ($('#' + window.prevPage + " input[name=" + index + "]").is(':radio'))
+		        	val = $('#' + window.prevPage + " input[name=" + index + "]:checked").val();
+		        
+		        if (val !== window.currentObj[index]) {
+		        	console.log(val + " Not matched " + window.currentObj[index]);
+		        	window.changeInPage = true;
+		        	break;
+		        }
+		    } else {
+		    	console.log(index + " does not hasOwnProperty.");
+		    }
+		}
+	}
+	
+	if (window.changeInPage && page !== window.prevPage) {
+		var htm = '<a href="#' + window.prevPage + 
+			'" data-role="button" data-inline="true"' +
+			' data-icon="back">Back</a><a href="#' + page +
+			'" data-role="button" data-inline="true" data-icon="forward" onclick="window.changeInPage = false;">Continue</a>';
+		console.log(htm);
+		$('#notify_buttondiv').empty().html(htm);
+		$('#a_dialog_notify_changevalidation').click();
+	} else {
+		$.mobile.changePage("#" + page);
+	}
+}
+
+/**
  * Screen One Init
  * Creates Survey
  *
@@ -25,6 +76,8 @@ $(document).delegate('#one', 'pageshow', function () {
 
     "use strict";
 
+    window.prevPage = 'one';
+    
     var lg = new Logger(Config.log.level, 'gta-page#one$pageshow', Config.log.type, Config.log.config); 
 
     try {
@@ -85,6 +138,8 @@ $(document).delegate('#four', 'pageshow', function () {
 
     "use strict";    
 
+    window.prevPage = 'four';
+    
     var lg = new Logger(Config.log.level, '#four$pageshow', Config.log.type, Config.log.config);
     var req = new Request(Config.url, undefined, Config.log);
     var usr = new User(req, Config.log);
@@ -106,6 +161,8 @@ $(document).delegate('#two', 'pageshow', function () {
 
     "use strict";    
 
+    window.prevPage = 'two';
+    
     var lg = new Logger(Config.log.level, '#two$pageshow', Config.log.type, Config.log.config);
     var language = new Language(undefined, Config.log);
 
@@ -125,6 +182,8 @@ $(document).delegate('#three', 'pageshow', function () {
 
     "use strict";
 
+    window.prevPage = 'three';
+    
     var base64_image = window.localStorage.getItem(window.localStorage.getItem('details_doc_id'));
     $('#three img').attr('src', 'data:image/jpeg;base64,' + base64_image);
     $('#three img').css('width', ($(document).width()-20));
@@ -140,6 +199,8 @@ $(document).delegate('#three', 'pageshow', function () {
 $(document).delegate('#five', 'pageshow', function () {
 
     "use strict";    
+    
+    window.prevPage = 'five';
     
     //Environment SetUp
     var lg = new Logger(Config.log.level, 'gta-page#five$pageshow', Config.log.type, Config.log.config); 
@@ -191,7 +252,9 @@ $(document).delegate('#contact', 'pageshow', function () {
 $(document).delegate('#settings', 'pageshow', function () {
 
     "use strict";    
-
+    
+    window.prevPage = 'settings';
+    
     var lg = new Logger(Config.log.level, 'gta-page#settings$pageshow', Config.log.type, Config.log.config);  
     var language = new Language(undefined, Config.log); 
 
@@ -217,6 +280,14 @@ $(document).delegate('#settings', 'pageshow', function () {
     }
 });
 
+$(document).delegate("#settings, #one, #two, #three, #four, #five", 'pagebeforehide', function (e, ui) {
+	
+});
+
+
+$(document).delegate('#dialog_notify_changevalidation', 'pagebeforeshow', function () {
+	$(this).page('destroy').page();
+});
 /**
  * Page Before Change
  * Executed before transition or change between any pages
@@ -281,13 +352,13 @@ $(document).bind('pagebeforechange', function (e, data) {
 
             if (to.attr('id') === 'settings') {  
 
-                $('#' + to.attr('id') + ' div[data-role=navbar] li a[href$=settings]').addClass('ui-btn-active');
+                $('#' + to.attr('id') + ' div[data-role=navbar] li a.page-settings').addClass('ui-btn-active');
 
             }
 
             if (to.attr('id') === 'contact') {  
 
-                $('#' + to.attr('id') + ' div[data-role=navbar] li a[href$=contact]').addClass('ui-btn-active');
+                $('#' + to.attr('id') + ' div[data-role=navbar] li a.page-contact').addClass('ui-btn-active');
 
             }
 
@@ -334,7 +405,7 @@ $(document).bind('pagebeforechange', function (e, data) {
                         to.attr('id') === 'four' || 
                         to.attr('id') === 'five') {  
 
-                    $('#' + to.attr('id') + ' div[data-role=navbar] li a[href$=one]').addClass('ui-btn-active');
+                    $('#' + to.attr('id') + ' div[data-role=navbar] li a.page-one').addClass('ui-btn-active');
 
                 }
 
@@ -419,6 +490,14 @@ document.addEventListener("deviceready", function(){
      * Event Bindings
      */
 
+    /**
+     * To get change in page
+     */
+    
+    window.changeInPage = false;
+    $('input').on('change', function(){
+    	window.changeInPage = true;
+    });
     /**
      * Slider widget
      */    
