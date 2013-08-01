@@ -634,9 +634,9 @@ var ScreenFourView = Stapes.subclass({
 	         * on the page.
 	         */
 	        window.currentObj = {
-	        	'damagetype' : $('#four #damagetype option:selected').text(),
-            	'damageposition' : $('#four #damageposition option:selected').text(),
-            	'drivercauseddamage' : $('#four #drivercauseddamage option:selected').text()
+	        	'damagetype' : escapeHtmlEntities($('#four #damagetype option:selected').text()),
+            	'damageposition' : escapeHtmlEntities($('#four #damageposition option:selected').text()),
+            	'drivercauseddamage' : escapeHtmlEntities($('#four #drivercauseddamage option:selected').text())
             };
 	
 	    }

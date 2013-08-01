@@ -1,4 +1,9 @@
-/* jshint undef: true, unused: true, strict: true, vars: true */
+/*jshint forin:true, noarg:true, noempty:true, eqeqeq:true, 
+         bitwise:true, strict:true, undef:false, unused:true, 
+         curly:true, browser:true, indent:4, maxerr:50 */
+
+/*global node_unit:true, Stapes:true, 
+         Logger:true, window:true, exports:false*/
 
 /**
  * Model Class for Trouble ticket
@@ -28,6 +33,8 @@ var TroubleTicket = Stapes.subclass({
 
     constructor : function(aUsr, aLogConfig) {
 
+        "use strict";
+
         /**
          * Set pseudo private vars
          * please dont change this using <objname>._privatevarname
@@ -35,21 +42,24 @@ var TroubleTicket = Stapes.subclass({
          * Arggghh Stapes!!!!
          */
 
-        if (typeof aLogConfig == 'undefined') {
+        if (typeof aLogConfig === 'undefined') {
             aLogConfig = {
                 level  : 'FATAL',
                 type   : 'console',
                 config : {}
             };
         } else {
-            if (typeof aLogConfig.level == 'undefined')
+            if (typeof aLogConfig.level === 'undefined') {
                 aLogConfig.level = 'FATAL';
+            }
 
-            if (typeof aLogConfig.level == 'undefined')
+            if (typeof aLogConfig.level === 'undefined') {
                 aLogConfig.type = 'console';
+            }
 
-            if (typeof aLogConfig.config == 'undefined')
-                aLogConfig.config = {};            
+            if (typeof aLogConfig.config === 'undefined') {
+                aLogConfig.config = {};
+            }
         }  
 
         this.extend({
@@ -84,6 +94,9 @@ var TroubleTicket = Stapes.subclass({
      */  
 
     getAllSanitized :  function() {
+
+        "use strict";
+
         var gas;
 
         gas = this.getAll();
@@ -107,6 +120,9 @@ var TroubleTicket = Stapes.subclass({
      */  
 
     getById : function(Id, successCb, errorCb) {
+
+        "use strict";
+
         var that = this;
 
         var successCbWrapper = function(data){
@@ -114,13 +130,15 @@ var TroubleTicket = Stapes.subclass({
 
             that._lg.log('DEBUG', ' received data ' + JSON.stringify(data.result));
 
-            if (typeof successCb == 'function')
+            if (typeof successCb === 'function') {
                 successCb(data);
+            }
         };
 
         var errorCbWrapper = function(jqxhr, status, er){
-            if (typeof errorCb == 'function')
-                errorCb(jqxhr, status, er);              
+            if (typeof errorCb === 'function') {
+                errorCb(jqxhr, status, er);
+            }
         };
 
         this._usr.send(
@@ -142,19 +160,24 @@ var TroubleTicket = Stapes.subclass({
      */
 
     getEnumPlace: function(successCb, errorCb) {
+
+        "use strict";
+
         var that = this;
 
         var successCbWrapper = function(data){
             that.set('enum_place', data.result);
             that._storage.setItem('enum_place', JSON.stringify(data.result));
 
-            if (typeof successCb == 'function')
+            if (typeof successCb === 'function') {
                 successCb(data, 'place');
+            }
         };
 
         var errorCbWrapper = function(jqxhr, status, er){
-            if (typeof errorCb == 'function')
+            if (typeof errorCb === 'function') {
                 errorCb(jqxhr, status, er, 'place');              
+            }
         };
 
         this._usr.send(
@@ -176,19 +199,24 @@ var TroubleTicket = Stapes.subclass({
      */
 
     getEnumSealed: function(successCb, errorCb) {
+
+        "use strict";
+
         var that = this;
 
         var successCbWrapper = function(data){
             that.set('enum_sealed', data.result);
             that._storage.setItem('enum_sealed', JSON.stringify(data.result));
 
-            if (typeof successCb == 'function')
+            if (typeof successCb === 'function') {
                 successCb(data, 'sealed');
+            }
         };
 
         var errorCbWrapper = function(jqxhr, status, er){
-            if (typeof errorCb == 'function')
+            if (typeof errorCb === 'function') {
                 errorCb(jqxhr, status, er, 'sealed');
+            }
         };
 
         this._usr.send(
@@ -211,22 +239,27 @@ var TroubleTicket = Stapes.subclass({
 
     save: function(successCb, errorCb, silent) {
 
+        "use strict";        
+
         var that = this;
-        var files = Array();
+        var files = [];
         var new_tt_id = 0;
+        var new_tt_no = '';
 
         var successCbWrapper = function(data){
 
             that._lg.log('TRACE', 'successCbWrapper : start');            
 
             new_tt_id = data.result.id;
+            new_tt_no = data.result.ticket_no;
 
             that._lg.log('DEBUG', 'successCbWrapper : new_tt_id ' + new_tt_id);  
             that._lg.log('DEBUG', 'successCbWrapper : files.length ' + files.length);  
 
             if (files.length <= 1) {
-                if (typeof successCb == 'function')
+                if (typeof successCb === 'function') {
                     successCb(data);
+                }
             } else {
                 that._lg.log('TRACE', 'successCbWrapper : calling successCbWrapperMultipleFile'); 
                 successCbWrapperMultipleFile(data);
@@ -240,8 +273,9 @@ var TroubleTicket = Stapes.subclass({
 
             that._lg.log('TRACE', 'errorCbWrapper : start');
 
-            if (typeof errorCb == 'function')
-                errorCb(jqxhr, status, er);   
+            if (typeof errorCb === 'function') {
+                errorCb(jqxhr, status, er);
+            }
 
             that._lg.log('TRACE', 'errorCbWrapper : end');           
         };
@@ -258,8 +292,9 @@ var TroubleTicket = Stapes.subclass({
             files.splice(0,1);
 
             if (files.length === 0) {
-                if (typeof successCb == 'function')
+                if (typeof successCb === 'function') {
                     successCb(data);
+                }
             } else {
 
                 that._lg.log('DEBUG', 'successCbWrapperMultipleFile : new_tt_id ' + new_tt_id);
@@ -267,7 +302,7 @@ var TroubleTicket = Stapes.subclass({
                 that._usr.send(
                     'POST',
                     'DocumentAttachment/' + new_tt_id,
-                    {},
+                    {"ticket_no":new_tt_no},
                     successCbWrapperMultipleFile,
                     errorCbWrapperMultipleFile,
                     files,
@@ -288,7 +323,7 @@ var TroubleTicket = Stapes.subclass({
 
             var unsent_files = window.localStorage.getItem('unsent_files');
 
-            if (unsent_files == null) {
+            if (unsent_files === null) {
                 unsent_files = [];
             } else {
                 unsent_files = JSON.parse(unsent_files);
@@ -308,8 +343,9 @@ var TroubleTicket = Stapes.subclass({
              */
 
             if (files.length === 0){
-                if (typeof successCb == 'function')
-                    successCb(jqxhr, status, er);              
+                if (typeof successCb === 'function') {
+                    successCb(jqxhr, status, er);    
+                }          
             } else {
                 that._usr.send(
                     'POST',
@@ -330,14 +366,14 @@ var TroubleTicket = Stapes.subclass({
         this._lg.log('DEBUG', ' ast instanceof Asset ' + (ast instanceof Asset));
         this._lg.log('DEBUG', ' ast.get(assetname) ' + ast.get('assetname'));
 
-        data = {
+        var data = {
             'trailerid' : ast.get('assetname'),
             'damagereportlocation' : $('<div/>').html(this.get('place')).text(),
             'sealed' : this.get('sealed')
         };
 
         if (!this.get('damage')) {
-            data.ticket_title = 'Survey Reported for ' + data.trailerid, //this.get('trailerid'),
+            data.ticket_title = 'Survey Reported for ' + data.trailerid; //this.get('trailerid'),
             data.ticketstatus = 'Closed';
             data.reportdamage = 'No';
 
@@ -355,10 +391,12 @@ var TroubleTicket = Stapes.subclass({
             var docs = this.get('damage').get('docs').getAll();
 
             for (var index in docs) {
-                files.push(docs[index].get('path'));
+                if (docs.hasOwnProperty(index)) {
+                    files.push(docs[index].get('path'));
+                }
             }
 
-            data.ticket_title = 'Damage Reported for ' + data.trailerid,
+            data.ticket_title = 'Damage Reported for ' + data.trailerid;
             data.ticketstatus = 'Open';
             data.reportdamage = 'Yes';
             data.damageposition = $('<div/>').html(this.get('damage').get('damageposition')).text();
@@ -382,6 +420,6 @@ var TroubleTicket = Stapes.subclass({
  * For node-unit test
  */
 
-if (typeof node_unit != 'undefined') {
+if (typeof node_unit !== 'undefined') {
     exports.TroubleTicket = TroubleTicket;
 }

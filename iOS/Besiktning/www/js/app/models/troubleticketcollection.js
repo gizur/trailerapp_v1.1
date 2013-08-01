@@ -1,4 +1,9 @@
-/* jshint undef: true, unused: true, strict: true, vars: true */
+/*jshint forin:true, noarg:true, noempty:true, eqeqeq:true, 
+         bitwise:true, strict:true, undef:false, unused:true, 
+         curly:true, browser:true, indent:4, maxerr:50 */
+
+/*global node_unit:true, Stapes:true, 
+         Logger:true, exports:false*/
 
 /**
  * Model Class for Trouble ticket collection, fetches 
@@ -21,21 +26,26 @@ var TroubleTicketCollection = Stapes.subclass({
 
     constructor : function(aUsr, aLogConfig) {
 
-        if (typeof aLogConfig == 'undefined') {
+        "use strict";
+
+        if (typeof aLogConfig === 'undefined') {
             aLogConfig = {
                 level  : 'FATAL',
                 type   : 'console',
                 config : {}
             };
         } else {
-            if (typeof aLogConfig.level == 'undefined')
+            if (typeof aLogConfig.level === 'undefined') {
                 aLogConfig.level = 'FATAL';
+            }
 
-            if (typeof aLogConfig.level == 'undefined')
+            if (typeof aLogConfig.level === 'undefined') {
                 aLogConfig.type = 'console';
+            }
 
-            if (typeof aLogConfig.config == 'undefined')
+            if (typeof aLogConfig.config === 'undefined') {
                 aLogConfig.config = {};            
+            }
         }
 
         this.extend({
@@ -55,6 +65,8 @@ var TroubleTicketCollection = Stapes.subclass({
      */       
 
     getDamagedTroubleTicketsByAsset : function(ast, successCb, errorCb) {
+
+        "use strict";        
         
         var that = this;
 
@@ -63,7 +75,7 @@ var TroubleTicketCollection = Stapes.subclass({
 
         var assetname;
 
-        if (typeof ast == 'object') {
+        if (typeof ast === 'object') {
             assetname = ast.get('assetname');
         } else {
             assetname = ast;
@@ -80,13 +92,15 @@ var TroubleTicketCollection = Stapes.subclass({
                 that.push(tt);
             });
 
-            if (typeof successCb == 'function')
+            if (typeof successCb === 'function') {
                 successCb(data);
+            }
         };
 
         var errorCbWrapper = function(jqxhr, status, er){
-            if (typeof errorCb == 'function')
+            if (typeof errorCb === 'function') {
                 errorCb(jqxhr, status, er);
+            }
         };
 
         this._lg.log('DEBUG', 'typeof usr ' + (typeof this._usr));
@@ -97,7 +111,9 @@ var TroubleTicketCollection = Stapes.subclass({
             'HelpDesk/damaged/0000/00/' + assetname + '/all',
             '',
             successCbWrapper,
-            errorCbWrapper
+            errorCbWrapper,
+            undefined,
+            true
         );
 
         this._lg.log('TRACE', 'getDamagedTroubleTicketsByAsset END');
@@ -116,13 +132,15 @@ var TroubleTicketCollection = Stapes.subclass({
 
     save : function(successCb, errorCb, statusCb, aAttemptCount, aKeys, aTotalCount) {
 
+        "use strict";        
+
         var that = this;
         var keys = aKeys;
         var current_key = '';
         var attempt_count = aAttemptCount;
         var total_count = aTotalCount;
 
-        if (typeof total_count == 'undefined') {
+        if (typeof total_count === 'undefined') {
             total_count = this.size();
         }
 
@@ -130,7 +148,7 @@ var TroubleTicketCollection = Stapes.subclass({
          * Number of times this save function has been called
          */
 
-        if (typeof attempt_count == 'undefined') {
+        if (typeof attempt_count === 'undefined') {
             attempt_count = 0;
         }
 
@@ -139,7 +157,7 @@ var TroubleTicketCollection = Stapes.subclass({
          */
 
         if (!(keys instanceof Array)) {
-            keys = Array();
+            keys = [];
         }        
 
         var newSuccessCb = successCb;
@@ -153,17 +171,19 @@ var TroubleTicketCollection = Stapes.subclass({
          * error callback is called
          */
 
-        if (attempt_count == total_count) {
+        if (attempt_count === total_count) {
 
             this._lg.log('DEBUG', ' attempt_count : total_count -> ' + attempt_count + ' : ' + total_count);
             this._lg.log('DEBUG', ' attempt_count == total_count : keys.length ' + keys.length);
 
             if (keys.length === 0) {
-                if (typeof newSuccessCb == 'function')
+                if (typeof newSuccessCb === 'function') {
                     newSuccessCb();
+                }
             } else {
-                if (typeof newErrorCb == 'function')
+                if (typeof newErrorCb === 'function') {
                     newErrorCb(keys.length, total_count);
+                }
             }
 
             this._lg.log('TRACE', ' save called parent callbacks ');
@@ -179,8 +199,9 @@ var TroubleTicketCollection = Stapes.subclass({
             that.remove(current_key);
             ++attempt_count;
 
-            if (typeof newStatusCb == 'function')
+            if (typeof newStatusCb === 'function') {
                 newStatusCb(attempt_count, total_count);
+            }
 
             that.save(newSuccessCb, newErrorCb, newStatusCb, attempt_count, keys, total_count);
         };
@@ -190,11 +211,15 @@ var TroubleTicketCollection = Stapes.subclass({
          */
 
         var error = function(jqxhr, status, er) {
+
+            jqxhr = status = er = undefined;
+
             keys.push(current_key);            
             ++attempt_count;
 
-            if (typeof newStatusCb == 'function')
+            if (typeof newStatusCb === 'function') {
                 newStatusCb(attempt_count, total_count);
+            }
 
             that.save(newSuccessCb, newErrorCb, newStatusCb, attempt_count, keys, total_count);
         };
@@ -210,12 +235,14 @@ var TroubleTicketCollection = Stapes.subclass({
         //this._lg.log('DEBUG', 'attrs ' + JSON.stringify(attrs));        
 
         for (var index in attrs) {
-            this._lg.log('DEBUG', 'attrs[index] instanceof TroubleTicket ' + (attrs[index] instanceof TroubleTicket));            
+            if (attrs.hasOwnProperty(index)) {
+                this._lg.log('DEBUG', 'attrs[index] instanceof TroubleTicket ' + (attrs[index] instanceof TroubleTicket));            
 
-            if (keys.indexOf(index) == -1) {
-                attrs[index].save(success, error, true); //boolean true for silent
-                current_key = index;
-                break;
+                if (keys.indexOf(index) === -1) {
+                    attrs[index].save(success, error, true); //boolean true for silent
+                    current_key = index;
+                    break;
+                }
             }
         }
     }
@@ -226,6 +253,6 @@ var TroubleTicketCollection = Stapes.subclass({
  * For node-unit test
  */
 
-if (typeof node_unit != 'undefined') {
+if (typeof node_unit !== 'undefined') {
     exports.TroubleTicketCollection = TroubleTicketCollection;
 }

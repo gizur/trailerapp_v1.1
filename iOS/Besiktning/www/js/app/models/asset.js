@@ -1,4 +1,9 @@
-/* jshint undef: true, unused: true, strict: true, vars: true */
+/*jshint forin:true, noarg:true, noempty:true, eqeqeq:true, 
+         bitwise:true, strict:true, undef:false, unused:true, 
+         curly:true, browser:true, indent:4, maxerr:50 */
+
+/*global node_unit:true, Stapes:true, 
+         Logger:true, window:true, exports:false*/
 
 /**
  * Model Class Asset
@@ -20,6 +25,8 @@ var Asset = Stapes.subclass({
 
     constructor : function(aUsr, aLogConfig) {
 
+        "use strict";
+
         /**
          * Set pseudo private vars
          * please dont change this using <objname>._privatevarname
@@ -27,21 +34,24 @@ var Asset = Stapes.subclass({
          * Arggghh Stapes!!!!
          */        
 
-        if (typeof aLogConfig == 'undefined') {
+        if (typeof aLogConfig === 'undefined') {
             aLogConfig = {
                 level  : 'FATAL',
                 type   : 'console',
                 config : {}
             };
         } else {
-            if (typeof aLogConfig.level == 'undefined')
+            if (typeof aLogConfig.level === 'undefined') {
                 aLogConfig.level = 'FATAL';
+            }
 
-            if (typeof aLogConfig.level == 'undefined')
+            if (typeof aLogConfig.level === 'undefined') {
                 aLogConfig.type = 'console';
+            }
 
-            if (typeof aLogConfig.config == 'undefined')
+            if (typeof aLogConfig.config === 'undefined') {
                 aLogConfig.config = {};            
+            }
         }
 
         this.extend({
@@ -75,6 +85,9 @@ var Asset = Stapes.subclass({
      */ 
           
     getEnumTrailerType : function(successCb, errorCb) {
+
+        "use strict";
+
         this._lg.log('DEBUG', 'getEnumTrailerType start');  
 
         var that = this;
@@ -83,13 +96,15 @@ var Asset = Stapes.subclass({
             that.set('enum_trailertype', data.result);
             that._storage.setItem('enum_trailertype', JSON.stringify(data.result));
 
-            if (typeof successCb == 'function')                
+            if (typeof successCb === 'function') {               
                 successCb(data, 'trailertype');
+            }
         };
 
         var errorCbWrapper = function(jqxhr, status, er){
-            if (typeof errorCb == 'function')
+            if (typeof errorCb === 'function') {
                 errorCb(jqxhr, status, er, 'trailertype');
+            }
         };
 
         this._lg.log('DEBUG', 'typeof usr = ' + (typeof this._usr));
@@ -110,6 +125,6 @@ var Asset = Stapes.subclass({
  * For node-unit test
  */
 
-if (typeof node_unit != 'undefined') {
+if (typeof node_unit !== 'undefined') {
     exports.Asset = Asset;
 }

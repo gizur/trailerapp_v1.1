@@ -1,4 +1,9 @@
-/* jshint undef: true, unused: true, strict: true, vars: true */
+/*jshint forin:true, noarg:true, noempty:true, eqeqeq:true, 
+         bitwise:true, strict:true, undef:false, unused:true, 
+         curly:true, browser:true, indent:4, maxerr:50 */
+
+/*global node_unit:true, Stapes:true, 
+         Logger:true, window:true, exports:false*/
 
 /**
  * Utility Class Language
@@ -12,6 +17,8 @@
 var Language = Stapes.subclass({
     constructor : function( language, aLogConfig ) {
 
+        "use strict";
+
         /**
          * Set pseudo private vars
          * please dont change this using <objname>._privatevarname
@@ -19,25 +26,28 @@ var Language = Stapes.subclass({
          * Arggghh Stapes!!!!
          */
 
-        if (typeof aLogConfig == 'undefined') {
+        if (typeof aLogConfig === 'undefined') {
             aLogConfig = {
                 level  : 'FATAL',
                 type   : 'console',
                 config : {}
             };
         } else {
-            if (typeof aLogConfig.level == 'undefined')
+            if (typeof aLogConfig.level === 'undefined') {
                 aLogConfig.level = 'FATAL';
+            }
 
-            if (typeof aLogConfig.level == 'undefined')
+            if (typeof aLogConfig.level === 'undefined') {
                 aLogConfig.type = 'console';
+            }
 
-            if (typeof aLogConfig.config == 'undefined')
+            if (typeof aLogConfig.config === 'undefined') {
                 aLogConfig.config = {};            
+            }
         }
 
         this.extend({
-            _lg : new Logger(aLogConfig.level, 'js/util/language', aLogConfig.type, aLogConfig.config)
+            _lg : new Logger('DEBUG', 'js/util/language', aLogConfig.type, aLogConfig.config)
         });
 
         /**
@@ -50,11 +60,15 @@ var Language = Stapes.subclass({
         this.set( 'svenska' , {
                 "If yes click 'Ok', (you will receive a mail with the new password) else click 'Go Back'" : 'Välj i så fall Ok (ditt nya lösen kommer att mailas)',
                 'Please try again, If the problem persists please contact the Gizur Saas Account holders' : 'Försök igen, Kontakta Gizur SaaS support om problemet kvarstår',
+                'All fields (username, password and client id) must be filled' : 'Alla fält (användarnamn, lösenord och klient id) måste fyllas',
+                'Please select, if damage was caused by driver or not' : 'Välj om skadan orsakats av chauffören eller ej',
                 'Are you sure you want to reset your password' : 'Vill du verkligen nollställa lösen',
+                'Specify the damage in the direction the trailer moves' : 'Skadan anges I trailerns färdriktning',
                 'Please check your mail for the new password' : 'Ett nytt lösen har mailat',  
                 'Please check your internet connection and try again' : 'Kontrollera internetuppkopplingen och försök igen',        
                 'Authenticated successfully and Cache built successfully' : 'Autensiering lyckades och cache är klar',
                 'Password has been reset successfully' : 'Lösen har nollställts',
+                'All Damages have been reported successfully' : 'Skadorna har rapporterats',
                 'Please select if sealed or not' : 'Ange om trailern är plomberad eller ej',
                 'Please select a damage type' : 'Ange typ av skada',
                 'Please select a damage position' : 'Ange position för skadan',                
@@ -67,32 +81,34 @@ var Language = Stapes.subclass({
                 'Building Cache, please wait' : 'Bygger cache, vänta',
                 'Gizur Saas Client ID' : 'Gizur Saas konto',
                 'I caused the damage': 'Jag orsakade skadan',
+                'Enter New Password': 'Ange nytt lösenord',
                 'No Picture(s) Attached' : 'Inga bilder har bifogats',
                 'Password Changed successfully' : 'Lösen har nollställts',
-                'Survey reported successfully' : 'Survey reported successfully',
                 'No Damages Reported' : 'Inga kontrollbesiktningar har rapporterats',
                 'Previously reported damages': 'Tidigare rapporterade skador',
-                'Add more damages' : 'Lägg fler skador',
+                'Add new damage' : 'Lägg till fler skador',
                 'New found damage' : 'Nyfunna skador',
                 'Send damage report' : 'Skicka skaderapport',                
                 'Type of damage' : 'Typ av skada',
-                'Add a picture' : 'Lägg till en bild',
+                'Add new picture' : 'Lägg till en bild',
                 'Report new damage' : 'Rapportera ny skada',
+                'Survey reported successfully' : 'Kontrollbesiktningen har rapporterats',
                 'No new damage' : 'Inga nya skador',
                 'Damage Information' : 'Information om skada',
                 'Existing Damage(s)': 'Befintliga Skador',
                 'Change Password': 'Ändra Lösenord',
                 'Connection Error' : 'Kunde inte ansluta till servern',
-                'Forgot Password': 'Glömt Lösenord',
+                'Forget Password': 'Glömt Lösenordet',
                 'Damage details': 'Skadeuppgifter',
                 'Please wait' : 'Vänta',
                 'Password Changed' : 'Lösen har ändrats',
                 'Authenticated successfully' : 'Autensiering lyckades',
-                'Trailer type' : 'Typ av trailer',                                          
+                'Trailer type' : 'Typ av trailer',   
+                'Select One' : 'Välj',  
+                'Go Back' : 'Tillbaka',                                 
                 'Back' : 'Tillbaka',
                 'Picture' : 'Foton',
                 'Save' : 'Spara',            
-                'Survey' : 'Kontrollbesiktning',
                 'Contact' : 'Kontakt',
                 'Survey' : 'Besiktning',
                 'Settings' : 'Inställningar',
@@ -109,12 +125,13 @@ var Language = Stapes.subclass({
                 'Change' : 'Ändra',
                 'Error' : 'Fel',
                 'Completed' : 'Slutfört',
-                'of' : 'av'
+                'of' : 'av',
+                'Sending' : 'Skickar'
             }
         );
 
-        if (typeof language != 'undefined') {
-            this.setLanguage(language)
+        if (typeof language !== 'undefined') {
+            this.setLanguage(language);
         }
     },
 
@@ -126,6 +143,8 @@ var Language = Stapes.subclass({
      */ 
 
     setLanguage : function ( language ) {
+
+        "use strict";
 
         this._lg.log('DEBUG', ' setLanguage language ' + language);
         window.localStorage.setItem('language', language);
@@ -139,13 +158,16 @@ var Language = Stapes.subclass({
      */ 
 
     hasLanguage : function ( language ) {
-        if (typeof language == 'undefined') {
+
+        "use strict";
+
+        if (typeof language === 'undefined') {
             this._lg.log('DEBUG', ' hasLanguage (window.localStorage.getItem(language)) ' + (window.localStorage.getItem('language')));                        
-            this._lg.log('DEBUG', ' hasLanguage (this.get(window.localStorage.getItem(language)) != null) ' + (this.get(window.localStorage.getItem('language')) != null));            
-            return (this.get(window.localStorage.getItem('language')) != null);
+            this._lg.log('DEBUG', ' hasLanguage (this.get(window.localStorage.getItem(language)) != null) ' + (this.get(window.localStorage.getItem('language')) !== null));            
+            return (this.get(window.localStorage.getItem('language')) !== null);
         } else {
-            this._lg.log('DEBUG', ' hasLanguage (this.get(language) != null) ' + (this.get(language) != null) );
-            return (this.get(language) != null);
+            this._lg.log('DEBUG', ' hasLanguage (this.get(language) != null) ' + (this.get(language) !== null) );
+            return (this.get(language) !== null);
         }
     },
 
@@ -158,14 +180,17 @@ var Language = Stapes.subclass({
 
     translate : function ( word ) {
 
+        "use strict";
+
         var language = window.localStorage.getItem('language');
 
         this._lg.log('DEBUG', language + ' translate ' + word + ' exists? ' + typeof this.get(language));
 
-        if (this.get(language) == null || typeof this.get(language)[word] == 'undefined')
+        if (this.get(language) === null || typeof this.get(language)[word] === 'undefined') {
             return word;
-        else
+        } else {
             return this.get(language)[word];
+        }
     }  
 });
 
@@ -173,6 +198,6 @@ var Language = Stapes.subclass({
  * For node-unit test
  */
 
-if (typeof node_unit != 'undefined') {
+if (typeof node_unit !== 'undefined') {
     exports.Language = Language;
 }

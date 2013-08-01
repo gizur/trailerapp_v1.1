@@ -1,4 +1,9 @@
-/* jshint undef: true, unused: true, strict: true, vars: true */
+/*jshint forin:true, noarg:true, noempty:true, eqeqeq:true, 
+         bitwise:true, strict:true, undef:false, unused:true, 
+         curly:true, browser:true, indent:4, maxerr:50 */
+
+/*global node_unit:true, Stapes:true, 
+         Logger:true, window:true, exports:false*/
 
 /**
  * Model Class for Documents ie pictures
@@ -20,6 +25,8 @@ var Doc = Stapes.subclass({
 
     constructor : function(aUsr, aLogConfig) {
 
+        "use strict";
+
         /**
          * Set pseudo private vars
          * please dont change this using <objname>._privatevarname
@@ -27,21 +34,24 @@ var Doc = Stapes.subclass({
          * Arggghh Stapes!!!!
          */        
 
-        if (typeof aLogConfig == 'undefined') {
+        if (typeof aLogConfig === 'undefined') {
             aLogConfig = {
                 level  : 'FATAL',
                 type   : 'console',
                 config : {}
             };
         } else {
-            if (typeof aLogConfig.level == 'undefined')
+            if (typeof aLogConfig.level === 'undefined') {
                 aLogConfig.level = 'FATAL';
+            }
 
-            if (typeof aLogConfig.level == 'undefined')
+            if (typeof aLogConfig.level === 'undefined') {
                 aLogConfig.type = 'console';
+            }
 
-            if (typeof aLogConfig.config == 'undefined')
-                aLogConfig.config = {};            
+            if (typeof aLogConfig.config === 'undefined') {
+                aLogConfig.config = {};
+            }           
         }
 
         this.extend({
@@ -64,10 +74,12 @@ var Doc = Stapes.subclass({
      */
 
     download : function(successCb, errorCb) {
+
+        "use strict";
+
         var that = this;
         var thatSuccessCb = successCb; 
         var thatErrorCb = errorCb;
-        var fullpath;
 
         that._lg.log('DEBUG', ' doc getAll ' + JSON.stringify(this.getAll()));
 
@@ -79,13 +91,15 @@ var Doc = Stapes.subclass({
             that._lg.log('DEBUG', ' full path of file : ' + data.result.filename);
             that.set('path', data.result.filename);
 
-            if (typeof thatSuccessCb == 'function')
-                thatSuccessCb(data);          
+            if (typeof thatSuccessCb === 'function') {
+                thatSuccessCb(data);
+            }
         };
 
         var errorCbWrapper = function(jqxhr, status, er){
-            if (typeof errorCb == 'function')
-                errorCb(jqxhr, status, er);              
+            if (typeof errorCb === 'function') {
+                thatErrorCb(jqxhr, status, er);
+            }         
         };
 
         this._usr.send(
@@ -102,6 +116,6 @@ var Doc = Stapes.subclass({
  * For node-unit test
  */
 
-if (typeof node_unit != 'undefined') {
+if (typeof node_unit !== 'undefined') {
     exports.Doc = Doc;
 }

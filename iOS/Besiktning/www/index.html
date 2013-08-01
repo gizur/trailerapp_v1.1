@@ -33,6 +33,16 @@
     <script src="js/app/models/troubleticket.js"></script>
     <script src="js/app/models/troubleticketcollection.js"></script>
     <script src="js/app/models/user.js"></script>
+
+    <!--view-->
+    <script src="js/app/views/one.js"></script>
+    <script src="js/app/views/two.js"></script>
+    <script src="js/app/views/three.js"></script>
+    <script src="js/app/views/four.js"></script>
+    <script src="js/app/views/five.js"></script>
+    <script src="js/app/views/settings.js"></script>
+    <script src="js/app/views/contact.js"></script>
+
 </head>
 <body> 
 <div data-role="page" id="splash">
@@ -48,17 +58,17 @@
         <div data-role="navbar">
             <ul>
                 <li>
-                    <a href="#contact" data-transition="fade" data-theme="a">
+                    <a href="javascript:changepage('contact');" class="page-contact" data-transition="fade" data-theme="a">
                         Contact
                     </a>
                 </li>
                 <li>
-                    <a href="#one" data-transition="fade" data-theme="a">
+                    <a href="javascript:changepage('one');" class="page-one" data-transition="fade" data-theme="a">
                         Survey
                     </a>
                 </li>
                 <li>
-                    <a href="#settings" data-transition="fade" data-theme="a">
+                    <a href="javascript:changepage('settings');" class="page-settings" data-transition="fade" data-theme="a">
                         Settings
                     </a>
                 </li>
@@ -67,21 +77,21 @@
 		<h2>Survey</h2>
 		<div data-role="fieldcontain">
             <label for="trailertype">
-                Trailer type:
+                Trailer type :
             </label>
             <select id="trailertype" name="trailertype">
             </select>
         </div>
         <div data-role="fieldcontain">
             <label for="trailerid">
-                Trailer ID:
+                Trailer ID :
             </label>
             <select id="trailerid" name="trailerid">
             </select>
         </div>
         <div data-role="fieldcontain">
             <label for="place">
-                Place
+                Place :
             </label>
             <select id="place" name="place">
             </select>
@@ -96,9 +106,7 @@
         </div>
         <div data-role="fieldcontain">
             <fieldset data-role="controlgroup" data-type="vertical" id="sealed">
-                <legend>
-                    Sealed
-                </legend>
+                <legend>Sealed :</legend>
                 <input id="radio1" name="sealed" value="Ja" type="radio">
                 <label for="radio1">
                     Yes
@@ -119,17 +127,17 @@
         <div data-role="navbar">
             <ul>
                 <li>
-                    <a href="#contact" data-transition="fade" data-theme="a">
+                    <a href="javascript:changepage('contact');" class="page-contact" data-transition="fade" data-theme="a">
                         Contact
                     </a>
                 </li>
                 <li>
-                    <a href="#one" data-transition="fade" data-theme="a">
+                    <a href="javascript:changepage('one');" class="page-one" data-transition="fade" data-theme="a">
                         Survey
                     </a>
                 </li>
                 <li>
-                    <a href="#settings" data-transition="fade" data-theme="a">
+                    <a href="javascript:changepage('settings');" class="page-settings" data-transition="fade" data-theme="a">
                         Settings
                     </a>
                 </li>
@@ -139,13 +147,13 @@
         <h3>Damage Information</h3>
         <div data-role="fieldcontain">
             <label for="damagetype">
-                Type of damage
+                Type of damage :
             </label>
             <input name="" id="damagetype" placeholder="" value="" type="text" readonly="readonly">
         </div>
         <div data-role="fieldcontain">
             <label for="damageposition">
-                Position
+                Position :
             </label>
             <input name="" id="damageposition" placeholder="" value="" type="text" readonly="readonly">
         </div>
@@ -168,17 +176,17 @@
         <div data-role="navbar">
             <ul>
                 <li>
-                    <a href="#contact" data-transition="fade" data-theme="a">
+                    <a href="javascript:changepage('contact');" class="page-contact" data-transition="fade" data-theme="a">
                         Contact
                     </a>
                 </li>
                 <li>
-                    <a href="#one" data-transition="fade" data-theme="a">
+                    <a href="javascript:changepage('one');" class="page-one" data-transition="fade" data-theme="a">
                         Survey
                     </a>
                 </li>
                 <li>
-                    <a href="#settings" data-transition="fade" data-theme="a">
+                    <a href="javascript:changepage('settings');" class="page-settings" data-transition="fade" data-theme="a">
                         Settings
                     </a>
                 </li>
@@ -195,17 +203,17 @@
 	    <div data-role="navbar">
             <ul>
                 <li>
-                    <a href="#contact" data-transition="fade" data-theme="a">
+                    <a href="javascript:changepage('contact');" class="page-contact" data-transition="fade" data-theme="a">
                         Contact
                     </a>
                 </li>
                 <li>
-                    <a href="#one" data-transition="fade" data-theme="a">
+                    <a href="javascript:changepage('one');" class="page-one" data-transition="fade" data-theme="a">
                         Survey
                     </a>
                 </li>
                 <li>
-                    <a href="#settings" data-transition="fade" data-theme="a">
+                    <a href="javascript:changepage('settings');" class="page-settings" data-transition="fade" data-theme="a">
                         Settings
                     </a>
                 </li>
@@ -216,22 +224,25 @@
         </h3>
         <div data-role="fieldcontain">
             <label for="damagetype">
-                Type of damage
+                Type of damage :
             </label>
             <select id="damagetype" name="damagetype">
             </select>
         </div>
         <div data-role="fieldcontain">
             <label for="damageposition">
-                Position
+                Position :
             </label>
             <select id="damageposition" name="damageposition">
             </select>
+            <div style="padding-top: 10px;">
+                Specify the damage in the direction the trailer moves
+            </div>            
         </div>
         <h3>
             Picture
         </h3>
-		<p><a id="takephoto" href="" data-role="button">Add a picture</a></p>
+		<p><a id="takephoto" href="" data-role="button">Add new picture</a></p>
         <div data-role="fieldcontain">
         <ul class="bxslider-four">
                 <li>
@@ -249,7 +260,7 @@
         </div-->       
         <div data-role="fieldcontain">
             <label for="drivercauseddamage">
-                I caused the damage:
+                I caused the damage :
             </label>
             <select id="drivercauseddamage" name="drivercauseddamage">
                 <option value="No">
@@ -270,17 +281,17 @@
         <div data-role="navbar">
             <ul>
                 <li>
-                    <a href="#contact" data-transition="fade" data-theme="a">
+                    <a href="javascript:changepage('contact');" class="page-contact" data-transition="fade" data-theme="a">
                         Contact
                     </a>
                 </li>
                 <li>
-                    <a href="#one" data-transition="fade" data-theme="a">
+                    <a href="javascript:changepage('one');" class="page-one" data-transition="fade" data-theme="a">
                         Survey
                     </a>
                 </li>
                 <li>
-                    <a href="#settings" data-transition="fade" data-theme="a">
+                    <a href="javascript:changepage('settings');" class="page-settings" data-transition="fade" data-theme="a">
                         Settings
                     </a>
                 </li>
@@ -298,7 +309,7 @@
         <p id='pager-five-a' style='text-align: right;'></p>
         </div>
         <h3>New found damage</h3>
-        <p><a id="reportanotherdamage" data-theme="a" href="javascript:void(0);" data-role="button">Add more damages</a></p>	
+        <p><a id="reportanotherdamage" data-theme="a" href="javascript:void(0);" data-role="button">Add new damage</a></p>	
         <div data-role="fieldcontain">
             <ul class="bxslider-five-b">
                 <li>
@@ -318,17 +329,17 @@
         <div data-role="navbar">
             <ul>
                 <li>
-                    <a href="#contact" data-transition="fade" data-theme="a">
+                    <a href="javascript:changepage('contact');" class="page-contact" data-transition="fade" data-theme="a">
                         Contact
                     </a>
                 </li>
                 <li>
-                    <a href="#one" data-transition="fade" data-theme="a">
+                    <a href="javascript:changepage('one');" class="page-one" data-transition="fade" data-theme="a">
                         Survey
                     </a>
                 </li>
                 <li>
-                    <a href="#settings" data-transition="fade" data-theme="a">
+                    <a href="javascript:changepage('settings');" class="page-settings" data-transition="fade" data-theme="a">
                         Settings
                     </a>
                 </li>
@@ -336,25 +347,25 @@
         </div>
         <div data-role="fieldcontain">
             <label for="settings_username">
-                E-mail:
+                E-mail :
             </label>
             <input name="settings_username" id="settings_username" placeholder="" value="" type="text">
         </div>
         <div data-role="fieldcontain">
-            <label for="textinput2">
-                Password
+            <label for="settings_password">
+                Password :
             </label>
-            <input name="settings_password" id="settings_password" placeholder="" value="" type="password">
+            <input maxlength="30" name="settings_password" id="settings_password" placeholder="" value="" type="password">
         </div>
         <a id="change_password" data-role="button" href="javascript:void(0);">
             Change Password
         </a>
         <a id="forgot_password" data-role="button" href="javascript:void(0);">
-            Forgot Password
+            Forget Password
         </a>
         <div data-role="fieldcontain">
             <label for="settings_client_id">
-                Gizur Saas Client ID:
+                Gizur Saas Client ID :
             </label>
             <input name="settings_client_id" id="settings_client_id" placeholder="" value="" type="text">
         </div>
@@ -369,17 +380,17 @@
         <div data-role="navbar">
             <ul>
                 <li>
-                    <a href="#contact" data-transition="fade" data-theme="a">
+                    <a href="javascript:changepage('contact');" class="page-contact" data-transition="fade" data-theme="a">
                         Contact
                     </a>
                 </li>
                 <li>
-                    <a href="#one" data-transition="fade" data-theme="a">
+                    <a href="javascript:changepage('one');" class="page-one" data-transition="fade" data-theme="a">
                         Survey
                     </a>
                 </li>
                 <li>
-                    <a href="#settings" data-transition="fade" data-theme="a">
+                    <a href="javascript:changepage('settings');" class="page-settings" data-transition="fade" data-theme="a">
                         Settings
                     </a>
                 </li>
@@ -398,6 +409,32 @@
     <div data-role="content" data-theme="d">
         <p></p>  
         <p><a data-role="button" data-inline="true" data-icon="back">Ok</a></p>
+    </div><!-- /content -->
+</div><!-- /page dialog -->
+
+<!-- Start of page: #dialog -->
+<a id="a_dialog_error_settingvalidation" href="#dialog_error_settingvalidation" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_error_settingvalidation" data-transition="flip">
+    <div data-role="header" data-theme="e">
+        <h1>Error</h1>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>All fields (Email, Password and Gizur Saas ClientID) must be filled.</p>  
+        <p><a href="#settings" data-role="button" data-inline="true" data-icon="back">Ok</a></p>
+    </div><!-- /content -->
+</div><!-- /page dialog -->
+
+<!-- Start of page: #dialog -->
+<a id="a_dialog_notify_changevalidation" href="#dialog_notify_changevalidation" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_notify_changevalidation" data-transition="flip">
+    <div data-role="header" data-theme="e">
+        <h1>Warning</h1>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>You have made some changes, If you continue, your changes shall be lost.</p>  
+        <div id="notify_buttondiv"></div>
     </div><!-- /content -->
 </div><!-- /page dialog -->
 
@@ -487,7 +524,7 @@
     </div><!-- /header -->
 
     <div data-role="content" data-theme="d">
-        <p>Please select a if damage was caused by driver or not</p>  
+        <p>Please select, if damage was caused by driver or not</p>  
         <p><a data-rel="back" data-role="button" data-inline="true" data-icon="back">Ok</a></p>
     </div><!-- /content -->
 </div><!-- /page dialog_validation_damageposition -->
@@ -627,7 +664,7 @@
 <a id="a_dialog_resetpassword_confirm" href="#dialog_resetpassword_confirm" data-rel="dialog" style="display: none;"></a> 
 <div data-role="page" id="dialog_resetpassword_confirm" data-transition="flip">
     <div data-role="header" data-theme="e">
-        <h1>Forgot Password</h1>
+        <h1>Forget Password</h1>
     </div><!-- /header -->
 
     <div data-role="content" data-theme="d">
@@ -643,7 +680,7 @@
 <a id="a_dialog_resetpassword_success" href="#dialog_resetpassword_success" data-rel="dialog" style="display: none;"></a> 
 <div data-role="page" id="dialog_resetpassword_success" data-transition="flip">
     <div data-role="header" data-theme="e">
-        <h1>Forgot Password</h1>
+        <h1>Forget Password</h1>
     </div><!-- /header -->
 
     <div data-role="content" data-theme="d">
@@ -658,7 +695,7 @@
 <a id="a_dialog_resetpassword_error" href="#dialog_resetpassword_error" data-rel="dialog" style="display: none;"></a> 
 <div data-role="page" id="dialog_resetpassword_error" data-transition="flip">
     <div data-role="header" data-theme="e">
-        <h1>Forgot Password</h1>
+        <h1>Forget Password</h1>
     </div><!-- /header -->
 
     <div data-role="content" data-theme="d">
@@ -693,7 +730,8 @@
 
     <div data-role="content" data-theme="d">
         <p>Enter New Password</p>
-        <p><input id="newpassword" type="text"></p>
+        <p><input id="newpassword" type="text" maxlength="30"></p>
+        <p id="message"></p>
         <p>
             <a id="change" data-role="button" data-inline="true" data-icon="Check">Change</a>
             <a href="#settings" data-role="button" data-inline="true" data-icon="back">Cancel</a>

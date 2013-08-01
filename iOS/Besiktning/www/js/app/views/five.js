@@ -767,7 +767,7 @@ var ScreenFiveView = Stapes.subclass({
             
             for (var index in this._current_tt.damages) {
                 if (this._current_tt.damages.hasOwnProperty(index)){
-                    $('#five .bxslider-five-b').append("<li><center><div style='height:60px;'><a id='" + index + "' href='javascript:void(0);'>" + this._current_tt.damages[index].damageposition + '<br/>' + this._current_tt.damages[index].damagetype + "</a></div></center></li>");
+                    $('#five .bxslider-five-b').append("<li><center><div style='height:60px;width:200px;'><a id='" + index + "' href='javascript:void(0);'>" + this._current_tt.damages[index].damageposition + ' ' + this._current_tt.damages[index].damagetype + "</a></div></center></li>");
                 }
             }
             window.slider_five_b.reloadSlider();  
@@ -781,7 +781,7 @@ var ScreenFiveView = Stapes.subclass({
             window.slider_five_a.reloadSlider();
             window.slider_five_a.goToSlide(tt_list.position);        
         } else {
-            $('#one #troubleticketlist').html("<li><center><div style='height:60px;'>" + this._language.translate('No Damages Reported') + "</div></center></li>");
+            $('#one #troubleticketlist').html("<li><center><div style='height:60px;width:120px;'>" + this._language.translate('No Damages Reported') + "</div></center></li>");
             window.slider_five_a.reloadSlider();       
         }
         

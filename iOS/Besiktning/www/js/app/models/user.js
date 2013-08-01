@@ -1,4 +1,9 @@
-/* jshint undef: true, unused: true, strict: true, vars: true */
+/*jshint forin:true, noarg:true, noempty:true, eqeqeq:true, 
+         bitwise:true, strict:true, undef:false, unused:true, 
+         curly:true, browser:true, indent:4, maxerr:50 */
+
+/*global node_unit:true, Stapes:true, 
+         Logger:true, window:true, exports:false*/
 
 /**
  * Model Class for User
@@ -16,12 +21,14 @@ var User = Stapes.subclass({
     /**
      * @constructor
      *
-     * @param {request} aReq request class object which the user with use to send
-     *                       requests to the API.
-     * @param {object} aLogConfig object containing the log configuration     
+     * @param {request} aReq       request class object which the user with use to send
+     *                             requests to the API.
+     * @param {object}  aLogConfig object containing the log configuration     
      */
 
     constructor : function(aReq, aLogConfig) {
+
+        "use strict";
 
         /**
          * Set pseudo private vars
@@ -30,21 +37,24 @@ var User = Stapes.subclass({
          * Arggghh Stapes!!!!
          */
 
-        if (typeof aLogConfig == 'undefined') {
+        if (typeof aLogConfig === 'undefined') {
             aLogConfig = {
                 level  : 'FATAL',
                 type   : 'console',
                 config : {}
             };
         } else {
-            if (typeof aLogConfig.level == 'undefined')
+            if (typeof aLogConfig.level === 'undefined') {
                 aLogConfig.level = 'FATAL';
+            }
 
-            if (typeof aLogConfig.level == 'undefined')
+            if (typeof aLogConfig.level === 'undefined') {
                 aLogConfig.type = 'console';
+            }
 
-            if (typeof aLogConfig.config == 'undefined')
-                aLogConfig.config = {};            
+            if (typeof aLogConfig.config === 'undefined') {
+                aLogConfig.config = {};
+            }
         }
 
         this.extend({
@@ -97,6 +107,9 @@ var User = Stapes.subclass({
      */ 
 
     send : function(method, url, body, successCb, errorCb, files, silent) {
+
+        "use strict";
+
         var that = this;
 
         var headers = {
@@ -105,7 +118,7 @@ var User = Stapes.subclass({
         };
 
         var successCbWrapper = function(data) {
-            if (typeof successCb == 'function') {
+            if (typeof successCb === 'function') {
                 successCb(data);
             }
         };
@@ -114,19 +127,22 @@ var User = Stapes.subclass({
 
             try {
 
+                var data;
+
                 try {
-                    var data = JSON.parse(jqxhr.responseText);
+                    data = JSON.parse(jqxhr.responseText);
                 } catch (err) {
                     data = null;
                 }
 
-                if (data != null &&
+                if (data !== null &&
                     typeof data.error !== 'undefined' &&
                     typeof data.error.message !== 'undefined' &&
-                    data.error.message == 'Invalid Username and Password') {
+                    data.error.message === 'Invalid Username and Password') {
 
-                    if (typeof navigator.app !== 'undefined')
+                    if (typeof navigator.app !== 'undefined') {
                         navigator.app.clearHistory();
+                    }
 
                     /**
                      * Set authenticated flag off
@@ -139,11 +155,15 @@ var User = Stapes.subclass({
                 }
 
             } catch (err) {
-                that._lg.log('FATAL', JSON.stringify(err))
-            }
 
-            if (typeof errorCb == 'function') {
-                errorCb(jqxhr, status, er);
+                that._lg.log('FATAL', JSON.stringify(err));
+                
+            } finally {
+
+                if (typeof errorCb === 'function') {
+                    errorCb(jqxhr, status, er);
+                }
+
             }
         };
 
@@ -151,6 +171,9 @@ var User = Stapes.subclass({
     },
 
     setAuthenticated :  function (status) {
+
+        "use strict";
+
         this.set('authenticated', status);
         this._storage.setItem('user', JSON.stringify(this.getAll()));             
     },
@@ -163,11 +186,14 @@ var User = Stapes.subclass({
      */
 
     authenticate : function(success, error) {
+
+        "use strict";
+
         var that = this;
 
         var successWrapper = function(data){
 
-            that._lg.log('TRACE', 'authenticate#successWrapper# enter');                                
+            that._lg.log('TRACE', 'authenticate#successWrapper# enter' + data);                                
 
             /**
              * Set flag authenticated to true
@@ -181,7 +207,7 @@ var User = Stapes.subclass({
 
             that._storage.setItem('user', JSON.stringify(that.getAll()));  
 
-            if (typeof data.contactinfo != 'undefined') {
+            if (typeof data.contactinfo !== 'undefined') {
                 that._lg.log('DEBUG', 'authenticate#successWrapper#attributes saved to cache data.contactinfo : ' + data.contactinfo);                
                 window.localStorage.setItem('contact', data.contactinfo);
             }          
@@ -255,6 +281,9 @@ var User = Stapes.subclass({
      */
 
     resetPassword : function(success, error) {
+
+        "use strict";
+
         var that = this;
 
         var successWrapper = function(data){
@@ -264,8 +293,9 @@ var User = Stapes.subclass({
             that.set('password', '');
             that._storage.setItem('user', JSON.stringify(that.getAll())); 
 
-            if (typeof success == 'function')
+            if (typeof success === 'function') {
                 success(data);
+            }
 
             that._lg.log('TRACE', 'reset#successWrapper# exit');
         };
@@ -274,8 +304,9 @@ var User = Stapes.subclass({
 
             that._lg.log('TRACE', 'reset#errorWrapper# enter');                                
 
-            if (typeof success == 'function')
+            if (typeof success === 'function') {
                 error(jqxhr, status, er);
+            }
 
             that._lg.log('TRACE', 'reset#errorWrapper# exit');
         };                     
@@ -308,6 +339,8 @@ var User = Stapes.subclass({
 
     changePassword : function( newpassword, success, error ) {
 
+        "use strict";
+
         var that = this;
 
         that._lg.log('DEBUG', 'got new password ' + newpassword);
@@ -322,8 +355,9 @@ var User = Stapes.subclass({
             that.set('password', newpassword);
             that._storage.setItem('user', JSON.stringify(that.getAll()));  
 
-            if (typeof success == 'function')
+            if (typeof success === 'function') {
                 success(data);
+            }
 
             that._lg.log('TRACE', 'changepassword#successWrapper# exit');
         };
@@ -332,8 +366,9 @@ var User = Stapes.subclass({
 
             that._lg.log('TRACE', 'changepassword#errorWrapper# enter');                                
 
-            if (typeof success == 'function')
+            if (typeof success === 'function') {
                 error(jqxhr, status, er);
+            }
 
             that._lg.log('TRACE', 'changepassword#errorWrapper# exit');
         };                     
@@ -362,6 +397,6 @@ var User = Stapes.subclass({
  * For node-unit test
  */
 
-if (typeof node_unit != 'undefined') {
+if (typeof node_unit !== 'undefined') {
     exports.User = User;
 }

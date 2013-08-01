@@ -1,5 +1,9 @@
-/* jshint undef: true, unused: true, strict: true, vars: true */
+/*jshint forin:true, noarg:true, noempty:true, eqeqeq:true, 
+         bitwise:true, strict:true, undef:false, unused:true, 
+         curly:true, browser:true, indent:4, maxerr:50 */
 
+/*global node_unit:true, Stapes:true, 
+         Logger:true, window:true, exports:false*/
 /**
  * Utility Class Request
  * 
@@ -21,6 +25,8 @@ var Request = Stapes.subclass({
 
     constructor : function(aBaseUrl, aClientId, aLogConfig) {
 
+        "use strict";
+
         /**
          * Set pseudo private vars
          * please dont change this using <objname>._privatevarname
@@ -28,21 +34,24 @@ var Request = Stapes.subclass({
          * Arggghh Stapes!!!!
          */
 
-        if (typeof aLogConfig == 'undefined') {
+        if (typeof aLogConfig === 'undefined') {
             aLogConfig = {
                 level  : 'FATAL',
                 type   : 'console',
                 config : {}
             };
         } else {
-            if (typeof aLogConfig.level == 'undefined')
+            if (typeof aLogConfig.level === 'undefined') {
                 aLogConfig.level = 'FATAL';
+            }
 
-            if (typeof aLogConfig.level == 'undefined')
+            if (typeof aLogConfig.level === 'undefined') {
                 aLogConfig.type = 'console';
+            }
 
-            if (typeof aLogConfig.config == 'undefined')
+            if (typeof aLogConfig.config === 'undefined') {
                 aLogConfig.config = {};            
+            }
         }        
 
         this.extend({
@@ -54,13 +63,15 @@ var Request = Stapes.subclass({
 
         var attrs = this._storage.getItem('request');
 
-        if (attrs != null) {
+        if (attrs !== null) {
             attrs = JSON.parse(attrs);
-            if (typeof aBaseUrl == 'undefined')
+            if (typeof aBaseUrl === 'undefined') {
                 this._base_url = attrs.base_url;
+            }
 
-            if (typeof aClientId == 'undefined')            
+            if (typeof aClientId === 'undefined') {          
                 this._client_id = attrs.client_id;
+            }
         }
 
         this._storage.setItem('request', JSON.stringify({
@@ -77,6 +88,9 @@ var Request = Stapes.subclass({
      */
 
     setClientId : function(aClientId) {
+
+        "use strict";
+        
         this._client_id = aClientId;
         this._lg.log('DEBUG', ' setClientId aClientId ' + aClientId);
 
@@ -97,6 +111,9 @@ var Request = Stapes.subclass({
      */
 
     getClientId : function() {
+
+        "use strict";
+
         return this._client_id;
     },
 
@@ -115,10 +132,13 @@ var Request = Stapes.subclass({
 
     send : function (method, url, headers, body, successCb, errorCb, files, silent) {
 
+        "use strict";
+
         var that = this;
 
-        if (typeof silent ==  'undefined')
+        if (typeof silent === 'undefined') {
             silent = false;
+        }
 
         try {
 
@@ -128,13 +148,14 @@ var Request = Stapes.subclass({
 
                 $.mobile.loading( 'hide' );
 
-                if (typeof successCb == 'function')
+                if (typeof successCb === 'function') {
                     successCb(data);
+                }
             };
 
             var errorCbWrapper = function(jqxhr, status, er){
 
-                //try {
+                try {
 
                     that._lg.log('DEBUG', 'Request#send#errorCbWrapper : ' + jqxhr.status + ' status ' + status + ' er ' + er);
                     that._lg.log('DEBUG', 'Request#send#errorCbWrapper : jqxhr.responseText ' + jqxhr.responseText);
@@ -145,14 +166,16 @@ var Request = Stapes.subclass({
 
                     $.mobile.loading( 'hide' );
 
-                    if ((jqxhr.status == 0 || status == null) && !silent) {
+                    if ((jqxhr.status === 0 || status === null) && !silent) {
 
                         $('#a_dialog_nointernet').click();
 
                     } else {
 
+                        var data;
+
                         try {
-                            var data = JSON.parse(jqxhr.responseText);
+                            data = JSON.parse(jqxhr.responseText);
                         } catch (err) {
                             data = null;
                         }
@@ -166,17 +189,18 @@ var Request = Stapes.subclass({
 
                         } else {
 
-                            if (typeof errorCb == 'function')
+                            if (typeof errorCb === 'function') {
                                 errorCb(jqxhr, status, er);
+                            }
 
                         }
                     }
-                /*
+                
                 } catch (err) {
 
                     that._lg.log('FATAL', JSON.stringify(err));
 
-                }*/
+                }
                 
             };
 
@@ -188,9 +212,9 @@ var Request = Stapes.subclass({
             this._lg.log('DEBUG', 'Request#send : headers ' + JSON.stringify(headers));
             this._lg.log('DEBUG', 'Request#send : client_id ' + this._client_id);
 
-            if (files == undefined || 
+            if (files === undefined || 
                 !(files instanceof Array) ||
-                files.length == 0) {
+                files.length === 0) {
 
                 this._lg.log('TRACE', 'Request#send : no files ');
 
@@ -202,8 +226,10 @@ var Request = Stapes.subclass({
                     cache: false,
                     beforeSend: function(xhr){
                         xhr.setRequestHeader('X_CLIENTID', that._client_id);
-                        for (key in headers) {
-                            xhr.setRequestHeader(key, headers[key]);
+                        for (var key in headers) {
+                            if (headers.hasOwnProperty(key)) {
+                                xhr.setRequestHeader(key, headers[key]);
+                            }
                         }
                     },          
                     success: successCbWrapper,
@@ -261,6 +287,6 @@ var Request = Stapes.subclass({
 /**
  * For node-unit test
  */
-if (typeof node_unit != 'undefined') {
+if (typeof node_unit !== 'undefined') {
     exports.Request = Request;
 }

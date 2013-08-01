@@ -1,4 +1,10 @@
-/* jshint undef: true, unused: true, strict: true, vars: true */
+/*jshint forin:true, noarg:true, noempty:true, eqeqeq:true, 
+         bitwise:false, strict:true, undef:false, unused:true, 
+         curly:true, browser:true, indent:4, maxerr:50 */
+
+/*global node_unit:true, Stapes:true, 
+         Logger:true, window:true, exports:false*/
+
 
 /**
  * Utility Class Logger
@@ -10,6 +16,8 @@
  */
 
 var Logger = (function() {
+
+    "use strict";
 
     /**
      * Private Static var
@@ -40,25 +48,25 @@ var Logger = (function() {
              */
 
             this.extend({
-                 _level : 1,
-                 _type : (typeof aType == 'undefined')?'console':aType,
-                 _type_config : aTypeConfig,
-                 _trace_id : '',
-                 _prefix : aPrefix,
-                 _enum_level : {
+                _level : 1,
+                _type : (typeof aType === 'undefined')?'console':aType,
+                _type_config : aTypeConfig,
+                _trace_id : '',
+                _prefix : aPrefix,
+                _enum_level : {
                     "DEBUG": 1,
                     "TRACE": 2,
                     "FATAL": 3
-                 }             
+                }             
             });
 
             /**
              * set the current level of log
              */            
 
-            this._level = this._enum_level[aLevel]
+            this._level = this._enum_level[aLevel];
 
-            if (typeof window.localStorage == 'undefined') {
+            if (typeof window.localStorage === 'undefined') {
                 
                 /**
                  * Generate a trace id, a unique number to identify the device
@@ -80,7 +88,7 @@ var Logger = (function() {
                  * if no cache is present generate unique trace id
                  */
 
-                if (this._trace_id == null) {
+                if (this._trace_id === null) {
                     this._trace_id = this._generateTraceId(); 
                     window.localStorage.setItem('trace_id', this._trace_id);               
                 }
@@ -94,7 +102,7 @@ var Logger = (function() {
 
         _generateTraceId : function(){
             return 'xxxxxxxy-xxxx-4xxx'.replace(/[xy]/g, function(c) {
-                var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+                var r = Math.random()*16|0, v = c === 'x' ? r : (r&0x3|0x8);
                 return v.toString(16);
             });
         },
@@ -119,15 +127,19 @@ var Logger = (function() {
 
         log : function(loglevel, message) {
             if (this._enum_level[loglevel] >= this._level) {
+
                 switch(this._type) {
-                    case 'console':
-                      this._logConsole(loglevel, message);
-                      break;
-                    case 'loggly':
-                      this._logLoggly(loglevel, message);
-                      break;
-                    default:
+                case 'console':
+                    this._logConsole(loglevel, message);
+                    break;
+
+                case 'loggly':
+                    this._logLoggly(loglevel, message);
+                    break;
+
+                default:
                 }
+
             }
         },
 
@@ -141,11 +153,13 @@ var Logger = (function() {
         _logConsole : function(loglevel, message) {
             console.log(loglevel + ' : ' + (new Date()).toString()  + ' : ' + this._trace_id);  
             
-            if (typeof (new Error()).stack !== 'undefined')                
+            if (typeof (new Error()).stack !== 'undefined') {              
                 console.log((new Error()).stack); 
+            }
 
-            if (typeof message == 'object') 
+            if (typeof message === 'object') {
                 message = JSON.stringify(message);                 
+            }
             console.log(this._prefix + ' : ' + message);
         },
 
@@ -159,17 +173,19 @@ var Logger = (function() {
         _logLoggly : function(loglevel, message) {
             console.log(loglevel + ' : ' + (new Date()).toString()  + ' : ' + this._trace_id); 
 
-            if (typeof (new Error()).stack !== 'undefined')            
+            if (typeof (new Error()).stack !== 'undefined') {           
                 console.log($.trim((new Error()).stack.split("\n")[4]).replace('at ',''));
+            }
 
             /**
              * Check if message is an object or a string
              */
 
-            if (typeof message == 'object') 
+            if (typeof message === 'object') {
                 console.log(this._prefix + ' : ' + JSON.stringify(message));
-            else
+            } else {
                 console.log(this._prefix + ' : ' + message);
+            }
 
             /**
              * Create the body which needs to be sent; teh Payload
@@ -177,10 +193,10 @@ var Logger = (function() {
 
             var error_info = '';
 
-            if (typeof (new Error()).stack !== 'undefined') 
+            if (typeof (new Error()).stack !== 'undefined') {
                 error_info = $.trim((new Error()).stack.split("\n")[4]).replace('at ','');
+            }
 
-            var that = this;
             var body = {
                 loglevel : loglevel,
                 timestamp : (new Date()).toString(),
@@ -196,8 +212,9 @@ var Logger = (function() {
 
             var error_log = JSON.parse(window.localStorage.getItem('error_log'));
 
-            if (error_log == null || !(error_log instanceof Array))
-                error_log = Array();
+            if (error_log === null || !(error_log instanceof Array)) {
+                error_log = [];
+            }
 
             /**
              * Add new error to the error_log stack
@@ -281,6 +298,6 @@ var Logger = (function() {
 /**
  * For node-unit test
  */
-if (typeof node_unit != 'undefined') {
+if (typeof node_unit !== 'undefined') {
     exports.Logger = Logger;
 }

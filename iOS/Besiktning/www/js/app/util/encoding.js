@@ -9,7 +9,8 @@
  * We need to keep all swedish characters (iso 8859-1) to there html entity form.
  * This is standard convention we follow in this trailer app.
  */
-if(typeof escapeHtmlEntities == 'undefined') {
+
+if(typeof escapeHtmlEntities === 'undefined') {
         escapeHtmlEntities = function (text) {
             if (text === undefined) return text;
             return text.replace(/[\u00A0-\u2666<>\&]/g, function(c) {

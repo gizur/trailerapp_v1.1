@@ -1,4 +1,9 @@
-/* jshint undef: true, unused: true, strict: true, vars: true */
+/*jshint forin:true, noarg:true, noempty:true, eqeqeq:true, 
+         bitwise:true, strict:true, undef:false, unused:true, 
+         curly:true, browser:true, indent:4, maxerr:50 */
+
+/*global node_unit:true, Stapes:true, 
+         Logger:true, exports:false*/
 
 /**
  * Model Class DocCollection
@@ -17,21 +22,26 @@ var DocCollection = Stapes.subclass({
      */ 
     constructor : function(aLogConfig) {
 
-        if (typeof aLogConfig == 'undefined') {
+        "use strict";
+
+        if (typeof aLogConfig === 'undefined') {
             aLogConfig = {
                 level  : 'FATAL',
                 type   : 'console',
                 config : {}
             };
         } else {
-            if (typeof aLogConfig.level == 'undefined')
+            if (typeof aLogConfig.level === 'undefined') {
                 aLogConfig.level = 'FATAL';
+            }
 
-            if (typeof aLogConfig.level == 'undefined')
+            if (typeof aLogConfig.level === 'undefined') {
                 aLogConfig.type = 'console';
+            }
 
-            if (typeof aLogConfig.config == 'undefined')
-                aLogConfig.config = {};            
+            if (typeof aLogConfig.config === 'undefined') {
+                aLogConfig.config = {};
+            }
         }
 
         this.extend({
@@ -42,32 +52,39 @@ var DocCollection = Stapes.subclass({
 
     download : function(completedCb) {
 
+        "use strict";        
+
         this._lg.log('TRACE', 'download : start');
 
         var that = this;
         var dcc = this.getAllAsArray();
-        var dc_success = Array();
+        var dc_success = [];
         var dc;
 
         var successCb = function(data) {
 
+            data = undefined;
+
             that._lg.log('TRACE', 'download successCb : start');
             that._lg.log('DEBUG', ' download successCb dcc.length : ' + dcc.length);
 
-            if (dc_success.length != 0)
+            if (dc_success.length !== 0) {
                 that._lg.log('DEBUG', ' download successCb dc_success[dc_success.length-1].get(path) : ' + dc_success[dc_success.length-1].get('path'));
-            else
+            } else {
                 that._lg.log('DEBUG', ' download successCb dc_success.length : ' + dc_success.length);
+            }
+
             /**
              * Start downloading first document in the stack
              */
 
-            if (dcc.length == 0) {
-                if (typeof completedCb != 'undefined')
+            if (dcc.length === 0) {
+                if (typeof completedCb !== 'undefined') {
                     completedCb(dc_success);            
+                }
             }              
 
-            while (dcc.length != 0) {
+            while (dcc.length !== 0) {
                 dc = dcc.splice(0,1);
                 if ( dc[0] instanceof Doc ) {
                     dc_success.push(dc[0]);
@@ -75,9 +92,10 @@ var DocCollection = Stapes.subclass({
                     dc[0].download(successCb, errorCb);
                     break;
                 } else {
-                    if (dcc.length == 0) {
-                        if (typeof completedCb != 'undefined')
+                    if (dcc.length === 0) {
+                        if (typeof completedCb !== 'undefined') {
                             completedCb(dc_success);            
+                        }
                     }                     
                 }
             }           
@@ -88,6 +106,8 @@ var DocCollection = Stapes.subclass({
 
         var errorCb = function(jqxhr, status, er) {
 
+            jqxhr = status = er = undefined;
+
             that._lg.log('TRACE', 'download errorCb : start');
 
             dc_success.splice(0,1);
@@ -96,7 +116,7 @@ var DocCollection = Stapes.subclass({
              * Start downloading first document in the stack
              */
 
-            while (dcc.length != 0) {
+            while (dcc.length !== 0) {
                 dc = dcc.splice(0,1);
                 if ( dc[0] instanceof Doc ) {
                     dc_success.push(dc[0]);
@@ -106,9 +126,10 @@ var DocCollection = Stapes.subclass({
                 }
             }
 
-            if (dcc.length == 0) {
-                if (typeof completedCb != 'undefined')
+            if (dcc.length === 0) {
+                if (typeof completedCb !== 'undefined') {
                     completedCb(dc_success);            
+                }
             }
 
             that._lg.log('TRACE', 'download errorCb : end');
@@ -121,12 +142,13 @@ var DocCollection = Stapes.subclass({
 
         this._lg.log('DEBUG', 'download dcc.length ' + dcc.length);
 
-        if (dcc.length == 0) {
-            if (typeof completedCb != 'undefined')
-                completedCb(dc_success);            
+        if (dcc.length === 0) {
+            if (typeof completedCb !== 'undefined') {
+                completedCb(dc_success);           
+            }
         }        
 
-        while (dcc.length != 0) {
+        while (dcc.length !== 0) {
             dc = dcc.splice(0,1);
             if ( dc[0] instanceof Doc ) {
                 dc_success.push(dc[0]);
@@ -134,9 +156,10 @@ var DocCollection = Stapes.subclass({
                 dc[0].download(successCb, errorCb);
                 break;
             } else {
-                if (dcc.length == 0) {
-                    if (typeof completedCb != 'undefined')
+                if (dcc.length === 0) {
+                    if (typeof completedCb !== 'undefined') {
                         completedCb(dc_success);            
+                    }
                 }                    
             }
         }
@@ -151,6 +174,6 @@ var DocCollection = Stapes.subclass({
 /**
  * For node-unit test
  */
-if (typeof node_unit != 'undefined') {
+if (typeof node_unit !== 'undefined') {
     exports.DocCollection = DocCollection;
 }
