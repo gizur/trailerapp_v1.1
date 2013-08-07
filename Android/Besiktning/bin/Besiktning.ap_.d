@@ -90,6 +90,7 @@
 /home/prabhat/workspace/trailerapp_v1.1/Android/Besiktning/assets/www/js/app/util/cache.js \
 /home/prabhat/workspace/trailerapp_v1.1/Android/Besiktning/assets/www/js/app/util/request.js \
 /home/prabhat/workspace/trailerapp_v1.1/Android/Besiktning/assets/www/js/app/util/TestLogger.js \
+/home/prabhat/workspace/trailerapp_v1.1/Android/Besiktning/assets/www/js/app/util/wrapper.js \
 /home/prabhat/workspace/trailerapp_v1.1/Android/Besiktning/assets/www/js/app/util/logger.js \
 /home/prabhat/workspace/trailerapp_v1.1/Android/Besiktning/assets/www/js/app/util/language.js \
 /home/prabhat/workspace/trailerapp_v1.1/Android/Besiktning/assets/www/js/app/util/encoding.js \

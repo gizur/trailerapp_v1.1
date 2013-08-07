@@ -24,7 +24,7 @@ var ScreenFourView = Stapes.subclass({
      * @param {language} aLanguage  the language object
      */
 
-    constructor : function(aUsr, aLog, aLanguage) {
+    constructor : function(aUsr, aLog, aLanguage, aWrapper) {
 
         "use strict";
 
@@ -39,7 +39,8 @@ var ScreenFourView = Stapes.subclass({
             _lg : aLog,
             _language : aLanguage,
             _usr : aUsr,
-            _latest_damage_index : -1
+            _latest_damage_index : -1,
+            _wrapper: aWrapper
         });
 
     },
@@ -354,7 +355,7 @@ var ScreenFourView = Stapes.subclass({
 
             };
             
-            navigator.camera.getPicture(success, fail, { quality: 35,
+            that._wrapper.getPicture(success, fail, { quality: 35,
                 destinationType: Camera.DestinationType.FILE_URL
             }); 
         });
@@ -415,9 +416,7 @@ var ScreenFourView = Stapes.subclass({
          * Clear browser cache if any
          */
 
-        if (typeof navigator.app !== 'undefined') {
-            navigator.app.clearCache();
-        }
+        this._wrapper.clearNavigatorCache();
         
         if (window.changeInPage === false) {
 	        var current_tt = JSON.parse(window.localStorage.getItem('current_tt'));
@@ -634,9 +633,9 @@ var ScreenFourView = Stapes.subclass({
 	         * on the page.
 	         */
 	        window.currentObj = {
-	        	'damagetype' : escapeHtmlEntities($('#four #damagetype option:selected').text()),
-            	'damageposition' : escapeHtmlEntities($('#four #damageposition option:selected').text()),
-            	'drivercauseddamage' : escapeHtmlEntities($('#four #drivercauseddamage option:selected').text())
+	        	'damagetype' : $('#four #damagetype option:selected').text(),
+            	'damageposition' : $('#four #damageposition option:selected').text(),
+            	'drivercauseddamage' : $('#four #drivercauseddamage option:selected').text()
             };
 	
 	    }

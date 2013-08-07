@@ -103,7 +103,7 @@ var ScreenTwoView = Stapes.subclass({
             }
 
         } else {
-            $('.bxslider-two').html("<li><center><div style='height:60px;width:200px;'>" + this._language.translate('No Picture(s) Attached') + "</div></center></li>");
+            $('.bxslider-two').html("<li><center><div style='height:60px;'>" + this._language.translate('No Picture(s) Attached') + "</div></center></li>");
         }
 
         window.slider_two.reloadSlider();          

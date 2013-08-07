@@ -77,6 +77,12 @@ var ScreenOneView = Stapes.subclass({
             that._lg.log('TRACE', 'trailertype change event start');
 
             /**
+             * Update the existing damage slider to default state
+             */
+            $('#one #troubleticketlist').html("<li><center><div style='height:60px;'>" + that._language.translate('No Damages Reported') + "</div></center></li>");
+            window.slider_one.reloadSlider();
+            
+            /**
              * Create the assetcollection object
              * this object automatically loads the cached
              * list of assets
@@ -132,6 +138,12 @@ var ScreenOneView = Stapes.subclass({
             that._lg.log('TRACE', 'trailerid change event start');
 
             /**
+             * Update the existing damage slider to default state
+             */
+            $('#one #troubleticketlist').html("<li><center><div style='height:60px;'>" + that._language.translate('No Damages Reported') + "</div></center></li>");
+            window.slider_one.reloadSlider();
+            
+            /**
              * Create the assetcollection object
              * this object automatically loads the cached
              * list of assets
@@ -160,7 +172,7 @@ var ScreenOneView = Stapes.subclass({
                 that._lg.log('DEBUG', ' typeof tts ' + (typeof tts));
                 that._lg.log('DEBUG', ' tts.length ' + tts.length);
                 if (ttc.size() === 0) {
-                    $('#one #troubleticketlist').html("<li><center><div style='height:60px;width:120px;'>" + that._language.translate('No Damages Reported') + "</div></center></li>");
+                    $('#one #troubleticketlist').html("<li><center><div style='height:60px;'>" + that._language.translate('No Damages Reported') + "</div></center></li>");
                 } else {
                     $('#one #troubleticketlist').html('');
                 }
@@ -185,7 +197,7 @@ var ScreenOneView = Stapes.subclass({
                         delete clipped_tt.enum_place;
                         delete clipped_tt.enum_sealed;
 
-                        var li_tt = "<li><center><div style='height:60px;width:200px;'><a id='" + clipped_tt.id + "' href='javascript:void(0);'>" + tts[index].get('damageposition') + ' ' + tts[index].get('damagetype') + "</a></div></center></li>";
+                        var li_tt = "<li><center><div style='height:60px;'><a id='" + clipped_tt.id + "' href='javascript:void(0);'>" + tts[index].get('damageposition') + '<br/>' + tts[index].get('damagetype') + "</a></div></center></li>";
 
                         tt_list_html += li_tt; 
 
@@ -773,9 +785,9 @@ var ScreenOneView = Stapes.subclass({
 	
 	            $('#one #troubleticketlist').html(this._tt_list.html);
 	            window.slider_one.reloadSlider();
-	            window.slider_one.goToSlide(this._tt_list.position);        
+	            window.slider_one.goToSlide(this._tt_list.position);      
 	        } else {
-	            $('#one #troubleticketlist').html("<li><center><div style='height:60px;width:120px;'>" + this._language.translate('No Damages Reported') + "</div></center></li>");
+	            $('#one #troubleticketlist').html("<li><center><div style='height:60px;'>" + this._language.translate('No Damages Reported') + "</div></center></li>");
 	            window.slider_one.reloadSlider();       
 	        }
         

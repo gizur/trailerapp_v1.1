@@ -144,8 +144,9 @@ $(document).delegate('#four', 'pageshow', function () {
     var req = new Request(Config.url, undefined, Config.log);
     var usr = new User(req, Config.log);
     var language = new Language(undefined, Config.log);
+    var wrapper = new Wrapper(lg);
 
-    var pageFour = new ScreenFourView(usr, lg, language);
+    var pageFour = new ScreenFourView(usr, lg, language, wrapper);
     pageFour.bindEventHandlers();
     pageFour.render();
 

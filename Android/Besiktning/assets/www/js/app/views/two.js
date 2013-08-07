@@ -68,6 +68,12 @@ var ScreenTwoView = Stapes.subclass({
 
         "use strict";
 
+        /** Check if device is Android **/
+
+        if (typeof navigator.app !== 'undefined') {
+            navigator.app.clearHistory();
+        }
+        
         /**
          * Initialize Page
          */
@@ -97,16 +103,22 @@ var ScreenTwoView = Stapes.subclass({
 
                 if (tt.docs.hasOwnProperty(index)){
                     this._lg.log('DEBUG', ' path to image file ' + tt.docs[index].path);
-                    $('.bxslider-two').append('<li><center><img id="' + tt.docs[index].path.replace('.','#') + '" style="width:100%;height:auto;" src="data:image/jpeg;base64,' + window.localStorage.getItem(tt.docs[index].path) + '"/></center></li>');   
+                    $('.bxslider-two').append('<li><center><img id="' + 
+                        tt.docs[index].path.replace('.','#') + 
+                        '" style="width:100%;height:auto;" src="data:image/jpeg;base64,' + 
+                        window.localStorage.getItem(tt.docs[index].path) + 
+                        '"/></center></li>');   
                 }
 
             }
 
         } else {
-            $('.bxslider-two').html("<li><center><div style='height:60px;'>" + this._language.translate('No Picture(s) Attached') + "</div></center></li>");
+            $('.bxslider-two').html("<li><center><div style='height:60px;'>" + 
+                this._language.translate('No Picture(s) Attached') + 
+                "</div></center></li>");
         }
 
-        window.slider_two.reloadSlider();          
-
+        window.slider_two.reloadSlider();
+        return false;
     }
 });

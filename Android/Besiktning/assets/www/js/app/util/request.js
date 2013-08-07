@@ -1,9 +1,9 @@
 /*jshint forin:true, noarg:true, noempty:true, eqeqeq:true, 
-         bitwise:true, strict:true, undef:false, unused:true, 
-         curly:true, browser:true, indent:4, maxerr:50 */
+ bitwise:true, strict:true, undef:false, unused:true, 
+ curly:true, browser:true, indent:4, maxerr:50 */
 
 /*global node_unit:true, Stapes:true, 
-         Logger:true, window:true, exports:false*/
+ Logger:true, window:true, exports:false*/
 /**
  * Utility Class Request
  * 
@@ -14,7 +14,6 @@
  */
 
 var Request = Stapes.subclass({
-
     /**
      * @constructor
      *
@@ -23,7 +22,7 @@ var Request = Stapes.subclass({
      * @param {object} aLogConfig object containing the log configuration     
      */
 
-    constructor : function(aBaseUrl, aClientId, aLogConfig) {
+    constructor: function(aBaseUrl, aClientId, aLogConfig) {
 
         "use strict";
 
@@ -36,9 +35,9 @@ var Request = Stapes.subclass({
 
         if (typeof aLogConfig === 'undefined') {
             aLogConfig = {
-                level  : 'FATAL',
-                type   : 'console',
-                config : {}
+                level: 'FATAL',
+                type: 'console',
+                config: {}
             };
         } else {
             if (typeof aLogConfig.level === 'undefined') {
@@ -50,15 +49,15 @@ var Request = Stapes.subclass({
             }
 
             if (typeof aLogConfig.config === 'undefined') {
-                aLogConfig.config = {};            
+                aLogConfig.config = {};
             }
-        }        
+        }
 
         this.extend({
-            _lg : new Logger(aLogConfig.level, 'js/util/request', aLogConfig.type, aLogConfig.config),
-            _storage : window.localStorage,
-            _base_url : aBaseUrl,
-            _client_id : aClientId
+            _lg: new Logger(aLogConfig.level, 'js/util/request', aLogConfig.type, aLogConfig.config),
+            _storage: window.localStorage,
+            _base_url: aBaseUrl,
+            _client_id: aClientId
         });
 
         var attrs = this._storage.getItem('request');
@@ -69,34 +68,33 @@ var Request = Stapes.subclass({
                 this._base_url = attrs.base_url;
             }
 
-            if (typeof aClientId === 'undefined') {          
+            if (typeof aClientId === 'undefined') {
                 this._client_id = attrs.client_id;
             }
         }
 
         this._storage.setItem('request', JSON.stringify({
-            "base_url" : this._base_url,
-            "client_id" : this._client_id
-        }));        
+            "base_url": this._base_url,
+            "client_id": this._client_id
+        }));
 
     },
-
     /**
      * Sets the client id and also save it to the cache
      *
      * @param {string} aClientId the gizur client it
      */
 
-    setClientId : function(aClientId) {
+    setClientId: function(aClientId) {
 
         "use strict";
-        
+
         this._client_id = aClientId;
         this._lg.log('DEBUG', ' setClientId aClientId ' + aClientId);
 
         this._storage.setItem('request', JSON.stringify({
-            "base_url" : this._base_url,
-            "client_id" : this._client_id
+            "base_url": this._base_url,
+            "client_id": this._client_id
         }));
 
         var attrs = JSON.parse(this._storage.getItem('request'));
@@ -104,19 +102,17 @@ var Request = Stapes.subclass({
         this._lg.log('DEBUG', ' setClientId attrs.client_id ' + attrs.client_id);
 
     },
-
     /**
      * Gets the client id and also save it to the cache
      *
      */
 
-    getClientId : function() {
+    getClientId: function() {
 
         "use strict";
 
         return this._client_id;
     },
-
     /**
      * Send the request to Gizur API
      *
@@ -130,7 +126,7 @@ var Request = Stapes.subclass({
      * @param {boolean}  silent    checks if internet connection error message has to be shown or not
      */
 
-    send : function (method, url, headers, body, successCb, errorCb, files, silent) {
+    send: function(method, url, headers, body, successCb, errorCb, files, silent) {
 
         "use strict";
 
@@ -142,18 +138,18 @@ var Request = Stapes.subclass({
 
         try {
 
-            var successCbWrapper = function(data){
+            var successCbWrapper = function(data) {
 
                 that._lg.log('DEBUG', 'Request#send#successCbWrapper : ' + JSON.stringify(data));
 
-                $.mobile.loading( 'hide' );
+                $.mobile.loading('hide');
 
                 if (typeof successCb === 'function') {
                     successCb(data);
                 }
             };
 
-            var errorCbWrapper = function(jqxhr, status, er){
+            var errorCbWrapper = function(jqxhr, status, er) {
 
                 try {
 
@@ -164,7 +160,7 @@ var Request = Stapes.subclass({
                      * Hide the loading GIF animation
                      */
 
-                    $.mobile.loading( 'hide' );
+                    $.mobile.loading('hide');
 
                     if ((jqxhr.status === 0 || status === null) && !silent) {
 
@@ -180,10 +176,10 @@ var Request = Stapes.subclass({
                             data = null;
                         }
 
-                        if ( data !== null &&
-                            typeof data.error !== 'undefined' && 
-                            typeof data.error.message !== 'undefined' && 
-                            data.error.message === 'Client ID not found') {
+                        if (data !== null &&
+                                typeof data.error !== 'undefined' &&
+                                typeof data.error.message !== 'undefined' &&
+                                data.error.message === 'Client ID not found') {
 
                             $('#a_dialog_error_clientid').click();
 
@@ -195,26 +191,26 @@ var Request = Stapes.subclass({
 
                         }
                     }
-                
+
                 } catch (err) {
 
                     that._lg.log('FATAL', JSON.stringify(err));
 
                 }
-                
+
             };
 
-            $.mobile.loading( 'show', { theme: "b", text: "Please wait...", textonly: false});
+            $.mobile.loading('show', {theme: "b", text: "Please wait...", textonly: false});
 
-            this._lg.log('DEBUG', 'Request#send : url ' + this._base_url +  url);
+            this._lg.log('DEBUG', 'Request#send : url ' + this._base_url + url);
             this._lg.log('DEBUG', 'Request#send : body ' + JSON.stringify(body));
 
             this._lg.log('DEBUG', 'Request#send : headers ' + JSON.stringify(headers));
             this._lg.log('DEBUG', 'Request#send : client_id ' + this._client_id);
 
-            if (files === undefined || 
-                !(files instanceof Array) ||
-                files.length === 0) {
+            if (files === undefined ||
+                    !(files instanceof Array) ||
+                    files.length === 0) {
 
                 this._lg.log('TRACE', 'Request#send : no files ');
 
@@ -224,14 +220,14 @@ var Request = Stapes.subclass({
                     url: this._base_url + url,
                     data: body,
                     cache: false,
-                    beforeSend: function(xhr){
+                    beforeSend: function(xhr) {
                         xhr.setRequestHeader('X_CLIENTID', that._client_id);
                         for (var key in headers) {
                             if (headers.hasOwnProperty(key)) {
                                 xhr.setRequestHeader(key, headers[key]);
                             }
                         }
-                    },          
+                    },
                     success: successCbWrapper,
                     error: errorCbWrapper
                 });
@@ -242,13 +238,14 @@ var Request = Stapes.subclass({
                 var ft = new FileTransfer();
                 var options = new FileUploadOptions();
 
-                options.fileKey="file";
-                options.fileName=files[0].substr(files[0].lastIndexOf('/')+1);
-                options.mimeType="image/jpeg";                
+                options.fileKey = "file";
+                options.fileName = files[0].substr(files[0].lastIndexOf('/') + 1);
+                options.mimeType = "image/jpeg";
 
-                options.params = body;               
+                options.params = body;
 
                 headers.X_CLIENTID = this._client_id;
+                headers.ACCEPT = "application/json";
 
                 options.headers = headers;
 
@@ -260,21 +257,21 @@ var Request = Stapes.subclass({
                 var errorCbWrapperF = function(r) {
 
                     that._lg.log('DEBUG', 'Request#send errorCbWrapperF ' + JSON.stringify(r));
-                    errorCbWrapper({'responseText': r.body ,'status':r.code}, r.http_status, r.code);
+                    errorCbWrapper({'responseText': r.body, 'status': r.code}, r.http_status, r.code);
                 };
-                
+
                 /**
                  * Limitation in Apache Cordova allows sending only one file
                  * so sending only the first one
                  */
-                
+
                 ft.upload(
-                    files[0], 
-                    (this._base_url + url), 
-                    successCbWrapperF, 
-                    errorCbWrapperF, 
-                    options
-                );
+                        files[0],
+                        (this._base_url + url),
+                        successCbWrapperF,
+                        errorCbWrapperF,
+                        options
+                        );
             }
         } catch (err) {
 
