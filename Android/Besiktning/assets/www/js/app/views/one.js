@@ -21,9 +21,10 @@ var ScreenOneView = Stapes.subclass({
      * @param {user}     aUsr       the user who is making calls to server
      * @param {logger}   aLog       object containing the log configuration
      * @param {language} aLanguage  the language object
+     * @param {wrapper}  aWrapper   the wrapper object
      */
 
-    constructor: function(aUsr, aLog, aLanguage) {
+    constructor: function(aUsr, aLog, aLanguage, aWrapper) {
 
         "use strict";
 
@@ -51,7 +52,8 @@ var ScreenOneView = Stapes.subclass({
             _language: aLanguage,
             _usr: aUsr,
             _current_tt: current_tt,
-            _tt_list: {}
+            _tt_list: {},
+            _wrapper: aWrapper
         });
     },
     /**
@@ -324,9 +326,7 @@ var ScreenOneView = Stapes.subclass({
 
                 $.mobile.urlHistory.stack = [];
 
-                if (typeof navigator.app !== 'undefined') {
-                    navigator.app.clearHistory();
-                }
+                that._wrapper.clearNavigatorHistory();
 
                 /**
                  * Show success message
@@ -798,5 +798,6 @@ var ScreenOneView = Stapes.subclass({
                 sealed: $('#one input[name=sealed]:checked').val()
             };
         }
+        window.changeInPage = false;
     }
 });

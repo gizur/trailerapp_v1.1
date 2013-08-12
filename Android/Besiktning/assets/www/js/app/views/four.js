@@ -21,6 +21,7 @@ var ScreenFourView = Stapes.subclass({
      * @param {user}     aUsr       the user who is making calls to server
      * @param {logger}   aLog       object containing the log configuration
      * @param {language} aLanguage  the language object
+     * @param {wrapper}  aWrapper   the wrapper object
      */
 
     constructor: function(aUsr, aLog, aLanguage, aWrapper) {
@@ -636,5 +637,6 @@ var ScreenFourView = Stapes.subclass({
             };
 
         }
+        window.changeInPage = false;
     }
 });

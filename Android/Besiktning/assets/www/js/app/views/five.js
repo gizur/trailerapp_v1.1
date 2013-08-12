@@ -22,9 +22,10 @@ var ScreenFiveView = Stapes.subclass({
      * @param {user}     aUsr       the user who is making calls to server
      * @param {logger}   aLog       object containing the log configuration
      * @param {language} aLanguage  the language object
+     * @param {wrapper}  aWrapper   the wrapper object
      */
 
-    constructor : function(aUsr, aLog, aLanguage) {
+    constructor : function(aUsr, aLog, aLanguage, aWrapper) {
 
         "use strict";
 
@@ -51,7 +52,8 @@ var ScreenFiveView = Stapes.subclass({
             _lg : aLog,
             _language : aLanguage,
             _usr : aUsr,
-            _current_tt : current_tt
+            _current_tt : current_tt,
+            _wrapper: aWrapper
         });
 
     },
@@ -299,11 +301,7 @@ var ScreenFiveView = Stapes.subclass({
 
                 $.mobile.urlHistory.stack = [];
 
-                /** Check if device is Android **/
-
-                if (typeof navigator.app !== 'undefined') {
-                    navigator.app.clearHistory();
-                }
+                that._wrapper.clearNavigatorHistory();
 
                 var unsent_files = window.localStorage.getItem('unsent_files');
 
@@ -488,9 +486,7 @@ var ScreenFiveView = Stapes.subclass({
 
                     $.mobile.urlHistory.stack = [];
 
-                    if (typeof navigator.app !== 'undefined') {
-                        navigator.app.clearHistory();
-                    }
+                    that._wrapper.clearNavigatorHistory();
 
                     $('#a_dialog_error_damagereported').click();
 
@@ -759,7 +755,9 @@ var ScreenFiveView = Stapes.subclass({
                 	var str = ' - ' + this._language.translate('Select One') + ' - ';
                 	if (this._current_tt.damages[index].damageposition === str || 
                 			this._current_tt.damages[index].damagetype === str ||
-                			this._current_tt.damages[index].drivercauseddamage === '') {
+                			this._current_tt.damages[index].drivercauseddamage === '' ||
+                			typeof this._current_tt.damages[index].damageposition === 'undefined' ||
+                			typeof this._current_tt.damages[index].damagetype === 'undefined') {
                 		this._current_tt.damages.splice(index,1);
                 	}
                 }
@@ -790,6 +788,7 @@ var ScreenFiveView = Stapes.subclass({
          * verify if user has modified anything
          * on the page.
          */
+        window.changeInPage = false;
         window.currentObj = {};
     }
 });

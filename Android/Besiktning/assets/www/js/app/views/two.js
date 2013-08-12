@@ -21,9 +21,10 @@ var ScreenTwoView = Stapes.subclass({
      *
      * @param {logger}   aLog       object containing the log configuration
      * @param {language} aLanguage  the language object
+     * @param {wrapper}  aWrapper   the wrapper object
      */
 
-    constructor : function(aLog, aLanguage) {
+    constructor : function(aLog, aLanguage, aWrapper) {
 
         "use strict";
 
@@ -36,7 +37,8 @@ var ScreenTwoView = Stapes.subclass({
 
         this.extend({
             _lg : aLog,
-            _language : aLanguage
+            _language : aLanguage,
+            _wrapper: aWrapper
         });
 
     },
@@ -70,9 +72,8 @@ var ScreenTwoView = Stapes.subclass({
 
         /** Check if device is Android **/
 
-        if (typeof navigator.app !== 'undefined') {
-            navigator.app.clearHistory();
-        }
+        this._wrapper.clearNavigatorCache();
+        this._wrapper.clearNavigatorHistory();
         
         /**
          * Initialize Page
@@ -118,6 +119,7 @@ var ScreenTwoView = Stapes.subclass({
                 "</div></center></li>");
         }
 
+        window.changeInPage = false;
         window.slider_two.reloadSlider();
         return false;
     }

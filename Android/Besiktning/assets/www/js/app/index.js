@@ -90,8 +90,9 @@ $(document).delegate('#one', 'pageshow', function() {
         var req = new Request(Config.url, undefined, Config.log);
         var usr = new User(req, Config.log);
         var language = new Language(undefined, Config.log);
-
-        var pageOne = new ScreenOneView(usr, lg, language);
+        var wrapper = new Wrapper(lg);
+        
+        var pageOne = new ScreenOneView(usr, lg, language, wrapper);
 
         //For Debugging : The line below must be commented
         //window.localStorage.removeItem('17x519_tt');
@@ -166,8 +167,9 @@ $(document).delegate('#two', 'pageshow', function() {
 
     var lg = new Logger(Config.log.level, '#two$pageshow', Config.log.type, Config.log.config);
     var language = new Language(undefined, Config.log);
+    var wrapper = new Wrapper(lg);
 
-    var pageTwo = new ScreenTwoView(lg, language);
+    var pageTwo = new ScreenTwoView(lg, language, wrapper);
     pageTwo.bindEventHandlers();
     pageTwo.render();
 
@@ -210,8 +212,9 @@ $(document).delegate('#five', 'pageshow', function() {
     var req = new Request(Config.url, undefined, Config.log);
     var usr = new User(req, Config.log);
     var language = new Language(undefined, Config.log);
+    var wrapper = new Wrapper(lg);
 
-    var pageFive = new ScreenFiveView(usr, lg, language);
+    var pageFive = new ScreenFiveView(usr, lg, language, wrapper);
     pageFive.bindEventHandlers();
     pageFive.render();
 
@@ -260,6 +263,7 @@ $(document).delegate('#settings', 'pageshow', function() {
 
     var lg = new Logger(Config.log.level, 'gta-page#settings$pageshow', Config.log.type, Config.log.config);
     var language = new Language(undefined, Config.log);
+    var wrapper = new Wrapper(lg);
 
     try {
 
@@ -269,7 +273,7 @@ $(document).delegate('#settings', 'pageshow', function() {
 
         var req = new Request(Config.url, undefined, Config.log);
         var usr = new User(req, Config.log);
-        var pageSettings = new ScreenSettingsView(usr, lg, language, req);
+        var pageSettings = new ScreenSettingsView(usr, lg, language, req, wrapper);
 
         pageSettings.bindEventHandlers();
         pageSettings.render();
@@ -306,6 +310,7 @@ $(document).bind('pagebeforechange', function(e, data) {
         var lg = new Logger(Config.log.level, 'gta-page$pagebeforechange', Config.log.type, Config.log.config);
         var req = new Request(Config.url, undefined, Config.log);
         var usr = new User(req, Config.log);
+        var wrapper = new Wrapper(lg);
 
         var to = data.toPage,
                 from = data.options.fromPage;
@@ -317,9 +322,7 @@ $(document).bind('pagebeforechange', function(e, data) {
          * Clear any browser cache
          */
 
-        if (typeof navigator.app !== 'undefined') {
-            navigator.app.clearCache();
-        }
+        wrapper.clearNavigatorCache();
 
         /**
          * The type of to is object when there is a transition from
@@ -486,6 +489,15 @@ document.addEventListener("deviceready", function() {
 
     "use strict";
     
+    var lg = new Logger(Config.log.level, 'deviceready', Config.log.type, Config.log.config);
+    var wrapper = new Wrapper(lg);
+    
+    /**
+     * this variable is used to 
+     * validate if change in page has done.
+     */
+    window.changeInPage = false;
+    
     /**
      * Slider widget
      */
@@ -544,8 +556,8 @@ document.addEventListener("deviceready", function() {
      * Localization
      */
 
-    if (typeof navigator.globalization !== 'undefined') {
-        navigator.globalization.getPreferredLanguage(
+    if (wrapper.isGlobalization()) {
+        wrapper.getPreferredLanguage(
                 function(lang) {
                     var language = new Language(lang.value, Config.log);
 
@@ -590,9 +602,7 @@ document.addEventListener("deviceready", function() {
 
                     $.mobile.changePage('#one');
 
-                    if (typeof navigator.app !== 'undefined') {
-                        navigator.app.clearHistory();
-                    }
+                    wrapper.clearNavigatorHistory();
                 }
         );
     }

@@ -14,11 +14,11 @@ var Wrapper = (function() {
      * Private Variables
      */
 
-    var Wrapper = Stapes.subclass({
+    var Wrapper = Stapes.subclass ({
         /**
          * @constructor
          */
-        constructor: function(aLog) {
+        constructor: function (aLog) {
             this.extend({
                 _lg: aLog
             });
@@ -26,7 +26,7 @@ var Wrapper = (function() {
         /**
          *  Clear Navigator History
          */
-        clearNavigatorHistory: function() {
+        clearNavigatorHistory: function () {
             this._lg.log('TRACE', 'Starting clearNavigatorHistory');
             if (typeof navigator.app !== 'undefined') {
                 navigator.app.clearHistory();
@@ -37,7 +37,7 @@ var Wrapper = (function() {
         /**
          *  Clear Navigator Cache
          */
-        clearNavigatorCache: function() {
+        clearNavigatorCache: function () {
             this._lg.log('TRACE', 'Starting clearNavigatorCache');
             if (typeof navigator.app !== 'undefined') {
                 navigator.app.clearCache();
@@ -48,13 +48,33 @@ var Wrapper = (function() {
         /**
          * getPicture
          */
-        getPicture: function(success, fail, options) {
+        getPicture: function (success, fail, options) {
             this._lg.log('TRACE', 'Starting getPicture');
             if (typeof success === 'function' && typeof fail === 'function') {
                 navigator.camera.getPicture(success, fail, options);
             }
             this._lg.log('TRACE', 'Leaving getPicture');
+        },
+        /**
+         * Globalization
+         */
+        isGlobalization: function () {
+        	this._lg.log('TRACE', 'In isGlobalization');
+        	if (typeof navigator.globalization !== 'undefined')
+        		return true;
+        	else
+        		return false;
+        },
+        /**
+         * getPreferredLanguage
+         */
+        getPreferredLanguage: function (successCB) {
+        	this._lg.log('TRACE', 'In getPreferredLanguage');
+        	if (typeof successCB === 'function') {
+        		navigator.globalization.getPreferredLanguage(successCB);
+        	}
         }
+        
     });
 
     return Wrapper;
