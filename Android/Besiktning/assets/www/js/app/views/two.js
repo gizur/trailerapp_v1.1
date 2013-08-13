@@ -53,10 +53,10 @@ var ScreenTwoView = Stapes.subclass({
 
         "use strict";
 
-        $('#two li center img').unbind('click').live('click', function(){
+        /*$('#two li center img').unbind('click').live('click', function(){
             window.localStorage.setItem('details_doc_id', $(this).attr('id').replace('#','.'));
             $.mobile.changePage('#three');
-        });        
+        });*/
   
     },
 
@@ -98,7 +98,7 @@ var ScreenTwoView = Stapes.subclass({
 
         if (tt.docs.length !== 0) {
 
-            $('.bxslider-two').html('');
+            $('.bxslider-two').empty();
 
             for (var index in tt.docs) {
 
@@ -108,7 +108,7 @@ var ScreenTwoView = Stapes.subclass({
                         tt.docs[index].path.replace('.','#') + 
                         '" style="width:100%;height:auto;" src="data:image/jpeg;base64,' + 
                         window.localStorage.getItem(tt.docs[index].path) + 
-                        '"/></center></li>');   
+                        '" onclick="window.localStorage.setItem(\'details_doc_id\', $(this).attr(\'id\').replace(\'#\',\'.\')); $.mobile.changePage(\'#three\');"/></center></li>');   
                 }
 
             }

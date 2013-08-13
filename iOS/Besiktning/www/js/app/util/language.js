@@ -60,7 +60,8 @@ var Language = Stapes.subclass({
         this.set( 'svenska' , {
                 "If yes click 'Ok', (you will receive a mail with the new password) else click 'Go Back'" : 'Välj i så fall Ok (ditt nya lösen kommer att mailas)',
                 'Please try again, If the problem persists please contact the Gizur Saas Account holders' : 'Försök igen, Kontakta Gizur SaaS support om problemet kvarstår',
-                'All fields (username, password and client id) must be filled' : 'Alla fält (användarnamn, lösenord och klient id) måste fyllas',
+                'All fields (username, password and client id) must be filled' : 'Alla fält (användarnamn, lösenord och klient id) måste fyllas i',
+                'You have made some changes, If you continue, your changes shall be lost': 'Du har gjort ändringar. Om du fortsätter kommer inte dina ändringar kommer inte att sparas',
                 'Please select, if damage was caused by driver or not' : 'Välj om skadan orsakats av chauffören eller ej',
                 'Are you sure you want to reset your password' : 'Vill du verkligen nollställa lösen',
                 'Specify the damage in the direction the trailer moves' : 'Skadan anges I trailerns färdriktning',

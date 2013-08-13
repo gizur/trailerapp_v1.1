@@ -159,7 +159,7 @@ $(document).delegate('#four', 'pageshow', function() {
  *
  */
 
-$(document).delegate('#two', 'pageshow', function() {
+$(document).delegate('#two', 'pageshow', function(e, data) {
 
     "use strict";
 
@@ -173,6 +173,8 @@ $(document).delegate('#two', 'pageshow', function() {
     pageTwo.bindEventHandlers();
     pageTwo.render();
 
+    e.preventDefault();
+    e.stopPropagation();
 });
 
 /**
@@ -186,13 +188,23 @@ $(document).delegate('#three', 'pageshow', function(e, data) {
     "use strict";
 
     window.prevPage = 'three';
+    
+    var lg = new Logger(Config.log.level, '#two$pageshow', Config.log.type, Config.log.config);
+    var req = new Request(Config.url, undefined, Config.log);
+    var usr = new User(req, Config.log);
+    var language = new Language(undefined, Config.log);
+    var wrapper = new Wrapper(lg);
 
     var base64_image = window.localStorage.getItem(window.localStorage.getItem('details_doc_id'));
+    
     $('#three img').attr('src', 'data:image/jpeg;base64,' + base64_image);
     $('#three img').css('width', ($(document).width() - 20));
     $('#three img').css('height', 'auto');
 
     e.preventDefault();
+    
+    var pageThree = new ScreenThreeView(usr, lg, language, wrapper);
+    pageThree.render();
 });
 
 /**

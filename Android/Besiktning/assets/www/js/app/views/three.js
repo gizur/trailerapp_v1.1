@@ -24,7 +24,7 @@ var ScreenThreeView = Stapes.subclass({
      * @param {language} aLanguage  the language object
      */
 
-    constructor : function(aUsr, aLog, aLanguage) {
+    constructor : function(aUsr, aLog, aLanguage, aWrapper) {
 
         "use strict";
 
@@ -50,7 +50,8 @@ var ScreenThreeView = Stapes.subclass({
         this.extend({
             _lg : aLog,
             _language : aLanguage,
-            _usr : aUsr
+            _usr : aUsr,
+            _wrapper : aWrapper
         });
 
     },
@@ -64,6 +65,10 @@ var ScreenThreeView = Stapes.subclass({
     render : function() {
 
         "use strict";
-
+        
+        this._wrapper.clearNavigatorCache();
+        this._wrapper.clearNavigatorHistory();
+        
+        window.changeInPage = false;
     }
 });

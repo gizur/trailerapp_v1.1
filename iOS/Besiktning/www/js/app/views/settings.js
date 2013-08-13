@@ -25,7 +25,7 @@ var ScreenSettingsView = Stapes.subclass({
      * @param {request}  aReq       the request object
      */
 
-    constructor : function(aUsr, aLog, aLanguage, aReq) {
+    constructor : function(aUsr, aLog, aLanguage, aReq, aWrapper) {
 
         "use strict";
 
@@ -40,7 +40,8 @@ var ScreenSettingsView = Stapes.subclass({
             _lg : aLog,
             _language : aLanguage,
             _usr : aUsr,
-            _req : aReq
+            _req : aReq,
+            _wrapper: aWrapper
         });
 
     },
@@ -107,9 +108,7 @@ var ScreenSettingsView = Stapes.subclass({
                  * device's back button the app exits
                  */
 
-                if (typeof navigator.app !== 'undefined') {
-                    navigator.app.clearHistory();
-                }
+                that._wrapper.clearNavigatorHistory();
 
                 /**
                  * Clear All cache
@@ -145,17 +144,13 @@ var ScreenSettingsView = Stapes.subclass({
                         if (cacheErrorList.length === 0) { 
                             $('#a_dialog_success_cache').click();
 
-                            if (typeof navigator.app !== 'undefined') {
-                                navigator.app.clearHistory();
-                            }
+                            that._wrapper.clearNavigatorHistory();
 
                         } else {
                             that._usr.setAuthenticated(false);
                             $('#a_dialog_error_cache').click();
 
-                            if (typeof navigator.app !== 'undefined') {
-                                navigator.app.clearHistory();          
-                            }        
+                            that._wrapper.clearNavigatorHistory();
                         }
                         cacheSuccessList = cacheErrorList = [];
                     }
@@ -218,9 +213,7 @@ var ScreenSettingsView = Stapes.subclass({
                         that._lg.log('TRACE', ' jqxhr ' + jqxhr.responseText);
                         var data = JSON.parse(jqxhr.responseText);
 
-                        if (typeof navigator.app !== 'undefined') {                  
-                            navigator.app.clearHistory();
-                        }
+                        that._wrapper.clearNavigatorHistory();
 
                         if (data.error.message === 'Invalid Username and Password') {
                             $('#a_dialog_error_invalidcredentials').click();
@@ -289,17 +282,13 @@ var ScreenSettingsView = Stapes.subclass({
 
                 e.preventDefault();
 
-                if (typeof navigator.app !== 'undefined') {
-                    navigator.app.clearHistory();
-                }
+                that._wrapper.clearNavigatorHistory();
 
                 var success = function( data ){
 
                     that._lg.log('TRACE', ' password reset successfully ' + JSON.stringify(data));
                     
-                    if (typeof navigator.app !== 'undefined') {
-                        navigator.app.clearHistory();
-                    }
+                    that._wrapper.clearNavigatorHistory();
 
                     $('#a_dialog_resetpassword_success').click();
 
@@ -311,9 +300,7 @@ var ScreenSettingsView = Stapes.subclass({
 
                     that._lg.log('TRACE', ' error reset password ' + jqxhr.responseText);
 
-                    if (typeof navigator.app !== 'undefined') {
-                        navigator.app.clearHistory();
-                    }
+                    that._wrapper.clearNavigatorHistory();
 
                     $('#a_dialog_resetpassword_error').click();                    
 
@@ -360,9 +347,7 @@ var ScreenSettingsView = Stapes.subclass({
 
                 e.preventDefault();
 
-                if (typeof navigator.app !== 'undefined') {
-                    navigator.app.clearHistory();
-                }
+                that._wrapper.clearNavigatorHistory();
 
                 if ($('#dialog_changepassword input').val() === '') {
                     $('#dialog_changepassword #message').html('New Password cannot be blank');
@@ -374,9 +359,7 @@ var ScreenSettingsView = Stapes.subclass({
 
                     that._lg.log('TRACE', ' password changed successfully ' + JSON.stringify(data));
 
-                    if (typeof navigator.app !== 'undefined') {
-                        navigator.app.clearHistory();
-                    }
+                    that._wrapper.clearNavigatorHistory();
 
                     $('#dialog_changepassword #newpassword').val('');
                     $('#a_dialog_changepassword_success').click();
@@ -389,9 +372,7 @@ var ScreenSettingsView = Stapes.subclass({
 
                     that._lg.log('TRACE', ' error changing password ' + jqxhr.responseText);
 
-                    if (typeof navigator.app !== 'undefined') {
-                        navigator.app.clearHistory();
-                    }
+                    that._wrapper.clearNavigatorHistory();
 
                     $('#dialog_changepassword #newpassword').val('');
                     $('#a_dialog_changepassword_error').click();                    

@@ -21,9 +21,10 @@ var ScreenTwoView = Stapes.subclass({
      *
      * @param {logger}   aLog       object containing the log configuration
      * @param {language} aLanguage  the language object
+     * @param {wrapper}  aWrapper   the wrapper object
      */
 
-    constructor : function(aLog, aLanguage) {
+    constructor : function(aLog, aLanguage, aWrapper) {
 
         "use strict";
 
@@ -36,7 +37,8 @@ var ScreenTwoView = Stapes.subclass({
 
         this.extend({
             _lg : aLog,
-            _language : aLanguage
+            _language : aLanguage,
+            _wrapper: aWrapper
         });
 
     },
@@ -68,6 +70,11 @@ var ScreenTwoView = Stapes.subclass({
 
         "use strict";
 
+        /** Check if device is Android **/
+
+        this._wrapper.clearNavigatorCache();
+        this._wrapper.clearNavigatorHistory();
+        
         /**
          * Initialize Page
          */
@@ -97,16 +104,23 @@ var ScreenTwoView = Stapes.subclass({
 
                 if (tt.docs.hasOwnProperty(index)){
                     this._lg.log('DEBUG', ' path to image file ' + tt.docs[index].path);
-                    $('.bxslider-two').append('<li><center><img id="' + tt.docs[index].path.replace('.','#') + '" style="width:100%;height:auto;" src="data:image/jpeg;base64,' + window.localStorage.getItem(tt.docs[index].path) + '"/></center></li>');   
+                    $('.bxslider-two').append('<li><center><img id="' + 
+                        tt.docs[index].path.replace('.','#') + 
+                        '" style="width:100%;height:auto;" src="data:image/jpeg;base64,' + 
+                        window.localStorage.getItem(tt.docs[index].path) + 
+                        '"/></center></li>');   
                 }
 
             }
 
         } else {
-            $('.bxslider-two').html("<li><center><div style='height:60px;'>" + this._language.translate('No Picture(s) Attached') + "</div></center></li>");
+            $('.bxslider-two').html("<li><center><div style='height:60px;'>" + 
+                this._language.translate('No Picture(s) Attached') + 
+                "</div></center></li>");
         }
 
-        window.slider_two.reloadSlider();          
-
+        window.changeInPage = false;
+        window.slider_two.reloadSlider();
+        return false;
     }
 });

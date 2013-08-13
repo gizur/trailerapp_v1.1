@@ -1,6 +1,6 @@
 /*jshint forin:true, noarg:true, noempty:true, eqeqeq:true, 
-         bitwise:true, strict:true, undef:false, unused:true, 
-         curly:true, browser:true, indent:4, maxerr:50 */
+ bitwise:true, strict:true, undef:false, unused:true, 
+ curly:true, browser:true, indent:4, maxerr:50 */
 
 /*global window:true*/
 
@@ -26,44 +26,44 @@
  */
 
 function changepage(page) {
-	window.changeInPage = false;
-	
-	if(window.currentObj !== null) {
-		console.log(JSON.stringify(window.currentObj));
-		for (index in window.currentObj) {
-			if (window.currentObj.hasOwnProperty(index)) {
-		        console.log("Fetching " + index);
-		        
-		        var val = $('#' + window.prevPage + " #" + index).val();
-		        
-		        if($('#' + window.prevPage + " #" + index).is('select'))
-		        	val = $('#' + window.prevPage + " #" + index + " option:selected").text();
-		        
-		        if ($('#' + window.prevPage + " input[name=" + index + "]").is(':radio'))
-		        	val = $('#' + window.prevPage + " input[name=" + index + "]:checked").val();
-		        
-		        if (val !== window.currentObj[index]) {
-		        	console.log(val + " Not matched " + window.currentObj[index]);
-		        	window.changeInPage = true;
-		        	break;
-		        }
-		    } else {
-		    	console.log(index + " does not hasOwnProperty.");
-		    }
-		}
-	}
-	
-	if (window.changeInPage && page !== window.prevPage) {
-		var htm = '<a href="#' + window.prevPage + 
-			'" data-role="button" data-inline="true"' +
-			' data-icon="back">Back</a><a href="#' + page +
-			'" data-role="button" data-inline="true" data-icon="forward" onclick="window.changeInPage = false;">Continue</a>';
-		console.log(htm);
-		$('#notify_buttondiv').empty().html(htm);
-		$('#a_dialog_notify_changevalidation').click();
-	} else {
-		$.mobile.changePage("#" + page);
-	}
+    window.changeInPage = false;
+
+    if (window.currentObj !== null) {
+        console.log(JSON.stringify(window.currentObj));
+        for (index in window.currentObj) {
+            if (window.currentObj.hasOwnProperty(index)) {
+                console.log("Fetching " + index);
+
+                var val = $('#' + window.prevPage + " #" + index).val();
+
+                if ($('#' + window.prevPage + " #" + index).is('select'))
+                    val = $('#' + window.prevPage + " #" + index + " option:selected").text();
+
+                if ($('#' + window.prevPage + " input[name=" + index + "]").is(':radio'))
+                    val = $('#' + window.prevPage + " input[name=" + index + "]:checked").val();
+
+                if (val !== window.currentObj[index]) {
+                    console.log(val + " Not matched " + window.currentObj[index]);
+                    window.changeInPage = true;
+                    break;
+                }
+            } else {
+                console.log(index + " does not hasOwnProperty.");
+            }
+        }
+    }
+
+    if (window.changeInPage && page !== window.prevPage) {
+        var htm = '<a href="#' + window.prevPage +
+                '" data-role="button" data-inline="true"' +
+                ' data-icon="back">Back</a><a href="#' + page +
+                '" data-role="button" data-inline="true" data-icon="forward" onclick="window.changeInPage = false;">Continue</a>';
+        console.log(htm);
+        $('#notify_buttondiv').empty().html(htm);
+        $('#a_dialog_notify_changevalidation').click();
+    } else {
+        $.mobile.changePage("#" + page);
+    }
 }
 
 /**
@@ -72,13 +72,13 @@ function changepage(page) {
  *
  */
 
-$(document).delegate('#one', 'pageshow', function () {
+$(document).delegate('#one', 'pageshow', function() {
 
     "use strict";
 
     window.prevPage = 'one';
-    
-    var lg = new Logger(Config.log.level, 'gta-page#one$pageshow', Config.log.type, Config.log.config); 
+
+    var lg = new Logger(Config.log.level, 'gta-page#one$pageshow', Config.log.type, Config.log.config);
 
     try {
 
@@ -90,8 +90,9 @@ $(document).delegate('#one', 'pageshow', function () {
         var req = new Request(Config.url, undefined, Config.log);
         var usr = new User(req, Config.log);
         var language = new Language(undefined, Config.log);
-
-        var pageOne = new ScreenOneView(usr, lg, language);
+        var wrapper = new Wrapper(lg);
+        
+        var pageOne = new ScreenOneView(usr, lg, language, wrapper);
 
         //For Debugging : The line below must be commented
         //window.localStorage.removeItem('17x519_tt');
@@ -102,7 +103,7 @@ $(document).delegate('#one', 'pageshow', function () {
          * ------------------
          */
 
-        pageOne.bindEventHandlers();    
+        pageOne.bindEventHandlers();
 
         /**
          * -------------------
@@ -125,7 +126,7 @@ $(document).delegate('#one', 'pageshow', function () {
 
     }
 
-    lg.log('DEBUG', '#one #troubleticketlist html : ' + $('#one #troubleticketlist').html());       
+    lg.log('DEBUG', '#one #troubleticketlist html : ' + $('#one #troubleticketlist').html());
 });
 
 /**
@@ -134,12 +135,12 @@ $(document).delegate('#one', 'pageshow', function () {
  *
  */
 
-$(document).delegate('#four', 'pageshow', function () {
+$(document).delegate('#four', 'pageshow', function() {
 
-    "use strict";    
+    "use strict";
 
     window.prevPage = 'four';
-    
+
     var lg = new Logger(Config.log.level, '#four$pageshow', Config.log.type, Config.log.config);
     var req = new Request(Config.url, undefined, Config.log);
     var usr = new User(req, Config.log);
@@ -158,19 +159,20 @@ $(document).delegate('#four', 'pageshow', function () {
  *
  */
 
-$(document).delegate('#two', 'pageshow', function () {
+$(document).delegate('#two', 'pageshow', function() {
 
-    "use strict";    
+    "use strict";
 
     window.prevPage = 'two';
-    
+
     var lg = new Logger(Config.log.level, '#two$pageshow', Config.log.type, Config.log.config);
     var language = new Language(undefined, Config.log);
+    var wrapper = new Wrapper(lg);
 
-    var pageTwo = new ScreenTwoView(lg, language);
+    var pageTwo = new ScreenTwoView(lg, language, wrapper);
     pageTwo.bindEventHandlers();
     pageTwo.render();
-   
+
 });
 
 /**
@@ -179,16 +181,18 @@ $(document).delegate('#two', 'pageshow', function () {
  *
  */
 
-$(document).delegate('#three', 'pageshow', function () {
+$(document).delegate('#three', 'pageshow', function(e, data) {
 
     "use strict";
 
     window.prevPage = 'three';
-    
+
     var base64_image = window.localStorage.getItem(window.localStorage.getItem('details_doc_id'));
     $('#three img').attr('src', 'data:image/jpeg;base64,' + base64_image);
-    $('#three img').css('width', ($(document).width()-20));
+    $('#three img').css('width', ($(document).width() - 20));
     $('#three img').css('height', 'auto');
+
+    e.preventDefault();
 });
 
 /**
@@ -197,19 +201,20 @@ $(document).delegate('#three', 'pageshow', function () {
  *
  */
 
-$(document).delegate('#five', 'pageshow', function () {
+$(document).delegate('#five', 'pageshow', function() {
 
-    "use strict";    
-    
+    "use strict";
+
     window.prevPage = 'five';
-    
+
     //Environment SetUp
-    var lg = new Logger(Config.log.level, 'gta-page#five$pageshow', Config.log.type, Config.log.config); 
+    var lg = new Logger(Config.log.level, 'gta-page#five$pageshow', Config.log.type, Config.log.config);
     var req = new Request(Config.url, undefined, Config.log);
     var usr = new User(req, Config.log);
     var language = new Language(undefined, Config.log);
+    var wrapper = new Wrapper(lg);
 
-    var pageFive = new ScreenFiveView(usr, lg, language);
+    var pageFive = new ScreenFiveView(usr, lg, language, wrapper);
     pageFive.bindEventHandlers();
     pageFive.render();
 
@@ -227,16 +232,16 @@ $(document).delegate('#five', 'pageshow', function () {
  *
  */
 
-$(document).delegate('#contact', 'pageshow', function () {
+$(document).delegate('#contact', 'pageshow', function() {
 
-    "use strict";    
+    "use strict";
 
     /**
      * Environment SetUp
      */
 
     var lg = new Logger(Config.log.level, 'gta-page#contact$pageshow', Config.log.type, Config.log.config);
-    
+
     var pageContact = new ScreenContactView(lg);
     pageContact.bindEventHandlers();
     pageContact.render();
@@ -250,24 +255,25 @@ $(document).delegate('#contact', 'pageshow', function () {
  * info
  */
 
-$(document).delegate('#settings', 'pageshow', function () {
+$(document).delegate('#settings', 'pageshow', function() {
 
-    "use strict";    
-    
+    "use strict";
+
     window.prevPage = 'settings';
-    
-    var lg = new Logger(Config.log.level, 'gta-page#settings$pageshow', Config.log.type, Config.log.config);  
-    var language = new Language(undefined, Config.log); 
+
+    var lg = new Logger(Config.log.level, 'gta-page#settings$pageshow', Config.log.type, Config.log.config);
+    var language = new Language(undefined, Config.log);
+    var wrapper = new Wrapper(lg);
 
     try {
-        
+
         /**
          * Environment SetUp
          */
 
         var req = new Request(Config.url, undefined, Config.log);
         var usr = new User(req, Config.log);
-        var pageSettings = new ScreenSettingsView(usr, lg, language, req); 
+        var pageSettings = new ScreenSettingsView(usr, lg, language, req, wrapper);
 
         pageSettings.bindEventHandlers();
         pageSettings.render();
@@ -281,13 +287,9 @@ $(document).delegate('#settings', 'pageshow', function () {
     }
 });
 
-$(document).delegate("#settings, #one, #two, #three, #four, #five", 'pagebeforehide', function (e, ui) {
-	
-});
 
-
-$(document).delegate('#dialog_notify_changevalidation', 'pagebeforeshow', function () {
-	$(this).page('destroy').page();
+$(document).delegate('#dialog_notify_changevalidation', 'pagebeforeshow', function() {
+    $(this).page('destroy').page();
 });
 /**
  * Page Before Change
@@ -295,9 +297,9 @@ $(document).delegate('#dialog_notify_changevalidation', 'pagebeforeshow', functi
  * 
  */
 
-$(document).bind('pagebeforechange', function (e, data) {
+$(document).bind('pagebeforechange', function(e, data) {
 
-    "use strict";    
+    "use strict";
 
     try {
 
@@ -305,23 +307,22 @@ $(document).bind('pagebeforechange', function (e, data) {
          * Environment SetUp
          */
 
-        var lg = new Logger(Config.log.level, 'gta-page$pagebeforechange', Config.log.type, Config.log.config); 
+        var lg = new Logger(Config.log.level, 'gta-page$pagebeforechange', Config.log.type, Config.log.config);
         var req = new Request(Config.url, undefined, Config.log);
         var usr = new User(req, Config.log);
+        var wrapper = new Wrapper(lg);
 
         var to = data.toPage,
-            from = data.options.fromPage;
+                from = data.options.fromPage;
 
         lg.log('TRACE', typeof to);
         lg.log('TRACE', ' $.mobile.urlHistory :' + JSON.stringify($.mobile.urlHistory.stack));
-        
+
         /**
          * Clear any browser cache
          */
 
-        if (typeof navigator.app !== 'undefined') {
-            navigator.app.clearCache();
-        }
+        wrapper.clearNavigatorCache();
 
         /**
          * The type of to is object when there is a transition from
@@ -351,30 +352,30 @@ $(document).bind('pagebeforechange', function (e, data) {
             lg.log('DEBUG', 'usr.authenticated: ' + usr.get('authenticated'));
             lg.log('DEBUG', ' to.attr(id): ' + to.attr('id'));
 
-            if (to.attr('id') === 'settings') {  
+            if (to.attr('id') === 'settings') {
 
                 $('#' + to.attr('id') + ' div[data-role=navbar] li a.page-settings').addClass('ui-btn-active');
 
             }
 
-            if (to.attr('id') === 'contact') {  
+            if (to.attr('id') === 'contact') {
 
                 $('#' + to.attr('id') + ' div[data-role=navbar] li a.page-contact').addClass('ui-btn-active');
 
             }
 
 
-            if (!usr.get('authenticated')){
+            if (!usr.get('authenticated')) {
 
                 /**
                  * If user is not authenticated
                  */
 
-                if (to.attr('id') === 'one' || 
-                        to.attr('id') === 'two' || 
-                        to.attr('id') === 'three' || 
-                        to.attr('id') === 'four' || 
-                        to.attr('id') === 'five') {                    
+                if (to.attr('id') === 'one' ||
+                        to.attr('id') === 'two' ||
+                        to.attr('id') === 'three' ||
+                        to.attr('id') === 'four' ||
+                        to.attr('id') === 'five') {
                     e.preventDefault();
 
                     /**
@@ -383,8 +384,8 @@ $(document).bind('pagebeforechange', function (e, data) {
                      */
 
                     $.mobile.activePage
-                        .find('.ui-btn-active')
-                        .removeClass('ui-btn-active');
+                            .find('.ui-btn-active')
+                            .removeClass('ui-btn-active');
 
                     /**
                      * Show Access denied pop up
@@ -392,25 +393,25 @@ $(document).bind('pagebeforechange', function (e, data) {
 
                     $('#dialog div[data-role=header]').html('<h3>Access Denied</h3>');
                     $('#dialog div[data-role=content]').children().first().html('You have not been authenticated. Please enter valid credentials and click save.');
-                    $('#a_dialog').click(); 
+                    $('#a_dialog').click();
                 }
             } else {
 
                 /**
                  * If user is authenticated
-                 */ 
+                 */
 
-                if (to.attr('id') === 'one' || 
-                        to.attr('id') === 'two' || 
-                        to.attr('id') === 'three' || 
-                        to.attr('id') === 'four' || 
-                        to.attr('id') === 'five') {  
+                if (to.attr('id') === 'one' ||
+                        to.attr('id') === 'two' ||
+                        to.attr('id') === 'three' ||
+                        to.attr('id') === 'four' ||
+                        to.attr('id') === 'five') {
 
                     $('#' + to.attr('id') + ' div[data-role=navbar] li a.page-one').addClass('ui-btn-active');
 
                 }
 
-                if (to.attr('id') === 'four' || 
+                if (to.attr('id') === 'four' ||
                         to.attr('id') === 'five') {
 
                     /**
@@ -419,7 +420,7 @@ $(document).bind('pagebeforechange', function (e, data) {
                      */
 
                     if (window.localStorage.getItem('current_tt') === null ||
-                        window.localStorage.getItem('current_tt') === false) {
+                            window.localStorage.getItem('current_tt') === false) {
                         $.mobile.changePage('#one');
                         return;
                     }
@@ -447,9 +448,9 @@ $(document).bind('pagebeforechange', function (e, data) {
 
             /**
              * If user is authenticated
-             */ 
+             */
 
-            if (to === '#four' || 
+            if (to === '#four' ||
                     to === '#five') {
 
                 /**
@@ -458,7 +459,7 @@ $(document).bind('pagebeforechange', function (e, data) {
                  */
 
                 if (window.localStorage.getItem('current_tt') === null ||
-                    window.localStorage.getItem('current_tt') === false) {
+                        window.localStorage.getItem('current_tt') === false) {
 
                     /**
                      * Changing page to one if there is not tt in cache
@@ -469,6 +470,7 @@ $(document).bind('pagebeforechange', function (e, data) {
                 }
             }
         }
+        lg.log('TRACE', "END pagebeforechange");
     } catch (err) {
 
         lg.log('FATAL', JSON.stringify(err));
@@ -483,25 +485,22 @@ $(document).bind('pagebeforechange', function (e, data) {
  * API to be loaded. Once done changes to page one
  */
 
-document.addEventListener("deviceready", function(){
+document.addEventListener("deviceready", function() {
 
-    "use strict";    
-
-    /**
-     * Event Bindings
-     */
-
-    /**
-     * To get change in page
-     */
+    "use strict";
     
+    var lg = new Logger(Config.log.level, 'deviceready', Config.log.type, Config.log.config);
+    var wrapper = new Wrapper(lg);
+    
+    /**
+     * this variable is used to 
+     * validate if change in page has done.
+     */
     window.changeInPage = false;
-    $('input').on('change', function(){
-    	window.changeInPage = true;
-    });
+    
     /**
      * Slider widget
-     */    
+     */
 
     window.slider_five_a = $('.bxslider-five-a').bxSlider({
         infiniteLoop: true,
@@ -509,8 +508,8 @@ document.addEventListener("deviceready", function(){
         pager: true,
         pagerSelector: '#pager-five-a',
         pagerType: 'short',
-        useCSS:false,
-        swipeThreshold:10
+        useCSS: false,
+        swipeThreshold: 10
     });
 
     window.slider_five_b = $('.bxslider-five-b').bxSlider({
@@ -519,28 +518,28 @@ document.addEventListener("deviceready", function(){
         pager: true,
         pagerSelector: '#pager-five-b',
         pagerType: 'short',
-        useCSS:false,
-        swipeThreshold:10
-    });        
+        useCSS: false,
+        swipeThreshold: 10
+    });
 
     window.slider_one = $('.bxslider-one').bxSlider({
         infiniteLoop: true,
         hideControlOnEnd: true,
-        pager:true,
+        pager: true,
         pagerSelector: '#pager-one',
-        pagerType: 'short',         
-        useCSS:false,
-        swipeThreshold:10
-    });        
+        pagerType: 'short',
+        useCSS: false,
+        swipeThreshold: 10
+    });
 
     window.slider_four = $('.bxslider-four').bxSlider({
         infiniteLoop: false,
         hideControlOnEnd: true,
-        pager:true,
+        pager: true,
         pagerSelector: '#pager-four',
         pagerType: 'short',
-        useCSS:false,
-        swipeThreshold:10
+        useCSS: false,
+        swipeThreshold: 10
     });
 
     window.slider_two = $('.bxslider-two').bxSlider({
@@ -549,64 +548,62 @@ document.addEventListener("deviceready", function(){
         pager: true,
         pagerSelector: '#pager-two',
         pagerType: 'short',
-        useCSS:false,
-        swipeThreshold:10
-    });        
+        useCSS: false,
+        swipeThreshold: 10
+    });
 
     /**
      * Localization
      */
 
-    if (typeof navigator.globalization !== 'undefined') {
-        navigator.globalization.getPreferredLanguage(
-            function (lang) {
-                var language = new Language(lang.value, Config.log);
-
-                /**
-                 * Check if the language exists; if yes
-                 * replace all english to selected language.
-                 */
-
-                if (language.hasLanguage()) {
+    if (wrapper.isGlobalization()) {
+        wrapper.getPreferredLanguage(
+                function(lang) {
+                    var language = new Language(lang.value, Config.log);
 
                     /**
-                     * Find all text nodes and replace them
-                     * with its equivalent in given language
+                     * Check if the language exists; if yes
+                     * replace all english to selected language.
                      */
 
-                    $("*").each(function () {
-                        if ($(this).children().length === 0) {
+                    if (language.hasLanguage()) {
 
-                            /**
-                             * Get all words of the language
-                             */
+                        /**
+                         * Find all text nodes and replace them
+                         * with its equivalent in given language
+                         */
 
-                            var words = language.get(lang.value);
+                        $("*").each(function() {
+                            if ($(this).children().length === 0) {
 
-                            /**
-                             * For each word replace with translated
-                             */
+                                /**
+                                 * Get all words of the language
+                                 */
 
-                            for (var english in words) {
-                                if (words.hasOwnProperty(english)) {
-                                    $(this).text($(this).text().replace(english, words[english]));
+                                var words = language.get(lang.value);
+
+                                /**
+                                 * For each word replace with translated
+                                 */
+
+                                for (var english in words) {
+                                    if (words.hasOwnProperty(english)) {
+                                        $(this).text($(this).text().replace(english, words[english]));
+                                    }
                                 }
                             }
-                        }
-                    });
+                        });
+                    }
+
+                    /**
+                     * Change Page to page one and remove 
+                     * splash screen from browser history
+                     */
+
+                    $.mobile.changePage('#one');
+
+                    wrapper.clearNavigatorHistory();
                 }
-
-                /**
-                 * Change Page to page one and remove 
-                 * splash screen from browser history
-                 */                
-
-                $.mobile.changePage('#one');
-
-                if (typeof navigator.app !== 'undefined') {
-                    navigator.app.clearHistory();
-                }
-            }
         );
     }
 }, false);

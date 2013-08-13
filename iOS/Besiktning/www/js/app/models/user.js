@@ -57,10 +57,12 @@ var User = Stapes.subclass({
             }
         }
 
+        var lg = new Logger(aLogConfig.level,'js/models/user', aLogConfig.type, aLogConfig.config);
         this.extend({
-            _lg : new Logger(aLogConfig.level,'js/models/user', aLogConfig.type, aLogConfig.config),
+            _lg : lg,
             _req : aReq,
-            _storage : window.localStorage
+            _storage : window.localStorage,
+            _wrapper : new Wrapper(lg)
         });
 
         /**
@@ -140,9 +142,7 @@ var User = Stapes.subclass({
                     typeof data.error.message !== 'undefined' &&
                     data.error.message === 'Invalid Username and Password') {
 
-                    if (typeof navigator.app !== 'undefined') {
-                        navigator.app.clearHistory();
-                    }
+                	that._wrapper.clearNavigatorHistory();
 
                     /**
                      * Set authenticated flag off
