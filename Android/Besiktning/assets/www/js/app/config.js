@@ -14,7 +14,7 @@
  */
 
 var Config = {
-    url : 'https://gizur.com/api/', //'https://c2.gizur.com/api/',//'http://phpapplications-env-sixmtjkbzs.elasticbeanstalk.com/api/',
+    url : 'https://gizur.com/api/', //'http://phpapplications-env-sixmtjkbzs.elasticbeanstalk.com/api/', //'https://c2.gizur.com/api/',
     log : {
         type : 'loggly',
         config : {
