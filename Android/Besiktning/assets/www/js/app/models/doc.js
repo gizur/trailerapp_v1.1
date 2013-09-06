@@ -80,12 +80,13 @@ var Doc = Stapes.subclass({
         var that = this;
         var thatSuccessCb = successCb; 
         var thatErrorCb = errorCb;
+        var isPath = 1;
 
         that._lg.log('DEBUG', ' doc getAll ' + JSON.stringify(this.getAll()));
 
         var successCbWrapper = function(data){
             that._lg.log('TRACE', ' download successCbWrapper start');
-
+            
             window.localStorage.setItem(data.result.filename, data.result.filecontent); 
             that._lg.log('TRACE', 'Finished downloading image');
             that._lg.log('DEBUG', ' full path of file : ' + data.result.filename);
@@ -104,7 +105,7 @@ var Doc = Stapes.subclass({
 
         this._usr.send(
             'GET', 
-            'DocumentAttachments/' + this.get('id'),
+            'DocumentAttachments/' + this.get('id') + "/" + this.isPath,
             '',
             successCbWrapper,
             errorCbWrapper

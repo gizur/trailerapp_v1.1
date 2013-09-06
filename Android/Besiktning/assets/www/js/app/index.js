@@ -197,7 +197,7 @@ $(document).delegate('#three', 'pageshow', function(e, data) {
 
     var base64_image = window.localStorage.getItem(window.localStorage.getItem('details_doc_id'));
     
-    $('#three img').attr('src', 'data:image/jpeg;base64,' + base64_image);
+    $('#three img').attr('src', base64_image);
     $('#three img').css('width', ($(document).width() - 20));
     $('#three img').css('height', 'auto');
 

@@ -452,7 +452,7 @@ var ScreenOneView = Stapes.subclass({
             var success = function(data) {
 
                 that._lg.log('TRACE', '.bxslider-one li a click start');
-
+                
                 if (typeof data.result.documents !== 'undefined') {
 
                     var docc = new DocCollection(Config.log);
@@ -473,7 +473,6 @@ var ScreenOneView = Stapes.subclass({
 
                     var completedCb = function(success_dc) {
                         that._lg.log('TRACE', 'completedCb Download Images start');
-
                         /**
                          * Save the page state
                          */
@@ -728,7 +727,7 @@ var ScreenOneView = Stapes.subclass({
                     }
 
                     $('#one #sealed').append('<input ' + selected + ' id="radio' + index + '" name="sealed" value="' + enum_sealed[index].value + '" type="radio">');
-                    $('#one #sealed').append('<label for="radio' + index + '">' + enum_sealed[index].label + '</label>');
+                    $('#one #sealed').append('<label for="radio' + index + '">' + this._language.translate(enum_sealed[index].label) + '</label>');
 
                 }
             }

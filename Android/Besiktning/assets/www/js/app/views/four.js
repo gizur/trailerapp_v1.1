@@ -330,8 +330,7 @@ var ScreenFourView = Stapes.subclass({
             }
 
             var success = function(imageURL) {
-
-                //Log
+            	//Log
                 that._lg.log('DEBUG', '#four #takephoto success' + imageURL);
 
                 if ($('.bxslider-four img').length === 0) {
@@ -355,7 +354,8 @@ var ScreenFourView = Stapes.subclass({
             };
 
             that._wrapper.getPicture(success, fail, {quality: 35,
-                destinationType: Camera.DestinationType.FILE_URL
+                destinationType: Camera.DestinationType.FILE_URI,
+                targetWidth: 1024
             });
         });
 
@@ -610,7 +610,7 @@ var ScreenFourView = Stapes.subclass({
             $('#four select#drivercauseddamage').append('<option value=""> - ' + this._language.translate('Select One') + ' - </option>');
             for (index in enum_drivercauseddamage) {
                 if (enum_drivercauseddamage.hasOwnProperty(index)) {
-                    $('#four select#drivercauseddamage').append('<option value="' + enum_drivercauseddamage[index].value + '">' + enum_drivercauseddamage[index].label + '</option>');
+                    $('#four select#drivercauseddamage').append('<option value="' + enum_drivercauseddamage[index].value + '">' + this._language.translate(enum_drivercauseddamage[index].label) + '</option>');
                 }
             }
 

@@ -89,7 +89,8 @@ var DocCollection = Stapes.subclass({
                 if ( dc[0] instanceof Doc ) {
                     dc_success.push(dc[0]);
                     that._lg.log('DEBUG', ' successCb downloading file id : ' + dc[0].get('id'));
-                    dc[0].download(successCb, errorCb);
+                    successCb();
+                    //dc[0].download(successCb, errorCb);
                     break;
                 } else {
                     if (dcc.length === 0) {
@@ -120,8 +121,9 @@ var DocCollection = Stapes.subclass({
                 dc = dcc.splice(0,1);
                 if ( dc[0] instanceof Doc ) {
                     dc_success.push(dc[0]);
-                    that._lg.log('DEBUG', ' errorCb downloading file id : ' + dc[0].get('id'));                    
-                    dc[0].download(successCb, errorCb);
+                    that._lg.log('DEBUG', ' errorCb downloading file id : ' + dc[0].get('id'));
+                    successCb();
+                    //dc[0].download(successCb, errorCb);
                     break;
                 }
             }
@@ -152,8 +154,9 @@ var DocCollection = Stapes.subclass({
             dc = dcc.splice(0,1);
             if ( dc[0] instanceof Doc ) {
                 dc_success.push(dc[0]);
-                that._lg.log('DEBUG', ' download downloading file id : ' + dc[0].get('id'));                                    
-                dc[0].download(successCb, errorCb);
+                that._lg.log('DEBUG', ' download downloading file id : ' + dc[0].get('id'));
+                successCb();
+                //dc[0].download(successCb, errorCb);
                 break;
             } else {
                 if (dcc.length === 0) {

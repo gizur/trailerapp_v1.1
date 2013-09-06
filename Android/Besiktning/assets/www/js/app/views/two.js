@@ -93,28 +93,34 @@ var ScreenTwoView = Stapes.subclass({
         /**
          * Load images
          */
+        $('.bxslider-two').empty().html("<li><center><div style='height:60px;'>" + 
+                this._language.translate('No Picture(s) Attached') + 
+        "</div></center></li>");
+        
+        if(tt.documents !== undefined)
+        if (tt.documents.length !== 0) {
+        	$('.bxslider-two').empty();
+            this._lg.log('DEBUG', " tt.docs.length " + tt.documents.length);
 
-        this._lg.log('DEBUG', " tt.docs.length " + tt.docs.length);
+            for (var index in tt.documents) {
 
-        if (tt.docs.length !== 0) {
-
-            $('.bxslider-two').empty();
-
-            for (var index in tt.docs) {
-
-                if (tt.docs.hasOwnProperty(index)){
-                    this._lg.log('DEBUG', ' path to image file ' + tt.docs[index].path);
-                    $('.bxslider-two').append('<li><center><img id="' + 
-                        tt.docs[index].path.replace('.','#') + 
-                        '" style="width:100%;height:auto;" src="data:image/jpeg;base64,' + 
-                        window.localStorage.getItem(tt.docs[index].path) + 
-                        '" onclick="window.localStorage.setItem(\'details_doc_id\', $(this).attr(\'id\').replace(\'#\',\'.\')); $.mobile.changePage(\'#three\');"/></center></li>');   
+                if (tt.documents.hasOwnProperty(index)){
+                	
+                	this._lg.log('DEBUG', ' path to image file ' + tt.documents[index].file.filename);
+                	
+                	window.localStorage.setItem(tt.documents[index].file.filename, Config.url + "Images/" + tt.documents[index].file.filename);
+                	
+                    $('.bxslider-two').append('<li><center><img alt="Loading ...' +
+                    	tt.documents[index].file.filename + '" id="' + tt.documents[index].file.filename + 
+                        '" style="width:100%;min-height:60px;height:auto;" src="' + 
+                        Config.url + "Images/" + tt.documents[index].file.filename +
+                        '" onclick="window.localStorage.setItem(\'details_doc_id\', this.id); $.mobile.changePage(\'#three\');"/></center></li>');
                 }
 
             }
 
         } else {
-            $('.bxslider-two').html("<li><center><div style='height:60px;'>" + 
+            $('.bxslider-two').empty().html("<li><center><div style='height:60px;'>" + 
                 this._language.translate('No Picture(s) Attached') + 
                 "</div></center></li>");
         }
