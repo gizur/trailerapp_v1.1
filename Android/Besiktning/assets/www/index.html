@@ -1,0 +1,898 @@
+<!DOCTYPE html> 
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1"> 
+	<title>Survey</title> 
+	<link rel="stylesheet" href="js/lib/jquery.mobile-1.2.1/jquery.mobile-1.2.1.min.css" />
+	<link href="css/jquery.bxslider.css" rel="stylesheet" />	
+	
+    <!--lib-->
+    <!-- <script src="js/lib/cordova-2.6.0.js"></script>-->
+    <script src="js/lib/cordova.js"></script>
+	<script src="js/lib/jquery.mobile-1.2.1/jquery-1.8.3.min.js"></script>  
+	<script src="js/lib/jquery.mobile-1.2.1/jquery.mobile-1.2.1.min.js"></script>
+	<script src="js/lib/jquery.bxslider.js"></script>
+    <script src="js/lib/stapes.min.js"></script>
+
+    <!--config-->
+    <script src="js/app/config.js"></script>  
+
+    <!--util-->
+    <script src="js/app/util/request.js"></script>     
+    <script src="js/app/util/logger.js"></script> 
+    <script src="js/app/util/encoding.js"></script>
+    <script src="js/app/util/language.js"></script>
+    <script src="js/app/util/wrapper.js"></script>
+
+    <!--model-->
+    <script src="js/app/models/asset.js"></script>
+    <script src="js/app/models/assetcollection.js"></script>
+    <script src="js/app/models/damage.js"></script>
+    <script src="js/app/models/doc.js"></script>
+    <script src="js/app/models/doccollection.js"></script>
+    <script src="js/app/models/troubleticket.js"></script>
+    <script src="js/app/models/troubleticketcollection.js"></script>
+    <script src="js/app/models/user.js"></script>
+
+    <!--view-->
+    <script src="js/app/views/one.js"></script>
+    <script src="js/app/views/two.js"></script>
+    <script src="js/app/views/three.js"></script>
+    <script src="js/app/views/four.js"></script>
+    <script src="js/app/views/five.js"></script>
+    <script src="js/app/views/settings.js"></script>
+    <script src="js/app/views/contact.js"></script>
+
+</head>
+<body> 
+<div data-role="page" id="splash">
+	<div data-role="content">
+    	<div>
+        	<img style="display:block;width:100%;height:auto;" src="img/splash.png"/>
+        </div>
+    </div>
+</div>
+<!-- Start of first page: #one -->
+<div data-role="page" id="one">
+	<div data-role="content" >	
+        <div data-role="navbar">
+            <ul>
+                <li>
+                    <a href="javascript:changepage('contact');" class="page-contact" data-transition="fade" data-theme="a">
+                        Contact
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:changepage('one');" class="page-one" data-transition="fade" data-theme="a">
+                        Survey
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:changepage('settings');" class="page-settings" data-transition="fade" data-theme="a">
+                        Settings
+                    </a>
+                </li>
+            </ul>
+        </div>
+		<h2>Survey</h2>
+		<div data-role="fieldcontain">
+            <label for="trailertype">
+                Trailer type :
+            </label>
+            <select id="trailertype" name="trailertype">
+            </select>
+        </div>
+        <div data-role="fieldcontain">
+            <label for="trailerid">
+                Trailer ID :
+            </label>
+            <select id="trailerid" name="trailerid">
+            </select>
+        </div>
+        <div data-role="fieldcontain">
+            <label for="place">
+                Place :
+            </label>
+            <select id="place" name="place">
+            </select>
+        </div>
+		
+		<h3>Existing Damage(s)</h3>
+		<div data-role="fieldcontain">	
+	        <ul class="bxslider-one" id="troubleticketlist">
+	          <li><center><div style='height:60px;width:120px;'>No Damages Reported</div></center></li>
+	        </ul>
+	        <p id='pager-one' style='text-align: right;'></p>
+        </div>
+        <div data-role="fieldcontain">
+            <fieldset data-role="controlgroup" data-type="vertical" id="sealed">
+                <legend>Sealed :</legend>
+                <input id="radio1" name="sealed" value="Ja" type="radio">
+                <label for="radio1">
+                    Yes
+                </label>
+                <input id="radio2" name="sealed" value="Nej" type="radio">
+                <label for="radio2">
+                    No
+                </label>
+            </fieldset>
+        </div>
+		<p><a data-theme="a" id="reportdamage" href="javascript:void(0);" data-role="button">Report new damage</a></p>	
+		<p><a data-theme="a" id="reportsurvey" href="javascript:void(0);" data-role="button" data-rel="dialog" data-transition="pop">No new damage</a></p>
+	</div><!-- /content -->
+</div><!-- /page one -->
+<!-- Start of second page: #two -->
+<div data-role="page" id="two">
+	<div data-role="content">
+        <div data-role="navbar">
+            <ul>
+                <li>
+                    <a href="javascript:changepage('contact');" class="page-contact" data-transition="fade" data-theme="a">
+                        Contact
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:changepage('one');" class="page-one" data-transition="fade" data-theme="a">
+                        Survey
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:changepage('settings');" class="page-settings" data-transition="fade" data-theme="a">
+                        Settings
+                    </a>
+                </li>
+            </ul>
+        </div>
+		<p><a href="#one" data-role="button" data-inline="true" data-icon="back">Back</a></p>
+        <h3>Damage Information</h3>
+        <div data-role="fieldcontain">
+            <label for="damagetype">
+                Type of damage :
+            </label>
+            <input name="" id="damagetype" placeholder="" value="" type="text" readonly="readonly">
+        </div>
+        <div data-role="fieldcontain">
+            <label for="damageposition">
+                Position :
+            </label>
+            <input name="" id="damageposition" placeholder="" value="" type="text" readonly="readonly">
+        </div>
+		<h4>Picture</h4>
+		<div data-role="fieldcontain">
+        <ul class="bxslider-two">
+                <li>
+                    <center>
+                        <div style='height:60px;width:200px;'>No Picture(s) Attached</div>
+                    </center>
+                </li>
+        </ul>	
+        <p id='pager-two' style='text-align: right;'></p>
+        </div>
+	</div><!-- /content -->
+</div><!-- /page two -->
+<!-- Start of third page: #three -->
+<div data-role="page" id="three">
+	<div data-role="content">
+        <div data-role="navbar">
+            <ul>
+                <li>
+                    <a href="javascript:changepage('contact');" class="page-contact" data-transition="fade" data-theme="a">
+                        Contact
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:changepage('one');" class="page-one" data-transition="fade" data-theme="a">
+                        Survey
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:changepage('settings');" class="page-settings" data-transition="fade" data-theme="a">
+                        Settings
+                    </a>
+                </li>
+            </ul>
+        </div>
+		<p><a href="#two" data-role="button" data-inline="true" data-icon="back">Back</a></p>
+        <h3>Picture</h3>
+        <img src=""/>
+	</div><!-- /content -->
+</div><!-- /page three -->
+<!-- Start of fourth page: #four -->
+<div data-role="page" id="four">
+	<div data-role="content">
+	    <div data-role="navbar">
+            <ul>
+                <li>
+                    <a href="javascript:changepage('contact');" class="page-contact" data-transition="fade" data-theme="a">
+                        Contact
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:changepage('one');" class="page-one" data-transition="fade" data-theme="a">
+                        Survey
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:changepage('settings');" class="page-settings" data-transition="fade" data-theme="a">
+                        Settings
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <h3>
+            Damage details
+        </h3>
+        <div data-role="fieldcontain">
+            <label for="damagetype">
+                Type of damage :
+            </label>
+            <select id="damagetype" name="damagetype">
+            </select>
+        </div>
+        <div data-role="fieldcontain">
+            <label for="damageposition">
+                Position :
+            </label>
+            <select id="damageposition" name="damageposition">
+            </select>
+            <div style="padding-top: 10px;">
+                Specify the damage in the direction the trailer moves
+            </div>            
+        </div>
+        <h3>
+            Picture
+        </h3>
+		<p><a id="takephoto" href="" data-role="button">Add new picture</a></p>
+        <div data-role="fieldcontain">
+        <ul class="bxslider-four">
+                <li>
+                    <center>
+                        <div style='height:60px;width:200px;'>No Picture(s) Attached</div>
+                    </center>
+                </li>
+        </ul>   
+        <p id='pager-four' style='text-align: right;'></p>
+        </div>        
+		<!--div data-role="fieldcontain">
+            <div class="four-picture" style="width:inherit;height:100px;line-height:100px;border:1px solid #BBB;padding:5px;">
+                <center>No Picture(s) Attached</center>
+            </div>
+        </div-->       
+        <div data-role="fieldcontain">
+            <label for="drivercauseddamage">
+                I caused the damage :
+            </label>
+            <select id="drivercauseddamage" name="drivercauseddamage">
+                <option value="No">
+                    
+                </option>
+                <option value="Yes">
+                    Chaufför
+                </option>
+            </select>
+        </div>
+        <p><a id="savedamage" data-theme="a" href="javascript:void(0);" data-role="button">Save</a></p>
+        <p><a id="deletedamage" data-theme="e" href="javascript:void(0);" data-role="button">Delete</a></p>
+	</div><!-- /content -->
+</div><!-- /page four -->
+<!-- Start of fifth page: #five -->
+<div data-role="page" id="five">
+	<div data-role="content">
+        <div data-role="navbar">
+            <ul>
+                <li>
+                    <a href="javascript:changepage('contact');" class="page-contact" data-transition="fade" data-theme="a">
+                        Contact
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:changepage('one');" class="page-one" data-transition="fade" data-theme="a">
+                        Survey
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:changepage('settings');" class="page-settings" data-transition="fade" data-theme="a">
+                        Settings
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <h3>Previously reported damages</h3>
+        <div data-role="fieldcontain">
+            <ul class="bxslider-five-a">
+                <li>
+                    <center>
+                        <div style='height:60px;'>No Damages Reported</div>
+                    </center>
+                </li>                
+            </ul>	
+        <p id='pager-five-a' style='text-align: right;'></p>
+        </div>
+        <h3>New found damage</h3>
+        <p><a id="reportanotherdamage" data-theme="a" href="javascript:void(0);" data-role="button">Add new damage</a></p>	
+        <div data-role="fieldcontain">
+            <ul class="bxslider-five-b">
+                <li>
+                    <center>
+                        <div style='height:60px;'>No Damages Reported</div>
+                    </center>
+                </li>
+            </ul>	
+        <p id='pager-five-b' style='text-align: right;'></p>
+        </div>
+		<p><a id="sendalldamages" data-theme="a" href="javascript:void(0);" data-role="button" data-rel="dialog" data-transition="pop">Send damage report</a></p>
+	</div><!-- /content -->
+</div><!-- /page five -->
+<!-- Start of fifth page: #settings -->
+<div data-role="page" id="settings">
+	<div data-role="content">
+        <div data-role="navbar">
+            <ul>
+                <li>
+                    <a href="javascript:changepage('contact');" class="page-contact" data-transition="fade" data-theme="a">
+                        Contact
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:changepage('one');" class="page-one" data-transition="fade" data-theme="a">
+                        Survey
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:changepage('settings');" class="page-settings" data-transition="fade" data-theme="a">
+                        Settings
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div data-role="fieldcontain">
+            <label for="settings_username">
+                E-mail :
+            </label>
+            <input name="settings_username" id="settings_username" placeholder="" value="" type="text">
+        </div>
+        <div data-role="fieldcontain">
+            <label for="settings_password">
+                Password :
+            </label>
+            <input maxlength="30" name="settings_password" id="settings_password" placeholder="" value="" type="password">
+        </div>
+        <a id="change_password" data-role="button" href="javascript:void(0);">
+            Change Password
+        </a>
+        <a id="forgot_password" data-role="button" href="javascript:void(0);">
+            Forget Password
+        </a>
+        <div data-role="fieldcontain">
+            <label for="settings_client_id">
+                Gizur Saas Client ID :
+            </label>
+            <input name="settings_client_id" id="settings_client_id" placeholder="" value="" type="text">
+        </div>
+        <a id="settings_save" data-role="button" href="javascript:void(0);" data-theme="b">
+            Save
+        </a>
+	</div><!-- /content -->
+</div><!-- /page setting -->
+<!-- Start of fifth page: #contact -->
+<div data-role="page" id="contact">
+	<div data-role="content">
+        <div data-role="navbar">
+            <ul>
+                <li>
+                    <a href="javascript:changepage('contact');" class="page-contact" data-transition="fade" data-theme="a">
+                        Contact
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:changepage('one');" class="page-one" data-transition="fade" data-theme="a">
+                        Survey
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:changepage('settings');" class="page-settings" data-transition="fade" data-theme="a">
+                        Settings
+                    </a>
+                </li>
+            </ul>
+        </div>
+	</div><!-- /content -->
+</div><!-- /page contact -->
+
+<!-- Start of page: #dialog -->
+<a id="a_dialog" href="#dialog" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog" data-transition="flip">
+    <div data-role="header" data-theme="e">
+        <h1>Error</h1>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p></p>  
+        <p><a data-role="button" data-inline="true" data-icon="back">Ok</a></p>
+    </div><!-- /content -->
+</div><!-- /page dialog -->
+
+<!-- Start of page: #dialog -->
+<a id="a_dialog_error_settingvalidation" href="#dialog_error_settingvalidation" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_error_settingvalidation" data-transition="flip">
+    <div data-role="header" data-theme="e">
+        <h1>Error</h1>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>All fields (Email, Password and Gizur Saas ClientID) must be filled.</p>  
+        <p><a href="#settings" data-role="button" data-inline="true" data-icon="back">Ok</a></p>
+    </div><!-- /content -->
+</div><!-- /page dialog -->
+
+<!-- Start of page: #dialog -->
+<a id="a_dialog_notify_changevalidation" href="#dialog_notify_changevalidation" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_notify_changevalidation" data-transition="flip">
+    <div data-role="header" data-theme="e">
+        <h1>Warning</h1>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>You have made some changes, If you continue, your changes shall be lost.</p>  
+        <div id="notify_buttondiv"></div>
+    </div><!-- /content -->
+</div><!-- /page dialog -->
+
+<!-- Start of page: #dialog_error_access -->
+<a id="a_dialog_error_access" href="#dialog_error_access" data-rel="dialog_error_access" style="display: none;"></a> 
+<div data-role="page" id="dialog_error_access" data-transition="flip">
+    <div data-role="header" data-theme="e">
+        <h1>Access Denied</h1>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>You have not been authenticated. Please enter valid credentials and click save.</p>  
+        <p><a data-role="button" data-inline="true" data-icon="back">Ok</a></p>
+    </div><!-- /content -->
+</div><!-- /page dialog -->
+
+<!-- Start of page: #dialog_error_general -->
+<a id="a_dialog_error_general" href="#dialog_error_general" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_error_general" data-transition="flip">
+    <div data-role="header" data-theme="e">
+        <h1>Error</h1>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>Contact Gizur Saas Account holders, details are available under Contact tab.</p>  
+        <p><a href="#settings" data-role="button" data-inline="true" data-icon="back">Ok</a></p>
+    </div><!-- /content -->
+</div><!-- /page dialog_error_general -->
+
+<!-- Start of page: #dialog_error_clientid -->
+<a id="a_dialog_error_clientid" href="#dialog_error_clientid" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_error_clientid" data-transition="flip">
+    <div data-role="header" data-theme="e">
+        <h1>Error</h1>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>Provided client ID is not valid.</p>  
+        <p><a href="#settings" data-role="button" data-inline="true" data-icon="back">Ok</a></p>
+    </div><!-- /content -->
+</div><!-- /page dialog_error_clientid -->
+
+<!-- Start of page: #dialog_error_invalidcredentials -->
+<a id="a_dialog_error_invalidcredentials" href="#dialog_error_invalidcredentials" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_error_invalidcredentials" data-transition="flip">
+    <div data-role="header" data-theme="e">
+        <h1>Error</h1>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>Your username and password settings are invalid. Please enter valid settings and try again.</p>  
+        <p><a href="#settings" data-role="button" data-inline="true" data-icon="back">Ok</a></p>
+    </div><!-- /content -->
+</div><!-- /page dialog_error_invalidcredentials -->
+
+<!-- Start of page: #dialog_validation_damagetype -->
+<a id="a_dialog_validation_damagetype" href="#dialog_validation_damagetype" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_validation_damagetype" data-transition="flip">
+    <div data-role="header" data-theme="e">
+        <h1>Error</h1>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>Please select a damage type</p>  
+        <p><a data-rel="back" data-role="button" data-inline="true" data-icon="back">Ok</a></p>
+    </div><!-- /content -->
+</div><!-- /page dialog_validation_damagetype -->
+
+<!-- Start of page: #dialog_validation_damageposition -->
+<a id="a_dialog_validation_damageposition" href="#dialog_validation_damageposition" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_validation_damageposition" data-transition="flip">
+    <div data-role="header" data-theme="e">
+        <h1>Error</h1>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>Please select a damage position</p>  
+        <p><a data-rel="back" data-role="button" data-inline="true" data-icon="back">Ok</a></p>
+    </div><!-- /content -->
+</div><!-- /page dialog_validation_damageposition -->
+
+<!-- Start of page: #dialog_validation_damageposition -->
+<a id="a_dialog_validation_drivercauseddamage" href="#dialog_validation_drivercauseddamage" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_validation_drivercauseddamage" data-transition="flip">
+    <div data-role="header" data-theme="e">
+        <h1>Error</h1>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>Please select, if damage was caused by driver or not</p>  
+        <p><a data-rel="back" data-role="button" data-inline="true" data-icon="back">Ok</a></p>
+    </div><!-- /content -->
+</div><!-- /page dialog_validation_damageposition -->
+
+<!-- Start of page: #dialog_validation_trailertype -->
+<a id="a_dialog_validation_trailertype" href="#dialog_validation_trailertype" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_validation_trailertype" data-transition="flip">
+    <div data-role="header" data-theme="e">
+        <h1>Error</h1>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>Please select Trailer Type</p>  
+        <p><a data-rel="back" data-role="button" data-inline="true" data-icon="back">Ok</a></p>
+    </div><!-- /content -->
+</div><!-- /page dialog_validation_trailertype -->
+
+<!-- Start of page: #dialog_validation_trailertype -->
+<a id="a_dialog_validation_trailertype" href="#dialog_validation_trailertype" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_validation_trailertype" data-transition="flip">
+    <div data-role="header" data-theme="e">
+        <h1>Error</h1>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>Please select Trailer Type</p>  
+        <p><a data-rel="back" data-role="button" data-inline="true" data-icon="back">Ok</a></p>
+    </div><!-- /content -->
+</div><!-- /page dialog_validation_trailertype -->
+
+<!-- Start of page: #dialog_validation_trailer -->
+<a id="a_dialog_validation_trailer" href="#dialog_validation_trailer" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_validation_trailer" data-transition="flip">
+    <div data-role="header" data-theme="e">
+        <h1>Error</h1>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>Please select a Trailer</p>  
+        <p><a data-rel="back" data-role="button" data-inline="true" data-icon="back">Ok</a></p>
+    </div><!-- /content -->
+</div><!-- /page dialog_validation_trailer -->
+
+<!-- Start of page: #dialog_validation_place -->
+<a id="a_dialog_validation_place" href="#dialog_validation_place" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_validation_place" data-transition="flip">
+    <div data-role="header" data-theme="e">
+        <h1>Error</h1>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>Please select a Place</p>  
+        <p><a data-rel="back" data-role="button" data-inline="true" data-icon="back">Ok</a></p>
+    </div><!-- /content -->
+</div><!-- /page dialog_validation_place -->
+
+<!-- Start of page: #dialog_validation_sealed -->
+<a id="a_dialog_validation_sealed" href="#dialog_validation_sealed" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_validation_sealed" data-transition="flip">
+    <div data-role="header" data-theme="e">
+        <h1>Error</h1>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>Please select if sealed or not</p>  
+        <p><a data-rel="back" data-role="button" data-inline="true" data-icon="back">Ok</a></p>
+    </div><!-- /content -->
+</div><!-- /page dialog_validation_sealed -->
+
+<!-- Start of page: #dialog_validation_picture -->
+<a id="a_dialog_validation_picture" href="#dialog_validation_picture" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_validation_picture" data-transition="flip">
+    <div data-role="header" data-theme="e">
+        <h1>Error</h1>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>You cannot add more than 3 pictures.</p>  
+        <p><a data-rel="back" data-role="button" data-inline="true" data-icon="back">Ok</a></p>
+    </div><!-- /content -->
+</div><!-- /page dialog_validation_picture -->
+
+<!-- Start of page: #dialog_damage_sending -->
+<a id="a_dialog_damage_sending" href="#dialog_damage_sending" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_damage_sending" data-transition="flip">
+    <div data-role="header" data-theme="e">
+        <h1>Sending ...</h1>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p></p>  
+    </div><!-- /content -->
+</div><!-- /page dialog_damage_sending -->
+
+<!-- Start of page: #dialog_survey_success -->
+<a id="a_dialog_survey_success" href="#dialog_survey_success" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_survey_success" data-transition="flip">
+    <div data-role="header" data-theme="e">
+        <h1>Success</h1>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>Survey reported successfully.</p>  
+        <p><a href="#one" data-role="button" data-inline="true" data-icon="back">Ok</a></p>
+    </div><!-- /content -->
+</div><!-- /page dialog_survey_success -->
+
+<!-- Start of page: #dialog_survey_error -->
+<a id="a_dialog_survey_error" href="#dialog_survey_error" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_survey_error" data-transition="flip">
+    <div data-role="header" data-theme="e">
+        <h1>Error</h1>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>Unable to report suvery.</p>  
+        <p><a href="#one" data-role="button" data-inline="true" data-icon="back">Ok</a></p>
+    </div><!-- /content -->
+</div><!-- /page dialog_survey_error -->
+
+<!-- Start of page: #dialog_changepassword_success -->
+<a id="a_dialog_changepassword_success" href="#dialog_changepassword_success" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_changepassword_success" data-transition="flip">
+    <div data-role="header" data-theme="e">
+        <h1>Success</h1>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>Password Changed successfully.</p>
+        <p>
+            <a href="#settings" data-role="button" data-inline="true" data-icon="back">Ok</a>
+        </p>                
+    </div><!-- /content -->
+</div><!-- /page dialog_changepassword_success -->
+
+<!-- Start of page: #dialog_resetpassword_confirm -->
+<a id="a_dialog_resetpassword_confirm" href="#dialog_resetpassword_confirm" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_resetpassword_confirm" data-transition="flip">
+    <div data-role="header" data-theme="e">
+        <h1>Forget Password</h1>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>Are you sure you want to reset your password? If yes click 'Ok', (you will receive a mail with the new password) else click 'Go Back'.</p>
+        <p>
+            <a id="resetpassword" href="javascript(0);" data-role="button" data-inline="true" data-icon="back">Ok</a>
+            <a href="#settings" data-role="button" data-inline="true" data-icon="back">Go Back</a>
+        </p>                
+    </div><!-- /content -->
+</div><!-- /page dialog_resetpassword_confirm -->
+
+<!-- Start of page: #dialog_resetpassword_success -->
+<a id="a_dialog_resetpassword_success" href="#dialog_resetpassword_success" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_resetpassword_success" data-transition="flip">
+    <div data-role="header" data-theme="e">
+        <h1>Forget Password</h1>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>Password has been reset successfully. Please check your mail for the new password.</p>
+        <p>
+            <a href="#settings" data-role="button" data-inline="true" data-icon="back">Ok</a>
+        </p>                
+    </div><!-- /content -->
+</div><!-- /page dialog_resetpassword_success -->
+
+<!-- Start of page: #dialog_resetpassword_error -->
+<a id="a_dialog_resetpassword_error" href="#dialog_resetpassword_error" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_resetpassword_error" data-transition="flip">
+    <div data-role="header" data-theme="e">
+        <h1>Forget Password</h1>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>Unable to reset password. Please try again, If the problem persists please contact the Gizur Saas Account holders.</p>
+        <p>
+            <a href="#settings" data-role="button" data-inline="true" data-icon="back">Ok</a>
+        </p>                
+    </div><!-- /content -->
+</div><!-- /page dialog_resetpassword_error -->
+
+<!-- Start of page: #dialog_changepassword_error -->
+<a id="a_dialog_changepassword_error" href="#dialog_changepassword_error" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_changepassword_error" data-transition="flip">
+    <div data-role="header" data-theme="e">
+        <h1>Error</h1>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>Unable to change password. Please try again, If the problem persists please contact the Gizur Saas Account holders.</p>
+        <p>
+            <a href="#settings" data-role="button" data-inline="true" data-icon="back">Ok</a>
+        </p>                
+    </div><!-- /content -->
+</div><!-- /page dialog_changepassword_error -->
+
+<!-- Start of page: #dialog_changepassword -->
+<a id="a_dialog_changepassword" href="#dialog_changepassword" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_changepassword" data-transition="flip">
+    <div data-role="header" data-theme="e">
+        <h1>Enter New Password</h1>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>Enter New Password</p>
+        <p><input id="newpassword" type="text" maxlength="30"></p>
+        <p id="message"></p>
+        <p>
+            <a id="change" data-role="button" data-inline="true" data-icon="Check">Change</a>
+            <a href="#settings" data-role="button" data-inline="true" data-icon="back">Cancel</a>
+        </p>                
+    </div><!-- /content -->
+</div><!-- /page dialog_changepassword -->
+
+<!-- Start of page: #dialog_authenticating -->
+<a id="a_dialog_authenticating" href="#dialog_authenticating" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_authenticating" data-transition="flip">
+    <div data-role="header" data-theme="e">
+        <h1>Authenticating</h1>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>Please wait ... </p>  
+    </div><!-- /content -->
+</div><!-- /page dialog_authenticating -->
+
+<!-- Start of page: #dialog_success_cache -->
+<a id="a_dialog_success_cache" href="#dialog_success_cache" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_success_cache" data-transition="none">
+    <div data-role="header" data-theme="e">
+        <h2>Success</h2>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>Authenticated successfully and Cache built successfully.</p>   
+        <p><a href="#one" data-role="button" data-inline="true" data-icon="back">Ok</a></p>
+    </div><!-- /content -->
+</div><!-- /page dialog_success_cache -->
+
+<!-- Start of page: #dialog_success_login -->
+<a id="a_dialog_success_login" href="#dialog_success_login" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_success_login" data-transition="none">
+    <div data-role="header" data-theme="e">
+        <h2>Success</h2>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>Authenticated successfully.</p>   
+        <p>Building Cache, please wait ... </p>   
+        <p>Completed 0 of 7</p>   
+    </div><!-- /content -->
+</div><!-- /page dialog_success_login -->
+
+<!-- Start of page: #dialog_error_cache -->
+<a id="a_dialog_error_cache" href="#dialog_error_cache" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_error_cache" data-transition="none">
+    <div data-role="header" data-theme="e">
+        <h2>Unable to build cache</h2>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>Please try again, If the problem persists please contact the Gizur Saas Account holders.</p>
+        <p><a href="#five" data-role="button" data-inline="true" data-icon="back">Ok</a></p>
+    </div><!-- /content -->
+</div><!-- /page dialog_error_cache -->
+
+
+<!-- Start of page: #dialog_success_damagereported -->
+<a id="a_dialog_success_damagereported" href="#dialog_success_damagereported" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_success_damagereported" data-transition="none">
+    <div data-role="header" data-theme="e">
+        <h2>Success</h2>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>All Damages have been reported successfully.</p>
+        <p><a href="#one" data-role="button" data-inline="true" data-icon="back">Ok</a></p>
+    </div><!-- /content -->
+</div><!-- /page dialog_success_damagereported -->
+
+<!-- Start of page: #dialog_success_damagereported_unsentfiles -->
+<a id="a_dialog_success_damagereported_unsentfiles" href="#dialog_success_damagereported_unsentfiles" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_success_damagereported_unsentfiles" data-transition="none">
+    <div data-role="header" data-theme="e">
+        <h2>Success</h2>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>All Damages have been reported successfully. Also <span>some</span> pictures have not been sent, would you like to retry sending them?</p>
+        <p>
+            <a href="javascript:void(0);" data-role="button" data-inline="true" data-icon="back">Retry</a>
+            <a href="javascript:void(0);" data-role="button" data-inline="true" data-icon="back">No</a>
+        </p>
+    </div><!-- /content -->
+</div><!-- /page dialog_success_damagereported_unsentfiles -->
+
+<!-- Start of page: #dialog_success_unsentfiles -->
+<a id="a_dialog_success_unsentfiles" href="#dialog_success_unsentfiles" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_success_unsentfiles" data-transition="none">
+    <div data-role="header" data-theme="e">
+        <h2>Success</h2>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p> All Pictures are sent.</p>
+        <p>
+            <a href="#one" data-role="button" data-inline="true" data-icon="back">Ok</a>
+        </p>
+    </div><!-- /content -->
+</div><!-- /page dialog_success_unsentfiles -->
+
+<!-- Start of page: #dialog_partialsuccess_damagereported -->
+<a id="a_dialog_partialsuccess_damagereported" href="#dialog_partialsuccess_damagereported" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_partialsuccess_damagereported" data-transition="none">
+    <div data-role="header" data-theme="e">
+        <h2>Success</h2>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>Only some damages have been reported successfully. Please try again, If the problem persists please contact the Gizur Saas Account holders.</p>
+        <p><a href="#five" data-role="button" data-inline="true" data-icon="back">Ok</a></p>
+    </div><!-- /content -->
+</div><!-- /page dialog_partialsuccess_damagereported -->
+
+<!-- Start of page: #dialog_partialsuccess_damagereported_unsentfiles -->
+<a id="a_dialog_partialsuccess_damagereported_unsentfiles" href="#dialog_partialsuccess_damagereported_unsentfiles" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_partialsuccess_damagereported_unsentfiles" data-transition="none">
+    <div data-role="header" data-theme="e">
+        <h2>Success</h2>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>Only some damages have been reported successfully. Also <span>some</span> pictures have not been sent, would you like to retry sending them?</p>
+        <p>
+            <a href="javascript:void(0);" data-role="button" data-inline="true" data-icon="back">Retry</a>
+            <a href="javascript:void(0);" data-role="button" data-inline="true" data-icon="back">No</a>
+        </p>
+    </div><!-- /content -->
+</div><!-- /page dialog_partialsuccess_damagereported_unsentfiles -->
+
+<!-- Start of page: #dialog_error_damagereported -->
+<a id="a_dialog_error_damagereported" href="#dialog_error_damagereported" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_error_damagereported" data-transition="none">
+    <div data-role="header" data-theme="e">
+        <h2>Error</h2>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>Error while reporting damages. Please try again, If the problem persists please contact the Gizur Saas Account holders.</p>
+        <p><a href="#five" data-role="button" data-inline="true" data-icon="back">Ok</a></p>
+    </div><!-- /content -->
+</div><!-- /page dialog_error_damagereported -->
+
+<!-- Start of page: #nointernet -->
+<a id="a_dialog_nointernet" href="#dialog_nointernet" data-rel="dialog" style="display: none;"></a> 
+<div data-role="page" id="dialog_nointernet" data-transition="none">
+    <div data-role="header" data-theme="e">
+        <h2>Connection Error</h2>
+    </div><!-- /header -->
+
+    <div data-role="content" data-theme="d">
+        <p>Please check your internet connection and try again.</p>
+        <p><a href="#settings" data-role="button" data-inline="true" data-icon="back">Ok</a></p>
+    </div><!-- /content -->
+</div><!-- /page nointernet -->
+
+<script src="js/app/index.js"></script>
+</body>
+</html>
