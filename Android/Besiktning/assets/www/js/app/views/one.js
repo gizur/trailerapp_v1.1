@@ -608,6 +608,7 @@ var ScreenOneView = Stapes.subclass({
              */
 
             var tt = new TroubleTicket(this._usr, Config.log);
+            
             var enum_sealed = tt.get('enum_sealed');
             var enum_place = tt.get('enum_place');
 
