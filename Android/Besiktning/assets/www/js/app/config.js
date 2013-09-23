@@ -23,7 +23,7 @@ var Config = {
                 buffer_size : (10 * 1024) //10kB
             }
         },
-        level : 'TRACE' 	
+        level : 'FATAL' 	
     }
 };
 
