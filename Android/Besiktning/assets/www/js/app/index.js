@@ -294,6 +294,12 @@ $(document).delegate('#settings', 'pageshow', function() {
         pageSettings.bindEventHandlers();
         
         lg.log('TRACE', 'page loaded');
+        
+        if (usr.get('authenticated') && window.refreshCache) {
+        	// Login again
+        	window.refreshCache = false;
+	        $('#settings_save').click();
+        }
 
     } catch (err) {
 
@@ -440,7 +446,6 @@ $(document).bind('pagebeforechange', function(e, data) {
                         return;
                     }
                 }
-
             }
 
         }
@@ -505,6 +510,8 @@ document.addEventListener("deviceready", function() {
     "use strict";
     
     var lg = new Logger(Config.log.level, 'deviceready', Config.log.type, Config.log.config);
+    var req = new Request(Config.url, undefined, Config.log);
+    var usr = new User(req, Config.log);
     var wrapper = new Wrapper(lg);
     
     /**
@@ -615,9 +622,24 @@ document.addEventListener("deviceready", function() {
                      * splash screen from browser history
                      */
 
-                    $.mobile.changePage('#one');
-
                     wrapper.clearNavigatorHistory();
+                    
+                    if(!usr.get('refreshTime')) {
+                		window.refreshCache = true;
+                		$.mobile.changePage('#settings');
+                		return;
+                	} else {
+                		var diff = new Date().getTime() - usr.get('refreshTime');
+                		lg.log('DEBUG', 'Last cache refresh time : ' + usr.get('refreshTime'));
+                		lg.log('DEBUG', "Cache time differance : " + diff + " milliseconds.");
+                		if (diff > Config.cacheRefreshTime) {
+                			window.refreshCache = true;
+                			$.mobile.changePage('#settings');
+                    		return;
+                		} else {
+                			$.mobile.changePage('#one');
+                		}
+                	}                    
                 }
         );
     }

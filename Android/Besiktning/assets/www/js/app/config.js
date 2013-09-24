@@ -24,7 +24,8 @@ var Config = {
             }
         },
         level : 'FATAL' 	
-    }
+    },
+    cacheRefreshTime : 1000*60*60*12 // Milli Seconds of 12 Hours ( (((12 hrs * 60) min * 60 ) Sec * 1000 ) Milli Seconds )
 };
 
  /**

@@ -82,14 +82,16 @@ var User = Stapes.subclass({
                 'id' : '',
                 'username' : attrs.username,
                 'password' : attrs.password,
-                'authenticated' : attrs.authenticated
+                'authenticated' : attrs.authenticated,
+                'refreshTime' : attrs.refreshTime
             }); 
         } else {
             this.set({
                 'id' : '',
                 'username' : '',
                 'password' : '',
-                'authenticated' : ''
+                'authenticated' : '',
+                'refreshTime' : ''
             }); 
         }
 
@@ -200,6 +202,7 @@ var User = Stapes.subclass({
              */
 
             that.set('authenticated', true);
+            that.set('refreshTime', new Date().getTime());
 
             /**
              * Saving user attr to cache
