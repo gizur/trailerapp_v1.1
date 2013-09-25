@@ -68,6 +68,7 @@ var Language = Stapes.subclass({
                 'Please check your mail for the new password' : 'Ett nytt lösen har mailat',  
                 'Please check your internet connection and try again' : 'Kontrollera internetuppkopplingen och försök igen',        
                 'Authenticated successfully and Cache built successfully' : 'Autensiering lyckades och cache är klar',
+                 'You cannot add more than 3 pictures' : 'Du kan inte lägga till mer än 3 bilder',
                 'Password has been reset successfully' : 'Lösen har nollställts',
                 'All Damages have been reported successfully' : 'Skadorna har rapporterats',
                 'Please select if sealed or not' : 'Ange om trailern är plomberad eller ej',

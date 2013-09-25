@@ -54,7 +54,7 @@ function changepage(page) {
     }
 
     if (window.changeInPage && page !== window.prevPage) {
-        var htm = '<a href="#' + window.prevPage +
+    	var htm = '<a href="#' + window.prevPage +
                 '" data-role="button" data-inline="true"' +
                 ' data-icon="back">Back</a><a href="#' + page +
                 '" data-role="button" data-inline="true" data-icon="forward" onclick="window.changeInPage = false;">Continue</a>';

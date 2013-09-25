@@ -522,6 +522,8 @@ var ScreenOneView = Stapes.subclass({
         this._wrapper.clearNavigatorCache();
         this._wrapper.clearNavigatorHistory();
         
+        console.log("CHANGE IN PAGE : " + window.changeInPage);
+        
         if (window.changeInPage === false) {
             /**
              * Load from cache if available
