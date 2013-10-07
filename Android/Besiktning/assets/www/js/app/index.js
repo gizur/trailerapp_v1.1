@@ -27,7 +27,11 @@
 
 function changepage(page) {
     window.changeInPage = false;
-
+    
+    var lg = new Logger(Config.log.level, 'gta-function#changepage', Config.log.type, Config.log.config);
+    var wrapper = new Wrapper(lg);
+    var language = new Language(undefined, Config.log);
+    
     if (window.currentObj !== null) {
         console.log(JSON.stringify(window.currentObj));
         for (index in window.currentObj) {
@@ -35,7 +39,7 @@ function changepage(page) {
                 console.log("Fetching " + index);
 
                 var val = $('#' + window.prevPage + " #" + index).val();
-
+                
                 if ($('#' + window.prevPage + " #" + index).is('select'))
                     val = $('#' + window.prevPage + " #" + index + " option:selected").text();
 
@@ -53,17 +57,83 @@ function changepage(page) {
         }
     }
 
-    if (window.changeInPage && page !== window.prevPage) {
-    	var htm = '<a href="#' + window.prevPage +
-                '" data-role="button" data-inline="true"' +
-                ' data-icon="back">Back</a><a href="#' + page +
-                '" data-role="button" data-inline="true" data-icon="forward" onclick="window.changeInPage = false;">Continue</a>';
-        console.log(htm);
-        $('#notify_buttondiv').empty().html(htm);
-        $('#a_dialog_notify_changevalidation').click();
-    } else {
-        $.mobile.changePage("#" + page);
+    if(page === "one" && (window.changeInPage || window.prevPage === "four" || window.prevPage === "five") && 
+    		window.prevPage !== "settings" && window.prevPage !== "contact"){
+    	var confirm = function(button){
+    		if(button === 1){
+    			resetFormFour();
+    			resetFormOne();
+    			$.mobile.changePage("#one");
+    			return true;
+    		}
+    		return false;
+    	};
+    	
+    	wrapper.showConfirm(language.translate("Your changes will not be saved."), confirm, language.translate("Warning"), language.translate("Confirm,Cancel"));    		
+    	
+    } else if (window.changeInPage && page !== window.prevPage) {
+    	
+    	var confirm = function(button){
+    		if(button === 1){
+    			window.changeInPage = false; 
+    			window.localStorage.removeItem('current_tt');
+    			$.mobile.changePage("#" + page);
+    			return true;
+    		} else {
+    			return false;
+    		}
+    	};
+    	
+    	wrapper.showConfirm(language.translate("You have made changes. If you continue, your changes will not be saved."), confirm, language.translate("Warning"), language.translate("Continue,Cancel"));
+    	/*var htm = '<a href="#' + window.prevPage +
+	        '" data-role="button" data-inline="true"' +
+	        ' data-icon="back">Back</a><a href="#' + page +
+	        '" data-role="button" data-inline="true" data-icon="forward" onclick="window.changeInPage = false; if(window.localStorage.getItem(\'current_tt\')) window.localStorage.removeItem(\'current_tt\');">Continue</a>';
+		console.log(htm);
+		$('#notify_buttondiv').empty().html(htm);
+		$('#a_dialog_notify_changevalidation').click();*/
+	} else  {
+		if( (window.prevPage === "contact" || window.prevPage === "settings") && page === 'one') {
+			if(typeof window.surveyPage !== 'undefined')
+				$.mobile.changePage("#" + window.surveyPage);
+			else
+				$.mobile.changePage("#" + page);
+		} else {
+			$.mobile.changePage("#" + page);
+		}
     }
+}
+
+function resetFormFour(){               
+	$('#four #damagetype').attr('value', '');
+    $('#four #damageposition').attr('value', '');
+    $('#four #drivercauseddamage').attr('value', '');
+    
+    $('#four #damagetype').selectmenu();
+    $('#four #damageposition').selectmenu();
+    $('#four #drivercauseddamage').selectmenu();
+    
+	$('#four #damagetype').selectmenu('refresh');
+    $('#four #damageposition').selectmenu('refresh');
+    $('#four #drivercauseddamage').selectmenu('refresh');
+}
+
+function resetFormOne(){
+	$('#one #trailertype').attr('value', '');
+    $('#one #trailerid').attr('value', '');
+    $('#one #place').attr('value', '');
+    
+    $('#one #trailertype').selectmenu();
+    $('#one #trailerid').selectmenu();
+    $('#one #place').selectmenu();
+    
+	$('#one #trailertype').selectmenu('refresh');
+    $('#one #trailerid').selectmenu('refresh');
+    $('#one #place').selectmenu('refresh');
+    $('#one input[name=sealed]').attr('checked', false).checkboxradio("refresh");
+    
+    window.localStorage.removeItem('tt_list');
+    window.localStorage.removeItem('current_tt');
 }
 
 /**
@@ -77,6 +147,7 @@ $(document).delegate('#one', 'pageshow', function() {
     "use strict";
 
     window.prevPage = 'one';
+    window.surveyPage = 'one';
 
     var lg = new Logger(Config.log.level, 'gta-page#one$pageshow', Config.log.type, Config.log.config);
 
@@ -140,6 +211,7 @@ $(document).delegate('#four', 'pageshow', function() {
     "use strict";
 
     window.prevPage = 'four';
+    window.surveyPage = 'four';
 
     var lg = new Logger(Config.log.level, '#four$pageshow', Config.log.type, Config.log.config);
     var req = new Request(Config.url, undefined, Config.log);
@@ -220,6 +292,7 @@ $(document).delegate('#five', 'pageshow', function() {
     "use strict";
 
     window.prevPage = 'five';
+    window.surveyPage = 'five';
 
     //Environment SetUp
     var lg = new Logger(Config.log.level, 'gta-page#five$pageshow', Config.log.type, Config.log.config);
@@ -256,6 +329,8 @@ $(document).delegate('#contact', 'pageshow', function() {
 
     var lg = new Logger(Config.log.level, 'gta-page#contact$pageshow', Config.log.type, Config.log.config);
     var wrapper = new Wrapper(lg);
+    
+    window.prevPage = 'contact';
     
     var pageContact = new ScreenContactView(lg, wrapper);
     pageContact.bindEventHandlers();

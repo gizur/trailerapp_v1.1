@@ -372,10 +372,15 @@ var ScreenOneView = Stapes.subclass({
             that._lg.log('TRACE', 'reportdamage click START');
 
             window.changeInPage = false;
+            
             /**
              * Save the state of page one
              */
 
+            /**
+             * Save the state of the current ticket
+             */
+            
             if (that._current_tt === null) {
                 that._current_tt = {};
             }
@@ -388,11 +393,42 @@ var ScreenOneView = Stapes.subclass({
             window.localStorage.setItem('current_tt', JSON.stringify(that._current_tt));
 
             that._lg.log('TRACE', 'reportdamage current tt saved : ' + JSON.stringify(that._current_tt));
-
+            
             /**
              * Validate
              */
+            
+            /*
+            var checkLength = function(obj, min, msg){
+            	if(obj.attr('value') === '') {
+            		navigator.notification.alert(msg);
+            		return false;
+            	}
+            	return true;
+            };
+            
+            var checkUndefined = function(obj, msg){
+            	if(typeof obj.attr('value') === 'undefined' ||
+            			obj.attr('value') === '') {
+            		navigator.notification.alert(msg);
+            		return false;
+            	}
+            	return true;
+            };
+            var valid = true;
+            
+            valid = valid && checkLength($('#one #trailertype option:selected'), 0, that._language.translate('Please select Trailer Type'));
+            
+            if(valid)
+            valid = valid && checkLength($('#one #trailerid option:selected'), 0, that._language.translate('Please select a Trailer'));
 
+            if(valid)
+            valid = valid && checkLength($('#one #place option:selected'), 0, that._language.translate('Please select a Place'));
+
+            if(valid)
+            valid = valid && checkUndefined($('#one input[name=sealed]:checked'), that._language.translate('Please select if sealed or not'));
+            */
+            
             if ($('#one #trailertype option:selected').attr('value') === '') {
                 that._lg.log('TRACE', ' trailertype not valid');
                 $('#a_dialog_validation_trailertype').click();
@@ -417,8 +453,23 @@ var ScreenOneView = Stapes.subclass({
                 $('#a_dialog_validation_sealed').click();
                 return;
             }
-
+            
             $.mobile.changePage('#four');
+            
+            /*
+            if(valid) {
+            	that._current_tt.trailertype = escapeHtmlEntities($('#one #trailertype option:selected').text());
+                that._current_tt.trailerid = escapeHtmlEntities($('#one #trailerid option:selected').text());
+                that._current_tt.place = escapeHtmlEntities($('#one #place option:selected').text());
+                that._current_tt.sealed = escapeHtmlEntities($('#one input[name=sealed]:checked').val());
+
+                window.localStorage.setItem('current_tt', JSON.stringify(that._current_tt));
+
+                that._lg.log('TRACE', 'reportdamage current tt saved : ' + JSON.stringify(that._current_tt));
+
+            	$.mobile.changePage('#four');
+            }
+            */
 
             that._lg.log('TRACE', 'reportdamage click END');
         });
@@ -438,6 +489,8 @@ var ScreenOneView = Stapes.subclass({
             e.preventDefault();
             e.stopPropagation();
 
+            window.changeInPage = true;
+            
             var tt = new TroubleTicket(that._usr, Config.log);
 
             that._lg.log('TRACE', '.bxslider-one li a click start');
@@ -683,13 +736,15 @@ var ScreenOneView = Stapes.subclass({
 
             this._lg.log('DEBUG', 'tt_list : ' + JSON.stringify(this._tt_list));
 
-            if (this._tt_list !== null && this._current_tt !== null && this._tt_list.html !== '') {
+            var empty = ($('#one select#trailerid').val().length > 0) && ($('#one select#trailertype').val().length > 0);
+            if (empty && this._tt_list !== null && this._current_tt !== null && this._tt_list.html !== '') {
                 this._lg.log('DEBUG', 'reloading slider for troubleticketlist  to position ' + this._tt_list.position);
 
                 $('#one #troubleticketlist').html(this._tt_list.html);
                 window.slider_one.reloadSlider();
                 window.slider_one.goToSlide(this._tt_list.position);
             } else {
+            	window.localStorage.removeItem('tt_list');
                 $('#one #troubleticketlist').html("<li><center><div style='height:60px;'>" + this._language.translate('No Damages Reported') + "</div></center></li>");
                 window.slider_one.reloadSlider();
             }

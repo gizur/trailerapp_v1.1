@@ -73,8 +73,18 @@ var Wrapper = (function() {
         	if (typeof successCB === 'function') {
         		navigator.globalization.getPreferredLanguage(successCB);
         	}
-        }
-        
+        },
+        /**
+         * Show Notification - Confirm
+         */
+        showConfirm: function (msg, onConfirm, title, labels) {
+            navigator.notification.confirm(
+                msg,       // message
+                onConfirm, // callback to invoke with index of button pressed
+                title,     // title
+                labels     // buttonLabels
+            );
+        }        
     });
 
     return Wrapper;

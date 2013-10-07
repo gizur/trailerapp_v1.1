@@ -263,8 +263,10 @@ var ScreenFourView = Stapes.subclass({
                 } else {
 
                     that._lg.log('TRACE', '#four #deletedamage redirect to screen five ');
-
-                    $.mobile.changePage('#five');
+                    
+                    // Freshdesk #74
+                    $.mobile.changePage('#four', {allowSamePageTransition: true, transition: 'none', showLoadMsg: false, reloadPage: false});
+                    //$.mobile.changePage('#five');
                 }
             } else {
             	$.mobile.changePage('#four', {allowSamePageTransition: true, transition: 'none', showLoadMsg: false, reloadPage: false});
@@ -337,9 +339,9 @@ var ScreenFourView = Stapes.subclass({
 
             };
 
-            that._wrapper.getPicture(success, fail, {quality: 15,
+            that._wrapper.getPicture(success, fail, {quality: Config.imageQuality,
                 destinationType: Camera.DestinationType.FILE_URI,
-                targetWidth: 768
+                targetWidth: Config.imageTargetWidth
             });
         });
 

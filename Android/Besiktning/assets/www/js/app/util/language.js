@@ -61,7 +61,7 @@ var Language = Stapes.subclass({
                 "If yes click 'Ok', (you will receive a mail with the new password) else click 'Go Back'" : 'Välj i så fall Ok (ditt nya lösen kommer att mailas)',
                 'Please try again, If the problem persists please contact the Gizur Saas Account holders' : 'Försök igen, Kontakta Gizur SaaS support om problemet kvarstår',
                 'All fields (username, password and client id) must be filled' : 'Alla fält (användarnamn, lösenord och klient id) måste fyllas i',
-                'You have made some changes, If you continue, your changes shall be lost': 'Du har gjort ändringar. Om du fortsätter kommer inte dina ändringar kommer inte att sparas',
+                'You have made changes. If you continue, your changes will not be saved.': 'Du har gjort ändringar. Om du fortsätter kommer inte dina ändringar att sparas.',
                 'Please select, if damage was caused by driver or not' : 'Välj om skadan orsakats av chauffören eller ej',
                 'Are you sure you want to reset your password' : 'Vill du verkligen nollställa lösen',
                 'Specify the damage in the direction the trailer moves' : 'Skadan anges I trailerns färdriktning',
@@ -73,6 +73,7 @@ var Language = Stapes.subclass({
                 'Please select if sealed or not' : 'Ange om trailern är plomberad eller ej',
                 'You cannot add more than 3 pictures' : 'Du kan inte lägga till mer än 3 bilder',
                 'Only some damages have been reported successfully' : 'Endast några skador har rapporterats',
+                'Your changes will not be saved.' : 'Dina ändringar kommer inte att sparas.',
                 'Please select a damage type' : 'Ange typ av skada',
                 'Please select a damage position' : 'Ange position för skadan',                
                 'Please select Trailer Type' : 'Välj en trailer typ',
@@ -107,7 +108,9 @@ var Language = Stapes.subclass({
                 'Password Changed' : 'Lösen har ändrats',
                 'Authenticated successfully' : 'Autensiering lyckades',
                 'Network Error: Retrying' : 'Network Error: Försöker igen',
-                'Trailer type' : 'Typ av trailer',   
+                'Trailer type' : 'Typ av trailer',
+                'Continue,Cancel' : 'Fortsätt,Avbryt',
+                'Confirm,Cancel' : 'Bekräfta,Avbryt',
                 'Select One' : 'Välj',  
                 'Go Back' : 'Tillbaka',                                 
                 'Back' : 'Tillbaka',
@@ -130,7 +133,8 @@ var Language = Stapes.subclass({
                 'Error' : 'Fel',
                 'Completed' : 'Slutfört',
                 'of' : 'av',
-                'Sending' : 'Skickar'
+                'Sending' : 'Skickar',
+                'Warning' : 'Varning'
             }
         );
 

@@ -117,7 +117,12 @@ var ScreenSettingsView = Stapes.subclass({
 
                 var temp_trace_id = window.localStorage.getItem('trace_id');
                 var temp_language = window.localStorage.getItem('language');
-                window.localStorage.clear();
+                
+                //window.localStorage.clear();
+                
+                // Set Authenticated = false
+                that._usr.setAuthenticated(false);
+                
                 window.localStorage.setItem('trace_id', temp_trace_id);
                 window.localStorage.setItem('language', temp_language);
 

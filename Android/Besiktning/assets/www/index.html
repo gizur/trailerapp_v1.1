@@ -9,7 +9,6 @@
 	<link href="css/jquery.bxslider.css" rel="stylesheet" />	
 	
     <!--lib-->
-    <!-- <script src="js/lib/cordova-2.6.0.js"></script>-->
     <script src="js/lib/cordova.js"></script>
 	<script src="js/lib/jquery.mobile-1.2.1/jquery-1.8.3.min.js"></script>  
 	<script src="js/lib/jquery.mobile-1.2.1/jquery.mobile-1.2.1.min.js"></script>
@@ -145,7 +144,7 @@
                 </li>
             </ul>
         </div>
-		<p><a href="#one" data-role="button" data-inline="true" data-icon="back">Back</a></p>
+		<p><a href="#one" onclick="window.changeInPage = true;" data-role="button" data-inline="true" data-icon="back">Back</a></p>
         <h3>Damage Information</h3>
         <div data-role="fieldcontain">
             <label for="damagetype">
@@ -435,7 +434,7 @@
     </div><!-- /header -->
 
     <div data-role="content" data-theme="d">
-        <p>You have made some changes, If you continue, your changes shall be lost.</p>  
+        <p>You have made changes. If you continue, your changes will not be saved.</p>  
         <div id="notify_buttondiv"></div>
     </div><!-- /content -->
 </div><!-- /page dialog -->
@@ -530,19 +529,6 @@
         <p><a data-rel="back" data-role="button" data-inline="true" data-icon="back">Ok</a></p>
     </div><!-- /content -->
 </div><!-- /page dialog_validation_damageposition -->
-
-<!-- Start of page: #dialog_validation_trailertype -->
-<a id="a_dialog_validation_trailertype" href="#dialog_validation_trailertype" data-rel="dialog" style="display: none;"></a> 
-<div data-role="page" id="dialog_validation_trailertype" data-transition="flip">
-    <div data-role="header" data-theme="e">
-        <h1>Error</h1>
-    </div><!-- /header -->
-
-    <div data-role="content" data-theme="d">
-        <p>Please select Trailer Type</p>  
-        <p><a data-rel="back" data-role="button" data-inline="true" data-icon="back">Ok</a></p>
-    </div><!-- /content -->
-</div><!-- /page dialog_validation_trailertype -->
 
 <!-- Start of page: #dialog_validation_trailertype -->
 <a id="a_dialog_validation_trailertype" href="#dialog_validation_trailertype" data-rel="dialog" style="display: none;"></a> 

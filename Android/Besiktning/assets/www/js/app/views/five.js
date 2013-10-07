@@ -137,7 +137,7 @@ var ScreenFiveView = Stapes.subclass({
             that._lg.log('TRACE', '#five #sendalldamages click start');
 
             var ttc = new TroubleTicketCollection(that._usr, Config.log);
-
+            
             /**
              * De-serialize current_tt to its object
              * Since window.localStorage does not support
@@ -214,6 +214,12 @@ var ScreenFiveView = Stapes.subclass({
 
                     that._lg.log('TRACE', '#five #sendalldamages success no unsent_files ');
 
+                    /**
+                     * Reset Forms
+                     */
+                    resetFormOne();
+                    resetFormFour();
+                    
                     $('#a_dialog_success_damagereported').click();
 
                 } else {
