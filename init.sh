@@ -3,7 +3,7 @@ sudo apt-get -y install vim
 
 # You can try any of the fluxbox, blackbox or openbox
 sudo apt-get -y install xorg fluxbox #MINIMAL UBUNTU
-sudo apt-get -y install openjdk-6-jdk
+sudo apt-get -y install openjdk-6-jdk git
 
 if [ -f "/home/vagrant/android-studio-bundle-130.737825-linux.tgz" ];
 then

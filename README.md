@@ -32,6 +32,23 @@ sudo apt-get install -y tightvncserver
 vncserver
 ```
 
+```
+# Create a workspace dir
+mkdir ~/workspace
+cd ~/workspace
+
+# Clone the repo
+git clone git@github.com:gizur/trailerapp_v1.1.git
+
+Unzip android-studio-bundle-130.737825-linux.tgz
+
+RUN ~/android-studio-bundle/eclipse/eclipse
+# Choose the default workspace i.e. /home/vagrant/workspace where we have cloned trailer app repo.
+# Import the trailerapp_v1.1/Android/Besiktning into workspace
+
+# To create simulator go to http://developer.android.com/training/basics/firstapp/running-app.html
+```
+
 Now connect with a VNC client (I'm using Chicken iof the VNC on OSX). Run 'ifconfig' to see the available interfaces. 
 I was able to connect in the 192.168.XXX.XXX interface. 
 
