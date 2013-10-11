@@ -25,8 +25,8 @@ Vagrant.configure("2") do |config|
   end
 
 
-  config.vm.provider :vb do |v|
-    v.gui = true
-  end
+#  config.vm.provider :vb do |v|
+#    v.gui = true
+#  end
 
 end
