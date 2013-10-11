@@ -1,4 +1,5 @@
 sudo apt-get update
+sudo apt-get -y install vim
 
 # You can try any of the fluxbox, blackbox or openbox
 sudo apt-get -y install xorg fluxbox #MINIMAL UBUNTU
