@@ -55,6 +55,23 @@ var ScreenOneView = Stapes.subclass({
             _tt_list: {},
             _wrapper: aWrapper
         });
+        
+        this.validate = function() {
+        	var valid = true;
+            
+        	valid = valid && this._wrapper.checkLength($('#one #trailertype option:selected'), 0, this._language.translate('Please select Trailer Type'), this._language.translate('Error'));
+            
+            if(valid)
+            valid = valid && this._wrapper.checkLength($('#one #trailerid option:selected'), 0, this._language.translate('Please select a Trailer'), this._language.translate('Error'));
+
+            if(valid)
+            valid = valid && this._wrapper.checkLength($('#one #place option:selected'), 0, this._language.translate('Please select a Place'), this._language.translate('Error'));
+
+            if(valid)
+            valid = valid && this._wrapper.checkUndefined($('#one input[name=sealed]:checked'), this._language.translate('Please select if sealed or not'), this._language.translate('Error'));
+            
+            return valid;
+        };
     },
     /**
      * Binds events to various elements of the page
@@ -268,93 +285,76 @@ var ScreenOneView = Stapes.subclass({
                 that._current_tt = {};
             }
 
-            that._current_tt.trailertype = escapeHtmlEntities($('#one #trailertype option:selected').text());
-            that._current_tt.trailerid = escapeHtmlEntities($('#one #trailerid option:selected').text());
-            that._current_tt.place = escapeHtmlEntities($('#one #place option:selected').text());
-            that._current_tt.sealed = escapeHtmlEntities($('#one input[name=sealed]:checked').val());
-
-            window.localStorage.setItem('current_tt', JSON.stringify(that._current_tt));
-
-            that._lg.log('TRACE', 'reportsurvey current tt saved : ' + JSON.stringify(that._current_tt));
-
             /**
              * Validate
              */
+            
+            if(that.validate()) {
+            	/**
+            	 * Save the current TT
+            	 */
+            	that._current_tt.trailertype = escapeHtmlEntities($('#one #trailertype option:selected').text());
+                that._current_tt.trailerid = escapeHtmlEntities($('#one #trailerid option:selected').text());
+                that._current_tt.place = escapeHtmlEntities($('#one #place option:selected').text());
+                that._current_tt.sealed = escapeHtmlEntities($('#one input[name=sealed]:checked').val());
 
-            if ($('#one #trailertype option:selected').attr('value') === '') {
-                $('#a_dialog_validation_trailertype').click();
-                return;
-            }
+                window.localStorage.setItem('current_tt', JSON.stringify(that._current_tt));
 
-            if ($('#one #trailerid option:selected').attr('value') === '') {
-                $('#a_dialog_validation_trailer').click();
-                return;
-            }
-
-            if ($('#one #place option:selected').attr('value') === '') {
-                $('#a_dialog_validation_place').click();
-                return;
-            }
-
-            if (typeof $('#one input[name=sealed]:checked').attr('value') === 'undefined' ||
-                    $('#one input[name=sealed]:checked').attr('value') === '') {
-                $('#a_dialog_validation_sealed').click();
-                return;
-            }
-
-            /**
-             * Create the assetcollection object
-             * this object automatically loads the cached
-             * list of assets
-             */
-
-            var tt = new TroubleTicket(that._usr, Config.log);
-
-            var success = function(data) {
-
-                data = undefined;
-
-                /**
-                 * Clear the cache
-                 */
-
-                window.localStorage.removeItem('current_tt');
-
-                /**
-                 * Removed History
-                 */
-
-                $.mobile.urlHistory.stack = [];
-
-                that._wrapper.clearNavigatorHistory();
-
-                /**
-                 * Show success message
-                 */
-
-                $('#a_dialog_survey_success').click();
-            };
-
-            var error = function(jqxhr, status, er) {
-
-                jqxhr = status = er = undefined;
-
-                //Show error pop up
-                $('#a_dialog_survey_error').click();
-            };
-
-            var ast = new Asset(undefined, Config.log);
-            ast.set('assetname', escapeHtmlEntities($('#one #trailerid option:selected').text()));
-
-            tt.set({
-                'asset': ast,
-                'place': escapeHtmlEntities($('#one #place option:selected').text()),
-                'sealed': escapeHtmlEntities($('#one input[name=sealed]:checked').val())
-            });
-
-            tt.save(success, error);
-
-            that._lg.log('TRACE', 'reportsurvey click END');
+		        /**
+		         * Create the assetcollection object
+		         * this object automatically loads the cached
+		         * list of assets
+		         */
+		
+		        var tt = new TroubleTicket(that._usr, Config.log);
+		
+		        var success = function(data) {
+		
+		        	resetFormOne();
+		            data = undefined;
+		
+		            /**
+		             * Clear the cache
+		             */
+		
+		            window.localStorage.removeItem('current_tt');
+		
+		            /**
+		             * Removed History
+		             */
+		
+		            $.mobile.urlHistory.stack = [];
+		
+		            that._wrapper.clearNavigatorHistory();
+		
+		            /**
+		             * Show success message
+		             */
+		
+		            $('#a_dialog_survey_success').click();
+		        };
+		
+		        var error = function(jqxhr, status, er) {
+		
+		            jqxhr = status = er = undefined;
+		
+		            //Show error pop up
+		            $('#a_dialog_survey_error').click();
+		        };
+		
+		        var ast = new Asset(undefined, Config.log);
+		        ast.set('assetname', escapeHtmlEntities($('#one #trailerid option:selected').text()));
+		
+		        tt.set({
+		            'asset': ast,
+		            'place': escapeHtmlEntities($('#one #place option:selected').text()),
+		            'sealed': escapeHtmlEntities($('#one input[name=sealed]:checked').val())
+		        });
+		
+		        tt.save(success, error);
+		
+		        that._lg.log('TRACE', 'reportsurvey click END');
+		    }
         });
 
         /**
@@ -373,91 +373,18 @@ var ScreenOneView = Stapes.subclass({
 
             window.changeInPage = false;
             
-            /**
-             * Save the state of page one
-             */
-
-            /**
-             * Save the state of the current ticket
-             */
-            
             if (that._current_tt === null) {
                 that._current_tt = {};
             }
 
-            that._current_tt.trailertype = escapeHtmlEntities($('#one #trailertype option:selected').text());
-            that._current_tt.trailerid = escapeHtmlEntities($('#one #trailerid option:selected').text());
-            that._current_tt.place = escapeHtmlEntities($('#one #place option:selected').text());
-            that._current_tt.sealed = escapeHtmlEntities($('#one input[name=sealed]:checked').val());
-
-            window.localStorage.setItem('current_tt', JSON.stringify(that._current_tt));
-
-            that._lg.log('TRACE', 'reportdamage current tt saved : ' + JSON.stringify(that._current_tt));
-            
             /**
              * Validate
              */
             
-            /*
-            var checkLength = function(obj, min, msg){
-            	if(obj.attr('value') === '') {
-            		navigator.notification.alert(msg);
-            		return false;
-            	}
-            	return true;
-            };
-            
-            var checkUndefined = function(obj, msg){
-            	if(typeof obj.attr('value') === 'undefined' ||
-            			obj.attr('value') === '') {
-            		navigator.notification.alert(msg);
-            		return false;
-            	}
-            	return true;
-            };
-            var valid = true;
-            
-            valid = valid && checkLength($('#one #trailertype option:selected'), 0, that._language.translate('Please select Trailer Type'));
-            
-            if(valid)
-            valid = valid && checkLength($('#one #trailerid option:selected'), 0, that._language.translate('Please select a Trailer'));
-
-            if(valid)
-            valid = valid && checkLength($('#one #place option:selected'), 0, that._language.translate('Please select a Place'));
-
-            if(valid)
-            valid = valid && checkUndefined($('#one input[name=sealed]:checked'), that._language.translate('Please select if sealed or not'));
-            */
-            
-            if ($('#one #trailertype option:selected').attr('value') === '') {
-                that._lg.log('TRACE', ' trailertype not valid');
-                $('#a_dialog_validation_trailertype').click();
-                return;
-            }
-
-            if ($('#one #trailerid option:selected').attr('value') === '') {
-                that._lg.log('TRACE', ' trailerid not valid');
-                $('#a_dialog_validation_trailer').click();
-                return;
-            }
-
-            if ($('#one #place option:selected').attr('value') === '') {
-                that._lg.log('TRACE', ' place not valid');
-                $('#a_dialog_validation_place').click();
-                return;
-            }
-
-            if (typeof $('#one input[name=sealed]:checked').attr('value') === 'undefined' ||
-                    $('#one input[name=sealed]:checked').attr('value') === '') {
-                that._lg.log('TRACE', ' sealed not valid');
-                $('#a_dialog_validation_sealed').click();
-                return;
-            }
-            
-            $.mobile.changePage('#four');
-            
-            /*
-            if(valid) {
+            if(that.validate()) {            	
+            	/**
+            	 * Save the current TT
+            	 */
             	that._current_tt.trailertype = escapeHtmlEntities($('#one #trailertype option:selected').text());
                 that._current_tt.trailerid = escapeHtmlEntities($('#one #trailerid option:selected').text());
                 that._current_tt.place = escapeHtmlEntities($('#one #place option:selected').text());
@@ -469,7 +396,6 @@ var ScreenOneView = Stapes.subclass({
 
             	$.mobile.changePage('#four');
             }
-            */
 
             that._lg.log('TRACE', 'reportdamage click END');
         });
