@@ -9,7 +9,7 @@ sudo apt-get -y install vim
 sudo apt-get -y install xorg fluxbox #MINIMAL UBUNTU
 sudo apt-get -y install ia32-libs git make curl
 sudo apt-get -y install tightvncserver
-
+sudo apt-get install -y g++
 
 #
 # Install NodeJS
