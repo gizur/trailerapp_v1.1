@@ -33,14 +33,11 @@ vncserver
 ```
 
 ```
-# Create a workspace dir
-mkdir ~/workspace
 cd ~/workspace
 
 # Clone the repo
-git clone git@github.com:gizur/trailerapp_v1.1.git
-
-Unzip android-studio-bundle-130.737825-linux.tgz
+git clone https://github.com/gizur/trailerapp_v1.1.git
+# or git clone git@github.com:gizur/trailerapp_v1.1.git
 
 RUN ~/android-studio-bundle/eclipse/eclipse
 # Choose the default workspace i.e. /home/vagrant/workspace where we have cloned trailer app repo.
