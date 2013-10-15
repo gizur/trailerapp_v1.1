@@ -16,7 +16,7 @@ sudo apt-get -y install tightvncserver
 #
 
 su vagrant -c "curl https://raw.github.com/creationix/nvm/master/install.sh | sh"
-su vagrant -c "source /home/vagrant/.profile && nvm install v0.11.7 && nvm use v0.11.7"
+su vagrant -c "source /home/vagrant/.profile && nvm install v0.10.20 && nvm use v0.10.20"
 
 
 #
