@@ -7,8 +7,16 @@ sudo apt-get -y install vim
 
 # You can try any of the fluxbox, blackbox or openbox
 sudo apt-get -y install xorg fluxbox #MINIMAL UBUNTU
-sudo apt-get -y install ia32-libs git
+sudo apt-get -y install ia32-libs git make curl
 sudo apt-get -y install tightvncserver
+
+
+#
+# Install NodeJS
+#
+
+su vagrant -c "curl https://raw.github.com/creationix/nvm/master/install.sh | sh"
+su vagrant -c "source /home/vagrant/.profile && nvm install v0.11.7 && nvm use v0.11.7"
 
 
 #
