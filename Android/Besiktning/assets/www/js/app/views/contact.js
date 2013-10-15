@@ -76,7 +76,7 @@ var ScreenContactView = Stapes.subclass({
 
         try {
 
-            this._lg.log('TRACE',' page loaded: ');
+            this._lg.log('TRACE', '#contact$render', ' page loaded: ');
 
             var contact_html = window.localStorage.getItem('contact');
 
@@ -100,11 +100,11 @@ var ScreenContactView = Stapes.subclass({
 
             }
 
-            this._lg.log('TRACE', ' page loaded: complete');
+            this._lg.log('TRACE', '#contact$render', ' page loaded: complete');
 
         } catch (err) {
 
-            this._lg.log('FATAL', JSON.stringify(err));
+            this._lg.log('FATAL', '#contact$render', JSON.stringify(err));
 
         }        
 

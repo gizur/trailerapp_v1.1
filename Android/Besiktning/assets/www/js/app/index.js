@@ -28,9 +28,9 @@
 function changepage(page) {
     window.changeInPage = false;
     
-    var lg = new Logger(Config.log.level, 'gta-function#changepage', Config.log.type, Config.log.config);
-    var wrapper = new Wrapper(lg);
-    var language = new Language(undefined, Config.log);
+    var lg = App._lg;
+    var wrapper = App._wrapper;
+    var language = App._lang;
     
     if (window.currentObj !== null) {
         console.log(JSON.stringify(window.currentObj));
@@ -65,8 +65,9 @@ function changepage(page) {
     			resetFormOne();
     			$.mobile.changePage("#one");
     			return true;
+    		} else {
+    			return false;
     		}
-    		return false;
     	};
     	
     	wrapper.showConfirm(language.translate("Your changes will not be saved."), confirm, language.translate("Warning"), language.translate("Confirm,Cancel"));    		
@@ -85,13 +86,6 @@ function changepage(page) {
     	};
     	
     	wrapper.showConfirm(language.translate("You have made changes. If you continue, your changes will not be saved."), confirm, language.translate("Warning"), language.translate("Continue,Cancel"));
-    	/*var htm = '<a href="#' + window.prevPage +
-	        '" data-role="button" data-inline="true"' +
-	        ' data-icon="back">Back</a><a href="#' + page +
-	        '" data-role="button" data-inline="true" data-icon="forward" onclick="window.changeInPage = false; if(window.localStorage.getItem(\'current_tt\')) window.localStorage.removeItem(\'current_tt\');">Continue</a>';
-		console.log(htm);
-		$('#notify_buttondiv').empty().html(htm);
-		$('#a_dialog_notify_changevalidation').click();*/
 	} else  {
 		if( (window.prevPage === "contact" || window.prevPage === "settings") && page === 'one') {
 			if(typeof window.surveyPage !== 'undefined')
@@ -149,21 +143,15 @@ $(document).delegate('#one', 'pageshow', function() {
     window.prevPage = 'one';
     window.surveyPage = 'one';
 
-    var lg = new Logger(Config.log.level, 'gta-page#one$pageshow', Config.log.type, Config.log.config);
-
     try {
 
         /**
          * Environment
          */
 
-        lg.log('TRACE', 'page loaded');
-        var req = new Request(Config.url, undefined, Config.log);
-        var usr = new User(req, Config.log);
-        var language = new Language(undefined, Config.log);
-        var wrapper = new Wrapper(lg);
+    	App._lg.log('TRACE', 'gta-page#one$pageshow', 'page loaded');
         
-        var pageOne = new ScreenOneView(usr, lg, language, wrapper);
+        var pageOne = new ScreenOneView(App._usr, App._lg, App._lang, App._wrapper);
 
         //For Debugging : The line below must be commented
         //window.localStorage.removeItem('17x519_tt');
@@ -189,15 +177,15 @@ $(document).delegate('#one', 'pageshow', function() {
          * to send logs to server
          */
 
-        lg.appLoadingComplete();
+        App._lg.appLoadingComplete();
 
     } catch (err) {
 
-        lg.log('FATAL', JSON.stringify(err));
+    	App._lg.log('FATAL', 'gta-page#one$pageshow', JSON.stringify(err));
 
     }
 
-    lg.log('DEBUG', '#one #troubleticketlist html : ' + $('#one #troubleticketlist').html());
+    App._lg.log('DEBUG', 'gta-page#one$pageshow', '#one #troubleticketlist html : ' + $('#one #troubleticketlist').html());
 });
 
 /**
@@ -213,13 +201,7 @@ $(document).delegate('#four', 'pageshow', function() {
     window.prevPage = 'four';
     window.surveyPage = 'four';
 
-    var lg = new Logger(Config.log.level, '#four$pageshow', Config.log.type, Config.log.config);
-    var req = new Request(Config.url, undefined, Config.log);
-    var usr = new User(req, Config.log);
-    var language = new Language(undefined, Config.log);
-    var wrapper = new Wrapper(lg);
-
-    var pageFour = new ScreenFourView(usr, lg, language, wrapper);
+    var pageFour = new ScreenFourView(App._usr, App._lg, App._lang, App._wrapper);
     pageFour.bindEventHandlers();
     pageFour.render();
 
@@ -237,11 +219,7 @@ $(document).delegate('#two', 'pageshow', function(e, data) {
 
     window.prevPage = 'two';
 
-    var lg = new Logger(Config.log.level, '#two$pageshow', Config.log.type, Config.log.config);
-    var language = new Language(undefined, Config.log);
-    var wrapper = new Wrapper(lg);
-
-    var pageTwo = new ScreenTwoView(lg, language, wrapper);
+    var pageTwo = new ScreenTwoView(App._lg, App._lang, App._wrapper);
     pageTwo.bindEventHandlers();
     pageTwo.render();
 
@@ -261,12 +239,6 @@ $(document).delegate('#three', 'pageshow', function(e, data) {
 
     window.prevPage = 'three';
     
-    var lg = new Logger(Config.log.level, '#two$pageshow', Config.log.type, Config.log.config);
-    var req = new Request(Config.url, undefined, Config.log);
-    var usr = new User(req, Config.log);
-    var language = new Language(undefined, Config.log);
-    var wrapper = new Wrapper(lg);
-
     var base64_image = window.localStorage.getItem(window.localStorage.getItem('details_doc_id'));
     
     $('#three img').attr('src', base64_image);
@@ -277,7 +249,7 @@ $(document).delegate('#three', 'pageshow', function(e, data) {
 
     e.preventDefault();
     
-    var pageThree = new ScreenThreeView(usr, lg, language, wrapper);
+    var pageThree = new ScreenThreeView(App._usr, App._lg, App._lang, App._wrapper);
     pageThree.render();
 });
 
@@ -294,14 +266,7 @@ $(document).delegate('#five', 'pageshow', function() {
     window.prevPage = 'five';
     window.surveyPage = 'five';
 
-    //Environment SetUp
-    var lg = new Logger(Config.log.level, 'gta-page#five$pageshow', Config.log.type, Config.log.config);
-    var req = new Request(Config.url, undefined, Config.log);
-    var usr = new User(req, Config.log);
-    var language = new Language(undefined, Config.log);
-    var wrapper = new Wrapper(lg);
-
-    var pageFive = new ScreenFiveView(usr, lg, language, wrapper);
+    var pageFive = new ScreenFiveView(App._usr, App._lg, App._lang, App._wrapper);
     pageFive.bindEventHandlers();
     pageFive.render();
 
@@ -310,7 +275,7 @@ $(document).delegate('#five', 'pageshow', function() {
      * to send logs to server
      */
 
-    lg.appLoadingComplete();
+    App._lg.appLoadingComplete();
 });
 
 /**
@@ -327,12 +292,9 @@ $(document).delegate('#contact', 'pageshow', function() {
      * Environment SetUp
      */
 
-    var lg = new Logger(Config.log.level, 'gta-page#contact$pageshow', Config.log.type, Config.log.config);
-    var wrapper = new Wrapper(lg);
-    
     window.prevPage = 'contact';
     
-    var pageContact = new ScreenContactView(lg, wrapper);
+    var pageContact = new ScreenContactView(App._lg, App._wrapper);
     pageContact.bindEventHandlers();
     pageContact.render();
 
@@ -351,26 +313,16 @@ $(document).delegate('#settings', 'pageshow', function() {
 
     window.prevPage = 'settings';
 
-    var lg = new Logger(Config.log.level, 'gta-page#settings$pageshow', Config.log.type, Config.log.config);
-    var language = new Language(undefined, Config.log);
-    var wrapper = new Wrapper(lg);
-
     try {
 
-        /**
-         * Environment SetUp
-         */
-
-        var req = new Request(Config.url, undefined, Config.log);
-        var usr = new User(req, Config.log);
-        var pageSettings = new ScreenSettingsView(usr, lg, language, req, wrapper);
+        var pageSettings = new ScreenSettingsView(App._usr, App._lg, App._lang, App._req, App._wrapper);
 
         pageSettings.render();
         pageSettings.bindEventHandlers();
         
-        lg.log('TRACE', 'page loaded');
+        App._lg.log('TRACE', 'gta-page#settings$pageshow', 'page loaded');
         
-        if (usr.get('authenticated') && window.refreshCache) {
+        if (App._usr.get('authenticated') && window.refreshCache) {
         	// Login again
         	window.refreshCache = false;
 	        $('#settings_save').click();
@@ -378,7 +330,7 @@ $(document).delegate('#settings', 'pageshow', function() {
 
     } catch (err) {
 
-        lg.log('FATAL', JSON.stringify(err));
+        App._lg.log('FATAL', 'gta-page#settings$pageshow', JSON.stringify(err));
 
     }
 });
@@ -399,26 +351,17 @@ $(document).bind('pagebeforechange', function(e, data) {
 
     try {
 
-        /**
-         * Environment SetUp
-         */
-
-        var lg = new Logger(Config.log.level, 'gta-page$pagebeforechange', Config.log.type, Config.log.config);
-        var req = new Request(Config.url, undefined, Config.log);
-        var usr = new User(req, Config.log);
-        var wrapper = new Wrapper(lg);
-
-        var to = data.toPage,
+    	var to = data.toPage,
                 from = data.options.fromPage;
 
-        lg.log('TRACE', typeof to);
-        lg.log('TRACE', ' $.mobile.urlHistory :' + JSON.stringify($.mobile.urlHistory.stack));
+        App._lg.log('TRACE', 'gta-page$pagebeforechange', typeof to);
+        App._lg.log('TRACE', 'gta-page$pagebeforechange', ' $.mobile.urlHistory :' + JSON.stringify($.mobile.urlHistory.stack));
 
         /**
          * Clear any browser cache
          */
 
-        wrapper.clearNavigatorCache();
+        App._wrapper.clearNavigatorCache();
 
         /**
          * The type of to is object when there is a transition from
@@ -433,7 +376,7 @@ $(document).bind('pagebeforechange', function(e, data) {
              */
 
             if (to.attr('id') === 'one' && !usr.get('authenticated')) {
-                lg.log('TRACE', ' Application loaded and user is not authenticated ');
+                App._lg.log('TRACE', 'gta-page$pagebeforechange', ' Application loaded and user is not authenticated ');
                 e.preventDefault();
                 $.mobile.changePage('#settings');
                 return;
@@ -445,8 +388,8 @@ $(document).bind('pagebeforechange', function(e, data) {
              * if not show him the access denied page
              */
 
-            lg.log('DEBUG', 'usr.authenticated: ' + usr.get('authenticated'));
-            lg.log('DEBUG', ' to.attr(id): ' + to.attr('id'));
+            App._lg.log('DEBUG', 'gta-page$pagebeforechange', 'usr.authenticated: ' + usr.get('authenticated'));
+            App._lg.log('DEBUG', 'gta-page$pagebeforechange', ' to.attr(id): ' + to.attr('id'));
 
             if (to.attr('id') === 'settings') {
 
@@ -461,7 +404,7 @@ $(document).bind('pagebeforechange', function(e, data) {
             }
 
 
-            if (!usr.get('authenticated')) {
+            if (!App._usr.get('authenticated')) {
 
                 /**
                  * If user is not authenticated
@@ -538,8 +481,8 @@ $(document).bind('pagebeforechange', function(e, data) {
                 from = '#' + from.attr('id');
             }
 
-            lg.log('DEBUG', 'To page: ' + to);
-            lg.log('DEBUG', 'usr.authenticated: ' + usr.get('authenticated'));
+            App._lg.log('DEBUG', 'gta-page$pagebeforechange', 'To page: ' + to);
+            App._lg.log('DEBUG', 'gta-page$pagebeforechange', 'usr.authenticated: ' + usr.get('authenticated'));
 
             /**
              * If user is authenticated
@@ -560,15 +503,15 @@ $(document).bind('pagebeforechange', function(e, data) {
                      * Changing page to one if there is not tt in cache
                      */
 
-                    lg.log('TRACE', ' changing to page one ');
+                    App._lg.log('TRACE', 'gta-page$pagebeforechange', ' changing to page one ');
                     $.mobile.changePage('#one');
                 }
             }
         }
-        lg.log('TRACE', "END pagebeforechange");
+        App._lg.log('TRACE', 'gta-page$pagebeforechange', "END pagebeforechange");
     } catch (err) {
 
-        lg.log('FATAL', JSON.stringify(err));
+        App._lg.log('FATAL', 'gta-page$pagebeforechange', JSON.stringify(err));
 
     }
 
@@ -583,11 +526,6 @@ $(document).bind('pagebeforechange', function(e, data) {
 document.addEventListener("deviceready", function() {
 
     "use strict";
-    
-    var lg = new Logger(Config.log.level, 'deviceready', Config.log.type, Config.log.config);
-    var req = new Request(Config.url, undefined, Config.log);
-    var usr = new User(req, Config.log);
-    var wrapper = new Wrapper(lg);
     
     /**
      * this variable is used to 
@@ -697,16 +635,16 @@ document.addEventListener("deviceready", function() {
                      * splash screen from browser history
                      */
 
-                    wrapper.clearNavigatorHistory();
+                    App._wrapper.clearNavigatorHistory();
                     
-                    if(!usr.get('refreshTime')) {
+                    if(!App._usr.get('refreshTime')) {
                 		window.refreshCache = true;
                 		$.mobile.changePage('#settings');
                 		return;
                 	} else {
                 		var diff = new Date().getTime() - usr.get('refreshTime');
-                		lg.log('DEBUG', 'Last cache refresh time : ' + usr.get('refreshTime'));
-                		lg.log('DEBUG', "Cache time differance : " + diff + " milliseconds.");
+                		App._lg.log('DEBUG', 'deviceready', 'Last cache refresh time : ' + usr.get('refreshTime'));
+                		App._lg.log('DEBUG', 'deviceready', "Cache time differance : " + diff + " milliseconds.");
                 		if (diff > Config.cacheRefreshTime) {
                 			window.refreshCache = true;
                 			$.mobile.changePage('#settings');

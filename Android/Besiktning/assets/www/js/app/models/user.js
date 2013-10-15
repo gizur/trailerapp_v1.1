@@ -57,7 +57,7 @@ var User = Stapes.subclass({
             }
         }
 
-        var lg = new Logger(aLogConfig.level,'js/models/user', aLogConfig.type, aLogConfig.config);
+        var lg = new Logger(aLogConfig.level, aLogConfig.type, aLogConfig.config);
         this.extend({
             _lg : lg,
             _req : aReq,
@@ -72,7 +72,7 @@ var User = Stapes.subclass({
 
         var attrs = this._storage.getItem('user');
 
-        this._lg.log('DEBUG', 'stored attrs: ' + attrs);
+        this._lg.log('DEBUG', 'js/models/user', 'stored attrs: ' + attrs);
 
         if (attrs) {
 
@@ -95,7 +95,7 @@ var User = Stapes.subclass({
             }); 
         }
 
-        this._lg.log('DEBUG', 'effective attrs: ' + JSON.stringify(this.getAll()));
+        this._lg.log('DEBUG', 'js/models/user', 'effective attrs: ' + JSON.stringify(this.getAll()));
     },
 
     /**
@@ -158,7 +158,7 @@ var User = Stapes.subclass({
 
             } catch (err) {
 
-                that._lg.log('FATAL', JSON.stringify(err));
+                that._lg.log('FATAL', 'js/models/user', JSON.stringify(err));
                 
             } finally {
 
@@ -195,7 +195,7 @@ var User = Stapes.subclass({
 
         var successWrapper = function(data){
 
-            that._lg.log('TRACE', 'authenticate#successWrapper# enter' + data);                                
+            that._lg.log('TRACE', 'js/models/user', 'authenticate#successWrapper# enter' + data);                                
 
             /**
              * Set flag authenticated to true
@@ -208,14 +208,14 @@ var User = Stapes.subclass({
              * Saving user attr to cache
              */
 
-            that._storage.setItem('user', JSON.stringify(that.getAll()));  
+            that._storage.setItem('user', 'js/models/user', JSON.stringify(that.getAll()));  
 
             if (typeof data.contactinfo !== 'undefined') {
-                that._lg.log('DEBUG', 'authenticate#successWrapper#attributes saved to cache data.contactinfo : ' + data.contactinfo);                
+                that._lg.log('DEBUG', 'js/models/user', 'authenticate#successWrapper#attributes saved to cache data.contactinfo : ' + data.contactinfo);                
                 window.localStorage.setItem('contact', data.contactinfo);
             }          
 
-            that._lg.log('DEBUG', 'authenticate#successWrapper#attributes saved to cache: ' + JSON.stringify(that.getAll()));                
+            that._lg.log('DEBUG', 'js/models/user', 'authenticate#successWrapper#attributes saved to cache: ' + JSON.stringify(that.getAll()));                
 
             /**
              * Execute caller's callback
@@ -223,12 +223,12 @@ var User = Stapes.subclass({
 
             success(data);
 
-            that._lg.log('TRACE', 'authenticate#successWrapper# exit');
+            that._lg.log('TRACE', 'js/models/user', 'authenticate#successWrapper# exit');
         };
 
         var errorWrapper = function(jqxhr, status, er){
 
-            that._lg.log('TRACE', 'authenticate#errorWrapper# enter');                                
+            that._lg.log('TRACE', 'js/models/user', 'authenticate#errorWrapper# enter');                                
 
             /**
              * Set flag authenticated to true
@@ -243,7 +243,7 @@ var User = Stapes.subclass({
 
             that._storage.setItem('user', JSON.stringify(that.getAll()));            
 
-            that._lg.log('DEBUG', 'authenticate#errorWrapper#attributes saved to cache: ' + JSON.stringify(that.getAll()));                
+            that._lg.log('DEBUG', 'js/models/user', 'authenticate#errorWrapper#attributes saved to cache: ' + JSON.stringify(that.getAll()));                
 
             /**
              * execute caller's callback
@@ -251,7 +251,7 @@ var User = Stapes.subclass({
 
             error(jqxhr, status, er);
 
-            that._lg.log('TRACE', 'authenticate#errorWrapper# exit');
+            that._lg.log('TRACE', 'js/models/user', 'authenticate#errorWrapper# exit');
         };            
 
         /**
@@ -260,7 +260,7 @@ var User = Stapes.subclass({
 
         this._storage.setItem('user', JSON.stringify(that.getAll()));            
 
-        this._lg.log('DEBUG', 'authenticate#attributes saved to cache: ' + JSON.stringify(this.getAll()));
+        this._lg.log('DEBUG', 'js/models/user', 'authenticate#attributes saved to cache: ' + JSON.stringify(this.getAll()));
 
         /**
          * Send the request to authenticate
@@ -291,7 +291,7 @@ var User = Stapes.subclass({
 
         var successWrapper = function(data){
 
-            that._lg.log('TRACE', 'reset#successWrapper# enter');
+            that._lg.log('TRACE', 'js/models/user', 'reset#successWrapper# enter');
 
             that.set('password', '');
             that._storage.setItem('user', JSON.stringify(that.getAll())); 
@@ -300,21 +300,21 @@ var User = Stapes.subclass({
                 success(data);
             }
 
-            that._lg.log('TRACE', 'reset#successWrapper# exit');
+            that._lg.log('TRACE', 'js/models/user', 'reset#successWrapper# exit');
         };
 
         var errorWrapper = function(jqxhr, status, er){
 
-            that._lg.log('TRACE', 'reset#errorWrapper# enter');                                
+            that._lg.log('TRACE', 'js/models/user', 'reset#errorWrapper# enter');                                
 
             if (typeof success === 'function') {
                 error(jqxhr, status, er);
             }
 
-            that._lg.log('TRACE', 'reset#errorWrapper# exit');
+            that._lg.log('TRACE', 'js/models/user', 'reset#errorWrapper# exit');
         };                     
 
-        that._lg.log('TRACE', 'resetPassword send call');
+        that._lg.log('TRACE', 'js/models/user', 'resetPassword send call');
 
         /**
          * Send the request to reset
@@ -346,14 +346,14 @@ var User = Stapes.subclass({
 
         var that = this;
 
-        that._lg.log('DEBUG', 'got new password ' + newpassword);
+        that._lg.log('DEBUG', 'js/models/user', 'got new password ' + newpassword);
 
 
         var successWrapper = function( data ){
 
-            that._lg.log('TRACE', 'changepassword#successWrapper# enter');
+            that._lg.log('TRACE', 'js/models/user', 'changepassword#successWrapper# enter');
 
-            that._lg.log('DEBUG', 'changepassword#successWrapper# new password ' + newpassword);
+            that._lg.log('DEBUG', 'js/models/user', 'changepassword#successWrapper# new password ' + newpassword);
 
             that.set('password', newpassword);
             that._storage.setItem('user', JSON.stringify(that.getAll()));  
@@ -362,21 +362,21 @@ var User = Stapes.subclass({
                 success(data);
             }
 
-            that._lg.log('TRACE', 'changepassword#successWrapper# exit');
+            that._lg.log('TRACE', 'js/models/user', 'changepassword#successWrapper# exit');
         };
 
         var errorWrapper = function( jqxhr, status, er ){
 
-            that._lg.log('TRACE', 'changepassword#errorWrapper# enter');                                
+            that._lg.log('TRACE', 'js/models/user', 'changepassword#errorWrapper# enter');                                
 
             if (typeof success === 'function') {
                 error(jqxhr, status, er);
             }
 
-            that._lg.log('TRACE', 'changepassword#errorWrapper# exit');
+            that._lg.log('TRACE', 'js/models/user', 'changepassword#errorWrapper# exit');
         };                     
 
-        that._lg.log('TRACE', 'changepassword send call');
+        that._lg.log('TRACE', 'js/models/user', 'changepassword send call');
 
         /**
          * Send the request to reset

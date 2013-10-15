@@ -45,7 +45,7 @@ var DocCollection = Stapes.subclass({
         }
 
         this.extend({
-            _lg : new Logger(aLogConfig.level, 'js/models/doccollection', aLogConfig.type, aLogConfig.config)
+            _lg : new Logger(aLogConfig.level, aLogConfig.type, aLogConfig.config)
         });
 
     },
@@ -54,7 +54,7 @@ var DocCollection = Stapes.subclass({
 
         "use strict";        
 
-        this._lg.log('TRACE', 'download : start');
+        this._lg.log('TRACE', 'js/models/doccollection', 'download : start');
 
         var that = this;
         var dcc = this.getAllAsArray();
@@ -65,13 +65,13 @@ var DocCollection = Stapes.subclass({
 
             data = undefined;
 
-            that._lg.log('TRACE', 'download successCb : start');
-            that._lg.log('DEBUG', ' download successCb dcc.length : ' + dcc.length);
+            that._lg.log('TRACE', 'js/models/doccollection', 'download successCb : start');
+            that._lg.log('DEBUG', 'js/models/doccollection', ' download successCb dcc.length : ' + dcc.length);
 
             if (dc_success.length !== 0) {
-                that._lg.log('DEBUG', ' download successCb dc_success[dc_success.length-1].get(path) : ' + dc_success[dc_success.length-1].get('path'));
+                that._lg.log('DEBUG', 'js/models/doccollection', ' download successCb dc_success[dc_success.length-1].get(path) : ' + dc_success[dc_success.length-1].get('path'));
             } else {
-                that._lg.log('DEBUG', ' download successCb dc_success.length : ' + dc_success.length);
+                that._lg.log('DEBUG', 'js/models/doccollection', ' download successCb dc_success.length : ' + dc_success.length);
             }
 
             /**
@@ -88,7 +88,7 @@ var DocCollection = Stapes.subclass({
                 dc = dcc.splice(0,1);
                 if ( dc[0] instanceof Doc ) {
                     dc_success.push(dc[0]);
-                    that._lg.log('DEBUG', ' successCb downloading file id : ' + dc[0].get('id'));
+                    that._lg.log('DEBUG', 'js/models/doccollection', ' successCb downloading file id : ' + dc[0].get('id'));
                     successCb();
                     //dc[0].download(successCb, errorCb);
                     break;
@@ -101,7 +101,7 @@ var DocCollection = Stapes.subclass({
                 }
             }           
 
-            that._lg.log('TRACE', 'download successCb : end');
+            that._lg.log('TRACE', 'js/models/doccollection', 'download successCb : end');
 
         };
 
@@ -109,7 +109,7 @@ var DocCollection = Stapes.subclass({
 
             jqxhr = status = er = undefined;
 
-            that._lg.log('TRACE', 'download errorCb : start');
+            that._lg.log('TRACE', 'js/models/doccollection', 'download errorCb : start');
 
             dc_success.splice(0,1);
 
@@ -121,7 +121,7 @@ var DocCollection = Stapes.subclass({
                 dc = dcc.splice(0,1);
                 if ( dc[0] instanceof Doc ) {
                     dc_success.push(dc[0]);
-                    that._lg.log('DEBUG', ' errorCb downloading file id : ' + dc[0].get('id'));
+                    that._lg.log('DEBUG', 'js/models/doccollection', ' errorCb downloading file id : ' + dc[0].get('id'));
                     successCb();
                     //dc[0].download(successCb, errorCb);
                     break;
@@ -134,7 +134,7 @@ var DocCollection = Stapes.subclass({
                 }
             }
 
-            that._lg.log('TRACE', 'download errorCb : end');
+            that._lg.log('TRACE', 'js/models/doccollection', 'download errorCb : end');
 
         };
 
@@ -142,7 +142,7 @@ var DocCollection = Stapes.subclass({
          * Start downloading first document in the stack
          */
 
-        this._lg.log('DEBUG', 'download dcc.length ' + dcc.length);
+        this._lg.log('DEBUG', 'js/models/doccollection', 'download dcc.length ' + dcc.length);
 
         if (dcc.length === 0) {
             if (typeof completedCb !== 'undefined') {
@@ -154,7 +154,7 @@ var DocCollection = Stapes.subclass({
             dc = dcc.splice(0,1);
             if ( dc[0] instanceof Doc ) {
                 dc_success.push(dc[0]);
-                that._lg.log('DEBUG', ' download downloading file id : ' + dc[0].get('id'));
+                that._lg.log('DEBUG', 'js/models/doccollection', ' download downloading file id : ' + dc[0].get('id'));
                 successCb();
                 //dc[0].download(successCb, errorCb);
                 break;
@@ -167,9 +167,9 @@ var DocCollection = Stapes.subclass({
             }
         }
 
-        this._lg.log('DEBUG', 'download dc_success.length ' + dc_success.length);
+        this._lg.log('DEBUG', 'js/models/doccollection', 'download dc_success.length ' + dc_success.length);
 
-        this._lg.log('TRACE', 'download : end');
+        this._lg.log('TRACE', 'js/models/doccollection', 'download : end');
 
     }
 });

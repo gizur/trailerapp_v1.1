@@ -74,7 +74,7 @@ var ScreenSettingsView = Stapes.subclass({
                     $('#settings_password').val() === '' ||
                     $('#settings_client_id').val() === '') {
 
-                    $('#a_dialog_error_settingvalidation').click();
+                	that._wrapper.showAlert(that._language.translate("All fields (Email, Password and Gizur Saas ClientID) must be filled") + ".", that._language.translate("Error"));
                     return false;
 
                 }
@@ -83,7 +83,7 @@ var ScreenSettingsView = Stapes.subclass({
                 
                 /**
                  * Storage place for the list of cache items which
-                 * were cache and which werent.
+                 * were cache and which weren't.
                  */
 
                 var cacheSuccessList = [];
@@ -93,9 +93,9 @@ var ScreenSettingsView = Stapes.subclass({
                  * Log it
                  */
 
-                that._lg.log('TRACE', ' username: ' + $('#settings_username').val());
-                that._lg.log('TRACE', ' password: ' + $('#settings_password').val());
-                that._lg.log('TRACE', ' client_id: ' + $('#settings_client_id').val());
+                that._lg.log('TRACE', '#settings_save', ' username: ' + $('#settings_username').val());
+                that._lg.log('TRACE', '#settings_save', ' password: ' + $('#settings_password').val());
+                that._lg.log('TRACE', '#settings_save', ' client_id: ' + $('#settings_client_id').val());
 
                 /**
                  * Show popup right away
@@ -126,7 +126,7 @@ var ScreenSettingsView = Stapes.subclass({
                 window.localStorage.setItem('trace_id', temp_trace_id);
                 window.localStorage.setItem('language', temp_language);
 
-                that._lg.log('DEBUG', ' language preserved ' + JSON.stringify(temp_language));
+                that._lg.log('DEBUG', '#settings_save', ' language preserved ' + JSON.stringify(temp_language));
  
                 /**
                  * Create event handler for cache complete
@@ -135,7 +135,8 @@ var ScreenSettingsView = Stapes.subclass({
                 that._usr.on('cache complete', function(status){
                     if (status.success) {
                         cacheSuccessList.push(status.name);
-                        $('#dialog_success_login div[data-role=content]').children().eq(2).html(that._language.translate('Completed') + ' ' + cacheSuccessList.length  + ' ' + that._language.translate('of') + ' 7');                                          
+                        $('#dialog_success_login div[data-role=content]').children().eq(2).html(that._language.translate('Completed') + ' ' + cacheSuccessList.length  + ' ' + that._language.translate('of') + ' 7');
+                        $('#dialog_success_login').page();
                     } else {
                         cacheErrorList.push(status.name);
                     }
@@ -147,12 +148,13 @@ var ScreenSettingsView = Stapes.subclass({
                     if ((cacheSuccessList.length + cacheErrorList.length) === 7) {
 
                         if (cacheErrorList.length === 0) { 
-                            $('#a_dialog_success_cache').click();
-
+                        	
+                        	$('#a_dialog_success_cache').click();
                             that._wrapper.clearNavigatorHistory();
 
                         } else {
-                            that._usr.setAuthenticated(false);
+                        	
+                        	that._usr.setAuthenticated(false);
                             $('#a_dialog_error_cache').click();
 
                             that._wrapper.clearNavigatorHistory();
@@ -166,14 +168,14 @@ var ScreenSettingsView = Stapes.subclass({
 
                     data = undefined;
 
-                    that._lg.log('TRACE', ' successfully authenticated');
+                    that._lg.log('TRACE', '#settings_save', ' successfully authenticated');
 
                     var tt = new TroubleTicket(that._usr, Config.log);
                     var dmg = new Damage(that._usr, Config.log);
                     var ast = new Asset(that._usr, Config.log);
                     var ac = new AssetCollection(that._usr, Config.log);
 
-                    that._lg.log('TRACE', ' starting to cache');
+                    that._lg.log('TRACE', '#settings_save', ' starting to cache');
 
                     var successCb = function (data, name) {
                         that._usr.emit("cache complete", {success: true, name: name});
@@ -195,7 +197,7 @@ var ScreenSettingsView = Stapes.subclass({
                     dmg.getEnumDamagePosition(successCb, errorCb);
                     dmg.getEnumDriverCausedDamage(successCb, errorCb);
 
-                    that._lg.log('TRACE', ' type of ast ' + (typeof ast));
+                    that._lg.log('TRACE', '#settings_save', ' type of ast ' + (typeof ast));
 
                     ast.getEnumTrailerType(successCb, errorCb);
                     ac.getAssets(successCb, errorCb);
@@ -211,7 +213,7 @@ var ScreenSettingsView = Stapes.subclass({
 
                     status = er = undefined;
 
-                    that._lg.log('TRACE', ' error start');
+                    that._lg.log('TRACE', '#settings_save', ' error start');
 
                     try {
 
@@ -228,11 +230,11 @@ var ScreenSettingsView = Stapes.subclass({
 
                     } catch (err) {
 
-                        that._lg.log('FATAL', JSON.stringify(err));
+                        that._lg.log('FATAL', '#settings_save', JSON.stringify(err));
 
                     }
 
-                    that._lg.log('TRACE', ' error end');
+                    that._lg.log('TRACE', '#settings_save', ' error end');
                 };
 
                 /**
@@ -263,7 +265,7 @@ var ScreenSettingsView = Stapes.subclass({
 
             } catch (err) {
 
-                that._lg.log('FATAL', JSON.stringify(err));
+                that._lg.log('FATAL', '#settings_save', JSON.stringify(err));
 
             }            
         });
@@ -276,7 +278,7 @@ var ScreenSettingsView = Stapes.subclass({
 
             } catch (err) {
 
-                that._lg.log('FATAL', JSON.stringify(err));
+                that._lg.log('FATAL', '#forgot_password', JSON.stringify(err));
 
             }            
         });
@@ -291,7 +293,7 @@ var ScreenSettingsView = Stapes.subclass({
 
                 var success = function( data ){
 
-                    that._lg.log('TRACE', ' password reset successfully ' + JSON.stringify(data));
+                    that._lg.log('TRACE', '#dialog_resetpassword_confirm #resetpassword', ' password reset successfully ' + JSON.stringify(data));
                     
                     that._wrapper.clearNavigatorHistory();
 
@@ -303,7 +305,7 @@ var ScreenSettingsView = Stapes.subclass({
 
                     jqxhr = status = er = undefined;
 
-                    that._lg.log('TRACE', ' error reset password ' + jqxhr.responseText);
+                    that._lg.log('TRACE', '#dialog_resetpassword_confirm #resetpassword', ' error reset password ' + jqxhr.responseText);
 
                     that._wrapper.clearNavigatorHistory();
 
@@ -315,7 +317,7 @@ var ScreenSettingsView = Stapes.subclass({
 
             } catch (err) {
 
-                that._lg.log('FATAL', JSON.stringify(err));
+                that._lg.log('FATAL', '#dialog_resetpassword_confirm #resetpassword', JSON.stringify(err));
 
             }            
         });        
@@ -334,7 +336,7 @@ var ScreenSettingsView = Stapes.subclass({
 
             } catch (err) {
 
-                that._lg.log('FATAL', JSON.stringify(err));
+                that._lg.log('FATAL', '#change_password', JSON.stringify(err));
 
             }
 
@@ -362,7 +364,7 @@ var ScreenSettingsView = Stapes.subclass({
 
                 var success = function( data ){
 
-                    that._lg.log('TRACE', ' password changed successfully ' + JSON.stringify(data));
+                    that._lg.log('TRACE', '#dialog_changepassword #change', ' password changed successfully ' + JSON.stringify(data));
 
                     that._wrapper.clearNavigatorHistory();
 
@@ -375,7 +377,7 @@ var ScreenSettingsView = Stapes.subclass({
 
                     jqxhr = status = er = undefined;
 
-                    that._lg.log('TRACE', ' error changing password ' + jqxhr.responseText);
+                    that._lg.log('TRACE', '#dialog_changepassword #change', ' error changing password ' + jqxhr.responseText);
 
                     that._wrapper.clearNavigatorHistory();
 
@@ -388,7 +390,7 @@ var ScreenSettingsView = Stapes.subclass({
 
             } catch (err) {
 
-                that._lg.log('FATAL', JSON.stringify(err));
+                that._lg.log('FATAL', '#dialog_changepassword #change', JSON.stringify(err));
 
             }    
 
@@ -396,7 +398,7 @@ var ScreenSettingsView = Stapes.subclass({
   
         $('#settings_username').unbind('keyup').bind('keyup', function(){
 
-            that._lg.log('DEBUG', "$('#settings #settings_username').bind('change')");
+            that._lg.log('DEBUG', '#settings_username', "$('#settings #settings_username').bind('change')");
 
             if ($(this).val() === '') {
                 that.disableForgotPasswordButton();

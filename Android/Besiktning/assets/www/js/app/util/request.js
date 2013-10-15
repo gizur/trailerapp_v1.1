@@ -54,7 +54,7 @@ var Request = Stapes.subclass({
         }
 
         this.extend({
-            _lg: new Logger(aLogConfig.level, 'js/util/request', aLogConfig.type, aLogConfig.config),
+            _lg: new Logger(aLogConfig.level, aLogConfig.type, aLogConfig.config),
             _storage: window.localStorage,
             _base_url: aBaseUrl,
             _client_id: aClientId
@@ -90,7 +90,7 @@ var Request = Stapes.subclass({
         "use strict";
 
         this._client_id = aClientId;
-        this._lg.log('DEBUG', ' setClientId aClientId ' + aClientId);
+        this._lg.log('DEBUG', 'js/util/request', ' setClientId aClientId ' + aClientId);
 
         this._storage.setItem('request', JSON.stringify({
             "base_url": this._base_url,
@@ -99,7 +99,7 @@ var Request = Stapes.subclass({
 
         var attrs = JSON.parse(this._storage.getItem('request'));
 
-        this._lg.log('DEBUG', ' setClientId attrs.client_id ' + attrs.client_id);
+        this._lg.log('DEBUG', 'js/util/request', ' setClientId attrs.client_id ' + attrs.client_id);
 
     },
     /**
@@ -140,7 +140,7 @@ var Request = Stapes.subclass({
 
             var successCbWrapper = function(data) {
 
-                that._lg.log('DEBUG', 'Request#send#successCbWrapper : ' + JSON.stringify(data));
+                that._lg.log('DEBUG', 'js/util/request', 'Request#send#successCbWrapper : ' + JSON.stringify(data));
 
                 $.mobile.loading('hide');
 
@@ -153,8 +153,8 @@ var Request = Stapes.subclass({
 
                 try {
 
-                    that._lg.log('DEBUG', 'Request#send#errorCbWrapper : ' + jqxhr.status + ' status ' + status + ' er ' + er);
-                    that._lg.log('DEBUG', 'Request#send#errorCbWrapper : jqxhr.responseText ' + jqxhr.responseText);
+                    that._lg.log('DEBUG', 'js/util/request', 'Request#send#errorCbWrapper : ' + jqxhr.status + ' status ' + status + ' er ' + er);
+                    that._lg.log('DEBUG', 'js/util/request', 'Request#send#errorCbWrapper : jqxhr.responseText ' + jqxhr.responseText);
 
                     /**
                      * Hide the loading GIF animation
@@ -194,7 +194,7 @@ var Request = Stapes.subclass({
 
                 } catch (err) {
 
-                    that._lg.log('FATAL', JSON.stringify(err));
+                    that._lg.log('FATAL', 'js/util/request', JSON.stringify(err));
 
                 }
 
@@ -202,17 +202,17 @@ var Request = Stapes.subclass({
 
             $.mobile.loading('show', {theme: "b", text: "Please wait...", textonly: false});
 
-            this._lg.log('DEBUG', 'Request#send : url ' + this._base_url + url);
-            this._lg.log('DEBUG', 'Request#send : body ' + JSON.stringify(body));
+            this._lg.log('DEBUG', 'js/util/request', 'Request#send : url ' + this._base_url + url);
+            this._lg.log('DEBUG', 'js/util/request', 'Request#send : body ' + JSON.stringify(body));
 
-            this._lg.log('DEBUG', 'Request#send : headers ' + JSON.stringify(headers));
-            this._lg.log('DEBUG', 'Request#send : client_id ' + this._client_id);
+            this._lg.log('DEBUG', 'js/util/request', 'Request#send : headers ' + JSON.stringify(headers));
+            this._lg.log('DEBUG', 'js/util/request', 'Request#send : client_id ' + this._client_id);
 
             if (files === undefined ||
                     !(files instanceof Array) ||
                     files.length === 0) {
 
-                this._lg.log('TRACE', 'Request#send : no files ');
+                this._lg.log('TRACE', 'js/util/request', 'Request#send : no files ');
 
                 $.ajax({
                     type: method,
@@ -233,7 +233,7 @@ var Request = Stapes.subclass({
                 });
             } else {
 
-                this._lg.log('TRACE', 'Request#send : with files ');
+                this._lg.log('TRACE', 'js/util/request', 'Request#send : with files ');
 
                 var ft = new FileTransfer();
                 var options = new FileUploadOptions();
@@ -260,7 +260,7 @@ var Request = Stapes.subclass({
                 };
 
                 var errorCbWrapperF = function(r) {
-                    that._lg.log('DEBUG', 'Request#send errorCbWrapperF ' + JSON.stringify(r));
+                    that._lg.log('DEBUG', 'js/util/request', 'Request#send errorCbWrapperF ' + JSON.stringify(r));
                     errorCbWrapper({'responseText': r.body, 'status': r.code}, r.http_status, r.code);
                 };
 
@@ -279,7 +279,7 @@ var Request = Stapes.subclass({
             }
         } catch (err) {
 
-            this._lg.log('FATAL', JSON.stringify(err));
+            this._lg.log('FATAL', 'js/util/request', JSON.stringify(err));
 
         }
     }

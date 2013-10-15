@@ -27,39 +27,39 @@ var Wrapper = (function() {
          *  Clear Navigator History
          */
         clearNavigatorHistory: function () {
-            this._lg.log('TRACE', 'Starting clearNavigatorHistory');
+            this._lg.log('TRACE', 'WRAPPER$clearNavigatorHistory', 'Starting clearNavigatorHistory');
             if (typeof navigator.app !== 'undefined') {
                 navigator.app.clearHistory();
-                this._lg.log('TRACE', 'History Cleared');
+                this._lg.log('TRACE', 'WRAPPER$clearNavigatorHistory', 'History Cleared');
             }
-            this._lg.log('TRACE', 'Starting clearNavigatorHistory');
+            this._lg.log('TRACE', 'WRAPPER$clearNavigatorHistory', 'ENDING clearNavigatorHistory');
         },
         /**
          *  Clear Navigator Cache
          */
         clearNavigatorCache: function () {
-            this._lg.log('TRACE', 'Starting clearNavigatorCache');
+            this._lg.log('TRACE', 'clearNavigatorCache', 'Starting clearNavigatorCache');
             if (typeof navigator.app !== 'undefined') {
                 navigator.app.clearCache();
-                this._lg.log('TRACE', 'Cache Cleared');
+                this._lg.log('TRACE', 'clearNavigatorCache', 'Cache Cleared');
             }
-            this._lg.log('TRACE', 'Leaving clearNavigatorCache');
+            this._lg.log('TRACE', 'clearNavigatorCache', 'Leaving clearNavigatorCache');
         },
         /**
          * getPicture
          */
         getPicture: function (success, fail, options) {
-            this._lg.log('TRACE', 'Starting getPicture');
+            this._lg.log('TRACE', 'getPicture', 'Starting getPicture');
             if (typeof success === 'function' && typeof fail === 'function') {
                 navigator.camera.getPicture(success, fail, options);
             }
-            this._lg.log('TRACE', 'Leaving getPicture');
+            this._lg.log('TRACE', 'getPicture', 'Leaving getPicture');
         },
         /**
          * Globalization
          */
         isGlobalization: function () {
-        	this._lg.log('TRACE', 'In isGlobalization');
+        	this._lg.log('TRACE', 'isGlobalization', 'In isGlobalization');
         	if (typeof navigator.globalization !== 'undefined')
         		return true;
         	else
@@ -69,7 +69,7 @@ var Wrapper = (function() {
          * getPreferredLanguage
          */
         getPreferredLanguage: function (successCB) {
-        	this._lg.log('TRACE', 'In getPreferredLanguage');
+        	this._lg.log('TRACE', 'getPreferredLanguage', 'In getPreferredLanguage');
         	if (typeof successCB === 'function') {
         		navigator.globalization.getPreferredLanguage(successCB);
         	}

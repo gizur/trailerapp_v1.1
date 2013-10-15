@@ -47,7 +47,7 @@ var Language = Stapes.subclass({
         }
 
         this.extend({
-            _lg : new Logger('DEBUG', 'js/util/language', aLogConfig.type, aLogConfig.config)
+            _lg : new Logger('DEBUG', aLogConfig.type, aLogConfig.config)
         });
 
         /**
@@ -154,7 +154,7 @@ var Language = Stapes.subclass({
 
         "use strict";
 
-        this._lg.log('DEBUG', ' setLanguage language ' + language);
+        this._lg.log('DEBUG', 'js/util/language', ' setLanguage language ' + language);
         window.localStorage.setItem('language', language);
     },
 
@@ -170,11 +170,11 @@ var Language = Stapes.subclass({
         "use strict";
 
         if (typeof language === 'undefined') {
-            this._lg.log('DEBUG', ' hasLanguage (window.localStorage.getItem(language)) ' + (window.localStorage.getItem('language')));                        
-            this._lg.log('DEBUG', ' hasLanguage (this.get(window.localStorage.getItem(language)) != null) ' + (this.get(window.localStorage.getItem('language')) !== null));            
+            this._lg.log('DEBUG', 'js/util/language', ' hasLanguage (window.localStorage.getItem(language)) ' + (window.localStorage.getItem('language')));                        
+            this._lg.log('DEBUG', 'js/util/language', ' hasLanguage (this.get(window.localStorage.getItem(language)) != null) ' + (this.get(window.localStorage.getItem('language')) !== null));            
             return (this.get(window.localStorage.getItem('language')) !== null);
         } else {
-            this._lg.log('DEBUG', ' hasLanguage (this.get(language) != null) ' + (this.get(language) !== null) );
+            this._lg.log('DEBUG', 'js/util/language', ' hasLanguage (this.get(language) != null) ' + (this.get(language) !== null) );
             return (this.get(language) !== null);
         }
     },
@@ -192,7 +192,7 @@ var Language = Stapes.subclass({
 
         var language = window.localStorage.getItem('language');
 
-        this._lg.log('DEBUG', language + ' translate ' + word + ' exists? ' + typeof this.get(language));
+        this._lg.log('DEBUG', 'js/util/language', language + ' translate ' + word + ' exists? ' + typeof this.get(language));
 
         if (this.get(language) === null || typeof this.get(language)[word] === 'undefined') {
             return word;

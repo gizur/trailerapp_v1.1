@@ -56,7 +56,7 @@ var Doc = Stapes.subclass({
 
         this.extend({
             _usr :  aUsr,
-            _lg : new Logger(aLogConfig.level, 'js/models/doc', aLogConfig.type, aLogConfig.config)
+            _lg : new Logger(aLogConfig.level, aLogConfig.type, aLogConfig.config)
         });
 
         this.set({
@@ -82,14 +82,14 @@ var Doc = Stapes.subclass({
         var thatErrorCb = errorCb;
         var isPath = 1;
 
-        that._lg.log('DEBUG', ' doc getAll ' + JSON.stringify(this.getAll()));
+        that._lg.log('DEBUG', 'js/models/doc', ' doc getAll ' + JSON.stringify(this.getAll()));
 
         var successCbWrapper = function(data){
-            that._lg.log('TRACE', ' download successCbWrapper start');
+            that._lg.log('TRACE', 'js/models/doc', ' download successCbWrapper start');
             
             window.localStorage.setItem(data.result.filename, data.result.filecontent); 
-            that._lg.log('TRACE', 'Finished downloading image');
-            that._lg.log('DEBUG', ' full path of file : ' + data.result.filename);
+            that._lg.log('TRACE', 'js/models/doc', 'Finished downloading image');
+            that._lg.log('DEBUG', 'js/models/doc', ' full path of file : ' + data.result.filename);
             that.set('path', data.result.filename);
 
             if (typeof thatSuccessCb === 'function') {

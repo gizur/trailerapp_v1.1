@@ -55,12 +55,12 @@ var Asset = Stapes.subclass({
         }
 
         this.extend({
-            _lg : new Logger(aLogConfig.level, 'js/models/asset', aLogConfig.type, aLogConfig.config),
+            _lg : new Logger(aLogConfig.level, aLogConfig.type, aLogConfig.config),
             _storage : window.localStorage,
             _usr : aUsr
         });
 
-        this._lg.log('DEBUG', 'typeof aUsr = ' + (typeof aUsr));
+        this._lg.log('DEBUG', 'js/models/asset', 'typeof aUsr = ' + (typeof aUsr));
 
         this.set({
             'id' : '',
@@ -88,7 +88,7 @@ var Asset = Stapes.subclass({
 
         "use strict";
 
-        this._lg.log('DEBUG', 'getEnumTrailerType start');  
+        this._lg.log('DEBUG', 'js/models/asset', 'getEnumTrailerType start');  
 
         var that = this;
 
@@ -107,7 +107,7 @@ var Asset = Stapes.subclass({
             }
         };
 
-        this._lg.log('DEBUG', 'typeof usr = ' + (typeof this._usr));
+        this._lg.log('DEBUG', 'js/models/asset', 'typeof usr = ' + (typeof this._usr));
 
         this._usr.send(
             'GET', 
@@ -117,7 +117,7 @@ var Asset = Stapes.subclass({
             errorCbWrapper
         );
         
-        this._lg.log('DEBUG', 'getEnumTrailerType end'); 
+        this._lg.log('DEBUG', 'js/models/asset', 'getEnumTrailerType end'); 
     }
 });
 

@@ -38,7 +38,7 @@ var Logger = (function() {
          * @param {string} aTypeConfig any configuration associated with the type mentioned above
          */
 
-        constructor : function(aLevel, aPrefix, aType, aTypeConfig) {
+        constructor : function(aLevel, aType, aTypeConfig) {
 
             /**
              * Set pseudo private vars
@@ -52,7 +52,6 @@ var Logger = (function() {
                 _type : (typeof aType === 'undefined')?'console':aType,
                 _type_config : aTypeConfig,
                 _trace_id : '',
-                _prefix : aPrefix,
                 _enum_level : {
                     "DEBUG": 1,
                     "TRACE": 2,
@@ -125,16 +124,16 @@ var Logger = (function() {
          * @param {string} message  the message to be logged 
          */
 
-        log : function(loglevel, message) {
+        log : function(loglevel, prefix, message) {
             if (this._enum_level[loglevel] >= this._level) {
 
                 switch(this._type) {
                 case 'console':
-                    this._logConsole(loglevel, message);
+                    this._logConsole(loglevel, prefix, message);
                     break;
 
                 case 'loggly':
-                    this._logLoggly(loglevel, message);
+                    this._logLoggly(loglevel, prefix, message);
                     break;
 
                 default:
@@ -150,7 +149,7 @@ var Logger = (function() {
          * @param {string} message  the message to be logged 
          */
 
-        _logConsole : function(loglevel, message) {
+        _logConsole : function(loglevel, prefix, message) {
             console.log(loglevel + ' : ' + (new Date()).toString()  + ' : ' + this._trace_id);  
             
             if (typeof (new Error()).stack !== 'undefined') {              
@@ -160,7 +159,7 @@ var Logger = (function() {
             if (typeof message === 'object') {
                 message = JSON.stringify(message);                 
             }
-            console.log(this._prefix + ' : ' + message);
+            console.log(prefix + ' : ' + message);
         },
 
         /**
@@ -170,7 +169,7 @@ var Logger = (function() {
          * @param {string} message  the message to be logged 
          */
 
-        _logLoggly : function(loglevel, message) {
+        _logLoggly : function(loglevel, prefix, message) {
             console.log(loglevel + ' : ' + (new Date()).toString()  + ' : ' + this._trace_id); 
 
             if (typeof (new Error()).stack !== 'undefined') {           
@@ -182,9 +181,9 @@ var Logger = (function() {
              */
 
             if (typeof message === 'object') {
-                console.log(this._prefix + ' : ' + JSON.stringify(message));
+                console.log(prefix + ' : ' + JSON.stringify(message));
             } else {
-                console.log(this._prefix + ' : ' + message);
+                console.log(prefix + ' : ' + message);
             }
 
             /**
@@ -201,7 +200,7 @@ var Logger = (function() {
                 loglevel : loglevel,
                 timestamp : (new Date()).toString(),
                 trace : this._trace_id,
-                prefix : this._prefix,
+                prefix : prefix,
                 callee : error_info,
                 message : message
             };

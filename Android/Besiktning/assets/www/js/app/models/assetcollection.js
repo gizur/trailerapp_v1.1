@@ -58,17 +58,17 @@ var AssetCollection = Stapes.subclass({
         this.extend({
             _usr : aUsr,
             _storage : window.localStorage,
-            _lg : new Logger(aLogConfig.level, 'js/models/assetcollection', aLogConfig.type, aLogConfig.config)
+            _lg : new Logger(aLogConfig.level, aLogConfig.type, aLogConfig.config)
         });
 
-        this._lg.log('TRACE', '#constructor start');
+        this._lg.log('TRACE', 'js/models/assetcollection', '#constructor start');
 
         var assets = this._storage.getItem('assets');
         var that = this;
 
         if (assets && assets !== null) {
 
-            this._lg.log('DEBUG', 'assets from cache ' + assets);
+            this._lg.log('DEBUG', 'js/models/assetcollection', 'assets from cache ' + assets);
 
             assets = JSON.parse(assets);
 
@@ -78,7 +78,7 @@ var AssetCollection = Stapes.subclass({
                 that.push(ast);
             });                
         }
-        this._lg.log('TRACE', '#constructor end');
+        this._lg.log('TRACE', 'js/models/assetcollection', '#constructor end');
     },
 
     /**
@@ -94,7 +94,7 @@ var AssetCollection = Stapes.subclass({
 
         "use strict";
 
-        this._lg.log('TRACE', '#getAssets');
+        this._lg.log('TRACE', 'js/models/assetcollection', '#getAssets');
 
         var that = this;
 

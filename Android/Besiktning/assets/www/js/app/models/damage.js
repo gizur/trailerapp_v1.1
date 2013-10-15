@@ -55,7 +55,7 @@ var Damage = Stapes.subclass({
         }  
 
         this.extend({
-            _lg: new Logger(aLogConfig.level,'js/models/damage', aLogConfig.type, aLogConfig.config),
+            _lg: new Logger(aLogConfig.level, aLogConfig.type, aLogConfig.config),
             _usr: aUsr,
             _storage: window.localStorage
         });

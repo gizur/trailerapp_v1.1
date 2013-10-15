@@ -74,13 +74,13 @@ var ScreenTwoView = Stapes.subclass({
          * Initialize Page
          */
 
-        this._lg.log('DEBUG', " tt details id " + window.localStorage.getItem('details_tt_id'));     
+        this._lg.log('DEBUG', '#two$render', " tt details id " + window.localStorage.getItem('details_tt_id'));     
 
         var tt = JSON.parse(window.localStorage.getItem(
             window.localStorage.getItem('details_tt_id') + '_tt'
         ));
 
-        this._lg.log('DEBUG', " tt details " + JSON.stringify(tt));
+        this._lg.log('DEBUG', '#two$render', " tt details " + JSON.stringify(tt));
 
         $('#two #damagetype').val(tt.damagetype);
         $('#two #damageposition').val(tt.damageposition);
@@ -97,13 +97,13 @@ var ScreenTwoView = Stapes.subclass({
         if(tt.files !== undefined)
         if (tt.files.length !== 0) {
         	$('.bxslider-two').empty();
-            this._lg.log('DEBUG', " tt.docs.length " + tt.files.length);
+            this._lg.log('DEBUG', '#two$render', " tt.docs.length " + tt.files.length);
 
             for (var index in tt.files) {
 
                 if (tt.files.hasOwnProperty(index)){
                 	
-                	this._lg.log('DEBUG', ' path to image file ' + tt.files[index].path);
+                	this._lg.log('DEBUG', '#two$render', ' path to image file ' + tt.files[index].path);
                 	
                 	var img_id = tt.files[index].id + index;
                 	window.localStorage.setItem(img_id, tt.files[index].path);

@@ -16,7 +16,7 @@
     <script src="js/lib/stapes.min.js"></script>
 
     <!--config-->
-    <script src="js/app/config.js"></script>  
+    <script src="js/app/config.js"></script>
 
     <!--util-->
     <script src="js/app/util/request.js"></script>     
@@ -35,6 +35,8 @@
     <script src="js/app/models/troubleticketcollection.js"></script>
     <script src="js/app/models/user.js"></script>
 
+	<script src="js/app/app.js"></script>
+    
     <!--view-->
     <script src="js/app/views/one.js"></script>
     <script src="js/app/views/two.js"></script>
@@ -478,19 +480,6 @@
     </div><!-- /content -->
 </div><!-- /page dialog_error_invalidcredentials -->
 
-<!-- Start of page: #dialog_validation_picture -->
-<a id="a_dialog_validation_picture" href="#dialog_validation_picture" data-rel="dialog" style="display: none;"></a> 
-<div data-role="page" id="dialog_validation_picture" data-transition="flip">
-    <div data-role="header" data-theme="e">
-        <h1>Error</h1>
-    </div><!-- /header -->
-
-    <div data-role="content" data-theme="d">
-        <p>You cannot add more than 3 pictures.</p>  
-        <p><a data-rel="back" data-role="button" data-inline="true" data-icon="back">Ok</a></p>
-    </div><!-- /content -->
-</div><!-- /page dialog_validation_picture -->
-
 <!-- Start of page: #dialog_damage_sending -->
 <a id="a_dialog_damage_sending" href="#dialog_damage_sending" data-rel="dialog" style="display: none;"></a> 
 <div data-role="page" id="dialog_damage_sending" data-transition="flip">
@@ -644,7 +633,7 @@
 
     <div data-role="content" data-theme="d">
         <p>Authenticated successfully and Cache built successfully.</p>   
-        <p><a href="javascript:changepage('one');" data-role="button" data-inline="true" data-icon="back">Ok</a></p>
+        <p><a href="#one" data-role="button" data-inline="true" data-icon="back">Ok</a></p>
     </div><!-- /content -->
 </div><!-- /page dialog_success_cache -->
 

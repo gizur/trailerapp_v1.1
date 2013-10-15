@@ -91,7 +91,7 @@ var ScreenOneView = Stapes.subclass({
          */
 
         $('#one select#trailertype').unbind('change').change(function() {
-            that._lg.log('TRACE', 'trailertype change event start');
+            that._lg.log('TRACE', '#one select#trailertype', 'trailertype change event start');
 
             /**
              * Update the existing damage slider to default state
@@ -120,9 +120,9 @@ var ScreenOneView = Stapes.subclass({
                 return item.get('trailertype') === $('#one select#trailertype option:selected').html();
             });
 
-            that._lg.log('DEBUG', 'assets filtered list : ' + JSON.stringify(assets));
+            that._lg.log('DEBUG', '#one select#trailertype', 'assets filtered list : ' + JSON.stringify(assets));
 
-            that._lg.log('TRACE', 'assets filtered END');
+            that._lg.log('TRACE', '#one select#trailertype', 'assets filtered END');
 
             /**
              * Load the filtered trailer ids into the select menu
@@ -143,7 +143,7 @@ var ScreenOneView = Stapes.subclass({
             $('#one select#trailerid').selectmenu('refresh');
             $('#one select#trailertype').selectmenu('refresh');
 
-            that._lg.log('trailertype change event end');
+            that._lg.log('TRACE', '#one select#trailertype', 'trailertype change event end');
         });
 
         /**
@@ -152,7 +152,7 @@ var ScreenOneView = Stapes.subclass({
          */
 
         $('#one select#trailerid').unbind('change').change(function() {
-            that._lg.log('TRACE', 'trailerid change event start');
+            that._lg.log('TRACE', '#one select#trailerid', 'trailerid change event start');
 
             /**
              * Update the existing damage slider to default state
@@ -180,14 +180,14 @@ var ScreenOneView = Stapes.subclass({
 
                 that.enable();
 
-                that._lg.log('TRACE', ' fetch tt success : start ');
+                that._lg.log('TRACE', '#one select#trailerid', ' fetch tt success : start ');
                 var tts = ttc.getAll();
 
                 //A memory issue is encountered when the following 
                 //line is uncommented
                 //that._lg.log('DEBUG', ' tts ' + JSON.stringify(tts));
-                that._lg.log('DEBUG', ' typeof tts ' + (typeof tts));
-                that._lg.log('DEBUG', ' tts.length ' + tts.length);
+                that._lg.log('DEBUG', '#one select#trailerid', ' typeof tts ' + (typeof tts));
+                that._lg.log('DEBUG', '#one select#trailerid', ' tts.length ' + tts.length);
                 if (ttc.size() === 0) {
                     $('#one #troubleticketlist').html("<li><center><div style='height:60px;'>" + that._language.translate('No Damages Reported') + "</div></center></li>");
                 } else {
@@ -200,13 +200,13 @@ var ScreenOneView = Stapes.subclass({
 
                     if (tts.hasOwnProperty(index)) {
 
-                        that._lg.log('DEBUG', ' tts[index].get(id) ' + tts[index].get('id'));
+                        that._lg.log('DEBUG', '#one select#trailerid', ' tts[index].get(id) ' + tts[index].get('id'));
 
                         var clipped_tt = tts[index].getAll();
 
-                        that._lg.log('DEBUG', ' tts[index].asset instanceof Asset ' + (tts[index].get('asset') instanceof Asset));
-                        that._lg.log('DEBUG', "tts[index].get('damageposition') " + tts[index].get('damageposition'));
-                        that._lg.log('DEBUG', "tts[index].get('damagetype') " + tts[index].get('damagetype'));
+                        that._lg.log('DEBUG', '#one select#trailerid', ' tts[index].asset instanceof Asset ' + (tts[index].get('asset') instanceof Asset));
+                        that._lg.log('DEBUG', '#one select#trailerid', "tts[index].get('damageposition') " + tts[index].get('damageposition'));
+                        that._lg.log('DEBUG', '#one select#trailerid', "tts[index].get('damagetype') " + tts[index].get('damagetype'));
 
                         clipped_tt.trailerid = tts[index].get('asset').get('assetname');
 
@@ -229,10 +229,10 @@ var ScreenOneView = Stapes.subclass({
 
                 that._tt_list.html = tt_list_html;
                 that._tt_list.position = 0;
-                window.localStorage.setItem('tt_list', JSON.stringify(that._tt_list));
+                window.localStorage.setItem('tt_list', '#one select#trailerid', JSON.stringify(that._tt_list));
 
                 window.slider_one.reloadSlider();
-                that._lg.log('TRACE', ' fetch tt success : end ');
+                that._lg.log('TRACE', '#one select#trailerid', ' fetch tt success : end ');
             };
 
             var error = function(jqxhr, status, er) {
@@ -258,7 +258,7 @@ var ScreenOneView = Stapes.subclass({
 
             ttc.getDamagedTroubleTicketsByAsset($('#one select#trailerid option:selected').text(), success, error);
 
-            that._lg.log('trailerid change event end');
+            that._lg.log('TRACE', '#one select#trailerid', 'trailerid change event end');
         });
 
         /**
@@ -273,7 +273,7 @@ var ScreenOneView = Stapes.subclass({
                 return false;
             }
 
-            that._lg.log('TRACE', 'reportsurvey click START');
+            that._lg.log('TRACE', '#one #reportsurvey', 'reportsurvey click START');
 
             window.changeInPage = false;
 
@@ -353,7 +353,7 @@ var ScreenOneView = Stapes.subclass({
 		
 		        tt.save(success, error);
 		
-		        that._lg.log('TRACE', 'reportsurvey click END');
+		        that._lg.log('TRACE', '#one #reportsurvey', 'reportsurvey click END');
 		    }
         });
 
@@ -369,7 +369,7 @@ var ScreenOneView = Stapes.subclass({
                 return false;
             }
 
-            that._lg.log('TRACE', 'reportdamage click START');
+            that._lg.log('TRACE', '#one #reportsurvey', 'reportdamage click START');
 
             window.changeInPage = false;
             
@@ -392,12 +392,12 @@ var ScreenOneView = Stapes.subclass({
 
                 window.localStorage.setItem('current_tt', JSON.stringify(that._current_tt));
 
-                that._lg.log('TRACE', 'reportdamage current tt saved : ' + JSON.stringify(that._current_tt));
+                that._lg.log('TRACE', '#one #reportsurvey', 'reportdamage current tt saved : ' + JSON.stringify(that._current_tt));
 
             	$.mobile.changePage('#four');
             }
 
-            that._lg.log('TRACE', 'reportdamage click END');
+            that._lg.log('TRACE', '#one #reportsurvey', 'reportdamage click END');
         });
 
         /**
@@ -419,8 +419,8 @@ var ScreenOneView = Stapes.subclass({
             
             var tt = new TroubleTicket(that._usr, Config.log);
 
-            that._lg.log('TRACE', '.bxslider-one li a click start');
-            that._lg.log('DEBUG', " $(this).attr('id') " + $(this).attr('id'));
+            that._lg.log('TRACE', '.bxslider-one li a', '.bxslider-one li a click start');
+            that._lg.log('DEBUG', '.bxslider-one li a', " $(this).attr('id') " + $(this).attr('id'));
 
             // Save the position
 
@@ -446,7 +446,7 @@ var ScreenOneView = Stapes.subclass({
             that._current_tt.sealed = escapeHtmlEntities($('#one input[name=sealed]:checked').val());
 
             window.localStorage.setItem('current_tt', JSON.stringify(that._current_tt));
-            that._lg.log('TRACE', 'completedCb saved current tt state');
+            that._lg.log('TRACE', '.bxslider-one li a', 'completedCb saved current tt state');
             
             $('#two a[data-icon="back"]').attr('href', '#one');
             $.mobile.changePage('#two');
@@ -501,8 +501,6 @@ var ScreenOneView = Stapes.subclass({
         this._wrapper.clearNavigatorCache();
         this._wrapper.clearNavigatorHistory();
         
-        console.log("CHANGE IN PAGE : " + window.changeInPage);
-        
         if (window.changeInPage === false) {
             /**
              * Load from cache if available
@@ -511,7 +509,7 @@ var ScreenOneView = Stapes.subclass({
 
             var selected; //text to save selected attr 
 
-            this._lg.log('DEBUG', 'from cache current_tt : ' + JSON.stringify(this._current_tt));
+            this._lg.log('DEBUG', '#one$render', 'from cache current_tt : ' + JSON.stringify(this._current_tt));
 
             /**
              * Create a new Asset object this object should have a cached
@@ -522,7 +520,7 @@ var ScreenOneView = Stapes.subclass({
 
             $('#one select#trailerid').html('');
 
-            this._lg.log('DEBUG', 'enum_trailertype : ' + JSON.stringify(enum_trailertype));
+            this._lg.log('DEBUG', '#one$render', 'enum_trailertype : ' + JSON.stringify(enum_trailertype));
 
             /**
              * Load the trailer types into the select menu
@@ -539,7 +537,7 @@ var ScreenOneView = Stapes.subclass({
                     selected = '';
                     if (this._current_tt !== null && enum_trailertype[index].value === this._current_tt.trailertype) {
                         selected = 'selected="selected"';
-                        this._lg.log('DEBUG', 'selected trailer type : ' + enum_trailertype[index].value);
+                        this._lg.log('DEBUG', '#one$render', 'selected trailer type : ' + enum_trailertype[index].value);
                     }
 
                     $('#one select#trailertype').append('<option ' + selected + ' value="' + enum_trailertype[index].value + '">' + enum_trailertype[index].label + '</option>');
@@ -568,13 +566,13 @@ var ScreenOneView = Stapes.subclass({
 
                     //Load value from cache
                     selected = '';
-                    this._lg.log('DEBUG', 'loop  preload trailer id : ' + assets[index].get('assetname'));
-                    this._lg.log('DEBUG', 'loop  preload trailer id : ' + this._current_tt.trailerid);
-                    this._lg.log('DEBUG', 'loop  preload are they equal : ' + (assets[index].get('assetname') === this._current_tt.trailerid));
+                    this._lg.log('DEBUG', '#one$render', 'loop  preload trailer id : ' + assets[index].get('assetname'));
+                    this._lg.log('DEBUG', '#one$render', 'loop  preload trailer id : ' + this._current_tt.trailerid);
+                    this._lg.log('DEBUG', '#one$render', 'loop  preload are they equal : ' + (assets[index].get('assetname') === this._current_tt.trailerid));
 
                     if (this._current_tt !== null && assets[index].get('assetname') === this._current_tt.trailerid) {
                         selected = 'selected="selected"';
-                        this._lg.log('DEBUG', 'selected trailer id : ' + assets[index].get('assetname'));
+                        this._lg.log('DEBUG', '#one$render', 'selected trailer id : ' + assets[index].get('assetname'));
                     }
 
                     $('#trailerid').append('<option ' + selected + ' value="' + assets[index].get('assetname') + '">' + assets[index].get('assetname') + '</option>');
@@ -593,7 +591,7 @@ var ScreenOneView = Stapes.subclass({
             var enum_sealed = tt.get('enum_sealed');
             var enum_place = tt.get('enum_place');
 
-            this._lg.log('DEBUG', 'enum_sealed : ' + JSON.stringify(enum_sealed));
+            this._lg.log('DEBUG', '#one$render', 'enum_sealed : ' + JSON.stringify(enum_sealed));
 
             /**
              * Load the sealed into the select menu
@@ -611,7 +609,7 @@ var ScreenOneView = Stapes.subclass({
                     selected = '';
                     if (this._current_tt !== null && enum_sealed[index].value === this._current_tt.sealed) {
                         selected = 'checked="checked"';
-                        this._lg.log('DEBUG', 'selected sealed : ' + enum_sealed[index].value);
+                        this._lg.log('DEBUG', '#one$render', 'selected sealed : ' + enum_sealed[index].value);
                     }
 
                     $('#one #sealed').append('<input ' + selected + ' id="radio' + index + '" name="sealed" value="' + enum_sealed[index].value + '" type="radio">');
@@ -622,7 +620,7 @@ var ScreenOneView = Stapes.subclass({
             $('#one #sealed').trigger('create');
             $('#one #sealed').controlgroup();
 
-            this._lg.log('DEBUG', 'enum_place : ' + JSON.stringify(enum_place));
+            this._lg.log('DEBUG', '#one$render', 'enum_place : ' + JSON.stringify(enum_place));
 
             /**
              * Load the place into the select menu
@@ -641,14 +639,14 @@ var ScreenOneView = Stapes.subclass({
                     selected = '';
                     if (this._current_tt !== null && enum_place[index].value === this._current_tt.place) {
                         selected = 'selected="selected"';
-                        this._lg.log('DEBUG', 'selected place : ' + enum_place[index].value);
+                        this._lg.log('DEBUG', '#one$render', 'selected place : ' + enum_place[index].value);
                     }
 
                     $('#one select#place').append('<option ' + selected + ' value="' + enum_place[index].value + '">' + enum_place[index].label + '</option>');
                 }
             }
 
-            this._lg.log('DEBUG', '#one select#place html : ' + $('#one select#place').html());
+            this._lg.log('DEBUG', '#one$render', '#one select#place html : ' + $('#one select#place').html());
 
             $('#one select#place').selectmenu('refresh');
 
@@ -660,7 +658,7 @@ var ScreenOneView = Stapes.subclass({
 
             this._tt_list = JSON.parse(window.localStorage.getItem('tt_list'));
 
-            this._lg.log('DEBUG', 'tt_list : ' + JSON.stringify(this._tt_list));
+            this._lg.log('DEBUG', '#one$render', 'tt_list : ' + JSON.stringify(this._tt_list));
 
             var empty = ($('#one select#trailerid').val().length > 0) && ($('#one select#trailertype').val().length > 0);
             if (empty && this._tt_list !== null && this._current_tt !== null && this._tt_list.html !== '') {

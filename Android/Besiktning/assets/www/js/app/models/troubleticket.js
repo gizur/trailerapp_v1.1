@@ -63,7 +63,7 @@ var TroubleTicket = Stapes.subclass({
         }  
 
         this.extend({
-            _lg : new Logger(aLogConfig.level,'js/models/troubleticket', aLogConfig.type, aLogConfig.config),
+            _lg : new Logger(aLogConfig.level, aLogConfig.type, aLogConfig.config),
             _storage : window.localStorage,
             _usr : aUsr
         });
@@ -128,7 +128,7 @@ var TroubleTicket = Stapes.subclass({
         var successCbWrapper = function(data){
             that.set(data.result);
 
-            that._lg.log('DEBUG', ' received data ' + JSON.stringify(data.result));
+            that._lg.log('DEBUG', 'js/models/troubleticket', ' received data ' + JSON.stringify(data.result));
 
             if (typeof successCb === 'function') {
                 successCb(data);
@@ -248,36 +248,36 @@ var TroubleTicket = Stapes.subclass({
 
         var successCbWrapper = function(data){
 
-            that._lg.log('TRACE', 'successCbWrapper : start');            
+            that._lg.log('TRACE', 'js/models/troubleticket', 'successCbWrapper : start');            
 
             new_tt_id = data.result.id;
             new_tt_no = data.result.ticket_no;
 
-            that._lg.log('DEBUG', 'successCbWrapper : new_tt_id ' + new_tt_id);  
-            that._lg.log('DEBUG', 'successCbWrapper : files.length ' + files.length);  
+            that._lg.log('DEBUG', 'js/models/troubleticket', 'successCbWrapper : new_tt_id ' + new_tt_id);  
+            that._lg.log('DEBUG', 'js/models/troubleticket', 'successCbWrapper : files.length ' + files.length);  
 
             if (files.length <= 1) {
                 if (typeof successCb === 'function') {
                     successCb(data);
                 }
             } else {
-                that._lg.log('TRACE', 'successCbWrapper : calling successCbWrapperMultipleFile'); 
+                that._lg.log('TRACE', 'js/models/troubleticket', 'successCbWrapper : calling successCbWrapperMultipleFile'); 
                 successCbWrapperMultipleFile(data);
             }
 
-            that._lg.log('TRACE', 'successCbWrapper : end');
+            that._lg.log('TRACE', 'js/models/troubleticket', 'successCbWrapper : end');
 
         };
 
         var errorCbWrapper = function(jqxhr, status, er){
 
-            that._lg.log('TRACE', 'errorCbWrapper : start');
+            that._lg.log('TRACE', 'js/models/troubleticket', 'errorCbWrapper : start');
 
             if (typeof errorCb === 'function') {
                 errorCb(jqxhr, status, er);
             }
 
-            that._lg.log('TRACE', 'errorCbWrapper : end');           
+            that._lg.log('TRACE', 'js/models/troubleticket', 'errorCbWrapper : end');           
         };
 
         /**
@@ -287,7 +287,7 @@ var TroubleTicket = Stapes.subclass({
 
         var successCbWrapperMultipleFile = function(data){
 
-            that._lg.log('TRACE', 'successCbWrapperMultipleFile : start');
+            that._lg.log('TRACE', 'js/models/troubleticket', 'successCbWrapperMultipleFile : start');
 
             files.splice(0,1);
 
@@ -297,7 +297,7 @@ var TroubleTicket = Stapes.subclass({
                 }
             } else {
 
-                that._lg.log('DEBUG', 'successCbWrapperMultipleFile : new_tt_id ' + new_tt_id);
+                that._lg.log('DEBUG', 'js/models/troubleticket', 'successCbWrapperMultipleFile : new_tt_id ' + new_tt_id);
 
                 that._usr.send(
                     'POST',
@@ -310,12 +310,12 @@ var TroubleTicket = Stapes.subclass({
                 );
             }
 
-            that._lg.log('TRACE', 'successCbWrapperMultipleFile : end');
+            that._lg.log('TRACE', 'js/models/troubleticket', 'successCbWrapperMultipleFile : end');
         };
 
         var errorCbWrapperMultipleFile = function(jqxhr, status, er){
 
-            that._lg.log('TRACE', 'errorCbWrapperMultipleFile : start');
+            that._lg.log('TRACE', 'js/models/troubleticket', 'errorCbWrapperMultipleFile : start');
 
             /**
              * Store unsent files
@@ -333,7 +333,7 @@ var TroubleTicket = Stapes.subclass({
 
             window.localStorage.setItem('unsent_files', JSON.stringify(unsent_files));
 
-            that._lg.log('DEBUG', 'errorCbWrapperMultipleFile : unsent_files.length ' + unsent_files.length);
+            that._lg.log('DEBUG', 'js/models/troubleticket', 'errorCbWrapperMultipleFile : unsent_files.length ' + unsent_files.length);
 
             /**
              * Check if files are left to be sent
@@ -358,13 +358,13 @@ var TroubleTicket = Stapes.subclass({
                 );
             }
 
-            that._lg.log('TRACE', 'errorCbWrapperMultipleFile : end');
+            that._lg.log('TRACE', 'js/models/troubleticket', 'errorCbWrapperMultipleFile : end');
         };       
 
         var ast = this.get('asset');
 
-        this._lg.log('DEBUG', ' ast instanceof Asset ' + (ast instanceof Asset));
-        this._lg.log('DEBUG', ' ast.get(assetname) ' + ast.get('assetname'));
+        this._lg.log('DEBUG', 'js/models/troubleticket', ' ast instanceof Asset ' + (ast instanceof Asset));
+        this._lg.log('DEBUG', 'js/models/troubleticket', ' ast.get(assetname) ' + ast.get('assetname'));
 
         var data = {
             'trailerid' : ast.get('assetname'),

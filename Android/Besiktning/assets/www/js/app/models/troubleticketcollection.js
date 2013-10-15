@@ -50,7 +50,7 @@ var TroubleTicketCollection = Stapes.subclass({
 
         this.extend({
             _usr : aUsr,
-            _lg : new Logger(aLogConfig.level, 'js/models/troubleticketcollection', aLogConfig.type, aLogConfig.config)
+            _lg : new Logger(aLogConfig.level, aLogConfig.type, aLogConfig.config)
         });
     }, 
 
@@ -70,8 +70,8 @@ var TroubleTicketCollection = Stapes.subclass({
         
         var that = this;
 
-        this._lg.log('TRACE', 'getDamagedTroubleTicketsByAsset START');
-        this._lg.log('DEBUG', 'typof usr ' + (typeof this._usr));
+        this._lg.log('TRACE', 'js/models/troubleticketcollection', 'getDamagedTroubleTicketsByAsset START');
+        this._lg.log('DEBUG', 'js/models/troubleticketcollection', 'typof usr ' + (typeof this._usr));
 
         var assetname;
 
@@ -83,7 +83,7 @@ var TroubleTicketCollection = Stapes.subclass({
 
         var successCbWrapper = function(data){
 
-            that._lg.log('DEBUG', 'received TroubleTickets ' + data.result.length);
+            that._lg.log('DEBUG', 'js/models/troubleticketcollection', 'received TroubleTickets ' + data.result.length);
             //that._lg.log('DEBUG', ' received TroubleTickets ' + JSON.stringify(data.result));
 
             $.each(data.result, function(index, item){
@@ -103,8 +103,8 @@ var TroubleTicketCollection = Stapes.subclass({
             }
         };
 
-        this._lg.log('DEBUG', 'typeof usr ' + (typeof this._usr));
-        this._lg.log('DEBUG', '(usr instanceof User) ' + (this._usr instanceof User));
+        this._lg.log('DEBUG', 'js/models/troubleticketcollection', 'typeof usr ' + (typeof this._usr));
+        this._lg.log('DEBUG', 'js/models/troubleticketcollection', '(usr instanceof User) ' + (this._usr instanceof User));
 
         this._usr.send(
             'GET', 
@@ -116,7 +116,7 @@ var TroubleTicketCollection = Stapes.subclass({
             true
         );
 
-        this._lg.log('TRACE', 'getDamagedTroubleTicketsByAsset END');
+        this._lg.log('TRACE', 'js/models/troubleticketcollection', 'getDamagedTroubleTicketsByAsset END');
     },
 
     /**
@@ -173,8 +173,8 @@ var TroubleTicketCollection = Stapes.subclass({
 
         if (attempt_count === total_count) {
 
-            this._lg.log('DEBUG', ' attempt_count : total_count -> ' + attempt_count + ' : ' + total_count);
-            this._lg.log('DEBUG', ' attempt_count == total_count : keys.length ' + keys.length);
+            this._lg.log('DEBUG', 'js/models/troubleticketcollection', ' attempt_count : total_count -> ' + attempt_count + ' : ' + total_count);
+            this._lg.log('DEBUG', 'js/models/troubleticketcollection', ' attempt_count == total_count : keys.length ' + keys.length);
 
             if (keys.length === 0) {
                 if (typeof newSuccessCb === 'function') {
@@ -186,7 +186,7 @@ var TroubleTicketCollection = Stapes.subclass({
                 }
             }
 
-            this._lg.log('TRACE', ' save called parent callbacks ');
+            this._lg.log('TRACE', 'js/models/troubleticketcollection', ' save called parent callbacks ');
 
             return;
         }
@@ -236,7 +236,7 @@ var TroubleTicketCollection = Stapes.subclass({
 
         for (var index in attrs) {
             if (attrs.hasOwnProperty(index)) {
-                this._lg.log('DEBUG', 'attrs[index] instanceof TroubleTicket ' + (attrs[index] instanceof TroubleTicket));            
+                this._lg.log('DEBUG', 'js/models/troubleticketcollection', 'attrs[index] instanceof TroubleTicket ' + (attrs[index] instanceof TroubleTicket));            
 
                 if (keys.indexOf(index) === -1) {
                     attrs[index].save(success, error, true); //boolean true for silent

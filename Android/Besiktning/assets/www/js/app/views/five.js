@@ -93,8 +93,8 @@ var ScreenFiveView = Stapes.subclass({
 
                 var tt = new TroubleTicket(that._usr, Config.log);
 
-                that._lg.log('TRACE', '.bxslider-one li a click start');
-                that._lg.log('DEBUG', " $(this).attr('id') " + $(this).attr('id'));
+                that._lg.log('TRACE', '.bxslider-five-a li a', '.bxslider-one li a click start');
+                that._lg.log('DEBUG', '.bxslider-five-a li a', " $(this).attr('id') " + $(this).attr('id'));
 
                 // Save the position
 
@@ -122,7 +122,7 @@ var ScreenFiveView = Stapes.subclass({
                  * Uncaught error catching and log it as FATAL
                  */
 
-                that._lg.log('FATAL', JSON.stringify(err));
+                that._lg.log('FATAL', '.bxslider-five-a li a', JSON.stringify(err));
 
             }        
         });
@@ -134,7 +134,7 @@ var ScreenFiveView = Stapes.subclass({
                 return false;
             }            
 
-            that._lg.log('TRACE', '#five #sendalldamages click start');
+            that._lg.log('TRACE', '#five #sendalldamages', '#five #sendalldamages click start');
 
             var ttc = new TroubleTicketCollection(that._usr, Config.log);
             
@@ -173,7 +173,7 @@ var ScreenFiveView = Stapes.subclass({
                     tt.set('damage', dmg);
                     tt.set('asset', ast);
 
-                    that._lg.log('DEBUG', 'trouble ticket');   
+                    that._lg.log('DEBUG', '#five #sendalldamages', 'trouble ticket');   
 
                     ttc.push(tt);
                 }
@@ -187,7 +187,7 @@ var ScreenFiveView = Stapes.subclass({
 
                 delete window.retry_count;                        
 
-                that._lg.log('TRACE', '#five #sendalldamages success start');
+                that._lg.log('TRACE', '#five #sendalldamages', '#five #sendalldamages success start');
 
                 /**
                  * Clear history in jqMobile and Android's 
@@ -203,7 +203,7 @@ var ScreenFiveView = Stapes.subclass({
                 var unsent_files = window.localStorage.getItem('unsent_files');
 
                 if (unsent_files instanceof Array) {
-                    that._lg.log('DEBUG', '#five #sendalldamages success unsent_files ' + unsent_files.length);
+                    that._lg.log('DEBUG', '#five #sendalldamages', '#five #sendalldamages success unsent_files ' + unsent_files.length);
                 }
 
                 if (unsent_files === null || !(unsent_files instanceof Array)) {
@@ -212,7 +212,7 @@ var ScreenFiveView = Stapes.subclass({
                 
                 if (unsent_files.length === 0) {
 
-                    that._lg.log('TRACE', '#five #sendalldamages success no unsent_files ');
+                    that._lg.log('TRACE', '#five #sendalldamages', '#five #sendalldamages success no unsent_files ');
 
                     /**
                      * Reset Forms
@@ -230,7 +230,7 @@ var ScreenFiveView = Stapes.subclass({
 
                     $('#dialog_success_damagereported_unsentfiles a:contains(Retry)').unbind('click').bind('click', function(e){
 
-                        that._lg.log('TRACE', '#five #sendalldamages success #dialog_success_damagereported_unsentfiles a:contains(Retry) START ');
+                        that._lg.log('TRACE', '#five #sendalldamages', '#five #sendalldamages success #dialog_success_damagereported_unsentfiles a:contains(Retry) START ');
                         
                         e.preventDefault();
 
@@ -238,7 +238,7 @@ var ScreenFiveView = Stapes.subclass({
 
                         var successCbMultipleFile = function() {
 
-                            that._lg.log('TRACE', '#five #sendalldamages success #dialog_success_damagereported_unsentfiles a:contains(Retry) successCbMultipleFile START ');
+                            that._lg.log('TRACE', '#five #sendalldamages', '#five #sendalldamages success #dialog_success_damagereported_unsentfiles a:contains(Retry) successCbMultipleFile START ');
 
                             unsent_files.splice(0,1);
 
@@ -265,13 +265,13 @@ var ScreenFiveView = Stapes.subclass({
 
                             }
 
-                            that._lg.log('TRACE', '#five #sendalldamages success #dialog_success_damagereported_unsentfiles a:contains(Retry) successCbMultipleFile END ');                        
+                            that._lg.log('TRACE', '#five #sendalldamages', '#five #sendalldamages success #dialog_success_damagereported_unsentfiles a:contains(Retry) successCbMultipleFile END ');                        
 
                         };
 
                         var errorCbMultipleFile = function() {
 
-                            that._lg.log('TRACE', '#five #sendalldamages success #dialog_success_damagereported_unsentfiles a:contains(Retry) errorCbMultipleFile START ');                        
+                            that._lg.log('TRACE', '#five #sendalldamages', '#five #sendalldamages success #dialog_success_damagereported_unsentfiles a:contains(Retry) errorCbMultipleFile START ');                        
 
                             new_unsent_files.push(unsent_files.splice(0,1)[0]);
 
@@ -296,7 +296,7 @@ var ScreenFiveView = Stapes.subclass({
 
                             }
 
-                            that._lg.log('TRACE', '#five #sendalldamages success #dialog_success_damagereported_unsentfiles a:contains(Retry) errorCbMultipleFile END ');                        
+                            that._lg.log('TRACE', '#five #sendalldamages', '#five #sendalldamages success #dialog_success_damagereported_unsentfiles a:contains(Retry) errorCbMultipleFile END ');                        
 
                         };
 
@@ -309,13 +309,13 @@ var ScreenFiveView = Stapes.subclass({
                             [unsent_files[0].path]                
                         );
 
-                        that._lg.log('TRACE', '#five #sendalldamages success #dialog_success_damagereported_unsentfiles a:contains(Retry) END ');                    
+                        that._lg.log('TRACE', '#five #sendalldamages', '#five #sendalldamages success #dialog_success_damagereported_unsentfiles a:contains(Retry) END ');                    
 
                     });
 
                     $('#dialog_success_damagereported_unsentfiles a:contains(No)').unbind('click').bind('click', function(e){
 
-                        that._lg.log('TRACE', '#five #sendalldamages success #dialog_success_damagereported_unsentfiles a:contains(No) START ');                    
+                        that._lg.log('TRACE', '#five #sendalldamages', '#five #sendalldamages success #dialog_success_damagereported_unsentfiles a:contains(No) START ');                    
 
                         e.preventDefault();
 
@@ -323,7 +323,7 @@ var ScreenFiveView = Stapes.subclass({
 
                         $.mobile.changePage('#one');
 
-                        that._lg.log('TRACE', '#five #sendalldamages success #dialog_success_damagereported_unsentfiles a:contains(No) END ');
+                        that._lg.log('TRACE', '#five #sendalldamages', '#five #sendalldamages success #dialog_success_damagereported_unsentfiles a:contains(No) END ');
 
                     });
 
@@ -334,7 +334,7 @@ var ScreenFiveView = Stapes.subclass({
 
                 window.localStorage.removeItem('current_tt');
 
-                that._lg.log('TRACE', '#five #sendalldamages success end');
+                that._lg.log('TRACE', '#five #sendalldamages', '#five #sendalldamages success end');
 
             };
 
@@ -344,7 +344,7 @@ var ScreenFiveView = Stapes.subclass({
 
             var error = function(error_count, total_count) {
 
-                that._lg.log('TRACE', '#five #sendalldamages error start');
+                that._lg.log('TRACE', '#five #sendalldamages', '#five #sendalldamages error start');
 
                 /**
                  * This section need to be tested thoroughly
@@ -358,8 +358,8 @@ var ScreenFiveView = Stapes.subclass({
 
                     if (stt.hasOwnProperty(index)) {
 
-                        that._lg.log('DEBUG', ' stt[index] instanceof TroubleTicket ' + (stt[index] instanceof TroubleTicket));
-                        that._lg.log('DEBUG', ' stt[index].damage instanceof Damage ' + (stt[index].get('damage') instanceof Damage));
+                        that._lg.log('DEBUG', '#five #sendalldamages', ' stt[index] instanceof TroubleTicket ' + (stt[index] instanceof TroubleTicket));
+                        that._lg.log('DEBUG', '#five #sendalldamages', ' stt[index].damage instanceof Damage ' + (stt[index].get('damage') instanceof Damage));
 
 
                         if (stt[index] instanceof TroubleTicket &&
@@ -373,7 +373,7 @@ var ScreenFiveView = Stapes.subclass({
                     }
                 }
 
-                that._lg.log('DEBUG', ' that._current_tt ' + JSON.stringify(that._current_tt));
+                that._lg.log('DEBUG', '#five #sendalldamages', ' that._current_tt ' + JSON.stringify(that._current_tt));
 
                 window.localStorage.setItem('current_tt', JSON.stringify(that._current_tt));            
 
@@ -385,7 +385,7 @@ var ScreenFiveView = Stapes.subclass({
                 
                 if (error_count === total_count) {
 
-                    that._lg.log('TRACE', '#five #sendalldamages error launching popup for a_dialog_error_damagereported');
+                    that._lg.log('TRACE', '#five #sendalldamages', '#five #sendalldamages error launching popup for a_dialog_error_damagereported');
 
                     $.mobile.urlHistory.stack = [];
 
@@ -405,7 +405,7 @@ var ScreenFiveView = Stapes.subclass({
                     
                     if (unsent_files.length === 0) {
 
-                        that._lg.log('TRACE', '#five #sendalldamages error no unsent_files');
+                        that._lg.log('TRACE', '#five #sendalldamages', '#five #sendalldamages error no unsent_files');
 
                         if(typeof window.retry_count === 'undefined')
                         	window.retry_count = 0;
@@ -420,7 +420,7 @@ var ScreenFiveView = Stapes.subclass({
 
                     } else {
 
-                        that._lg.log('DEBUG', '#five #sendalldamages error unsent_files ' + unsent_files.length);
+                        that._lg.log('DEBUG', '#five #sendalldamages', '#five #sendalldamages error unsent_files ' + unsent_files.length);
 
                         /**
                          * Attach events for retry and cancel
@@ -428,7 +428,7 @@ var ScreenFiveView = Stapes.subclass({
 
                         $('#dialog_partialsuccess_damagereported_unsentfiles a:contains(Retry)').unbind('click').bind('click', function(e){
 
-                            that._lg.log('TRACE', '#five #sendalldamages error #dialog_partialsuccess_damagereported_unsentfiles a:contains(Retry) START');
+                            that._lg.log('TRACE', '#five #sendalldamages', '#five #sendalldamages error #dialog_partialsuccess_damagereported_unsentfiles a:contains(Retry) START');
 
                             e.preventDefault();
 
@@ -436,7 +436,7 @@ var ScreenFiveView = Stapes.subclass({
 
                             var successCbMultipleFile = function() {
 
-                                that._lg.log('TRACE', '#five #sendalldamages error #dialog_partialsuccess_damagereported_unsentfiles a:contains(Retry) successCbMultipleFile START');                            
+                                that._lg.log('TRACE', '#five #sendalldamages', '#five #sendalldamages error #dialog_partialsuccess_damagereported_unsentfiles a:contains(Retry) successCbMultipleFile START');                            
 
                                 unsent_files.splice(0,1);
 
@@ -463,13 +463,13 @@ var ScreenFiveView = Stapes.subclass({
 
                                 }
 
-                                that._lg.log('TRACE', '#five #sendalldamages error #dialog_partialsuccess_damagereported_unsentfiles a:contains(Retry) successCbMultipleFile END');                                                        
+                                that._lg.log('TRACE', '#five #sendalldamages', '#five #sendalldamages error #dialog_partialsuccess_damagereported_unsentfiles a:contains(Retry) successCbMultipleFile END');                                                        
 
                             };
 
                             var errorCbMultipleFile = function() {
 
-                                that._lg.log('TRACE', '#five #sendalldamages error #dialog_partialsuccess_damagereported_unsentfiles a:contains(Retry) errorCbMultipleFile START');
+                                that._lg.log('TRACE', '#five #sendalldamages', '#five #sendalldamages error #dialog_partialsuccess_damagereported_unsentfiles a:contains(Retry) errorCbMultipleFile START');
 
                                 new_unsent_files.push(unsent_files.splice(0,1)[0]);
 
@@ -494,7 +494,7 @@ var ScreenFiveView = Stapes.subclass({
 
                                 }
 
-                                that._lg.log('TRACE', '#five #sendalldamages error #dialog_partialsuccess_damagereported_unsentfiles a:contains(Retry) errorCbMultipleFile END');                            
+                                that._lg.log('TRACE', '#five #sendalldamages', '#five #sendalldamages error #dialog_partialsuccess_damagereported_unsentfiles a:contains(Retry) errorCbMultipleFile END');                            
 
                             };
 
@@ -507,13 +507,13 @@ var ScreenFiveView = Stapes.subclass({
                                 [unsent_files[0].path]                
                             );
 
-                            that._lg.log('TRACE', '#five #sendalldamages error #dialog_partialsuccess_damagereported_unsentfiles a:contains(Retry) END');                        
+                            that._lg.log('TRACE', '#five #sendalldamages', '#five #sendalldamages error #dialog_partialsuccess_damagereported_unsentfiles a:contains(Retry) END');                        
 
                         });
 
                         $('#dialog_partialsuccess_damagereported_unsentfiles a:contains(No)').unbind('click').bind('click', function(e){
 
-                            that._lg.log('TRACE', '#five #sendalldamages error #dialog_partialsuccess_damagereported_unsentfiles a:contains(No) START');                        
+                            that._lg.log('TRACE', '#five #sendalldamages', '#five #sendalldamages error #dialog_partialsuccess_damagereported_unsentfiles a:contains(No) START');                        
 
                             e.preventDefault();
 
@@ -521,7 +521,7 @@ var ScreenFiveView = Stapes.subclass({
 
                             $.mobile.changePage('#five');
 
-                            that._lg.log('TRACE', '#five #sendalldamages error #dialog_partialsuccess_damagereported_unsentfiles a:contains(No) END');                                                
+                            that._lg.log('TRACE', '#five #sendalldamages', '#five #sendalldamages error #dialog_partialsuccess_damagereported_unsentfiles a:contains(No) END');                                                
 
                         });
 
@@ -533,7 +533,7 @@ var ScreenFiveView = Stapes.subclass({
 
                 }
 
-                that._lg.log('TRACE', '#five #sendalldamages error end');
+                that._lg.log('TRACE', '#five #sendalldamages', '#five #sendalldamages error end');
             };
 
             var status = function(aAttemptCount, aTotalCount){
@@ -552,7 +552,7 @@ var ScreenFiveView = Stapes.subclass({
             $('#dialog_damage_sending div[data-role=content]').children().first().html(that._language.translate('Completed') + ' ... 0 ' + that._language.translate('of') + ' ' + ttc.size());
             $('#a_dialog_damage_sending').click(); 
 
-            that._lg.log('TRACE', '#five #sendalldamages click end'); 
+            that._lg.log('TRACE', '#five #sendalldamages', '#five #sendalldamages click end'); 
 
             ttc.save(success, error, status, 0);
         });
@@ -568,7 +568,7 @@ var ScreenFiveView = Stapes.subclass({
                 return false;
             }            
 
-            that._lg.log('TRACE', '#five #savedamage click start');
+            that._lg.log('TRACE', '#five #reportanotherdamage', '#five #savedamage click start');
 
             that._current_tt.damages.push({});
 
@@ -578,7 +578,7 @@ var ScreenFiveView = Stapes.subclass({
 
             $.mobile.changePage('#four');  
 
-            that._lg.log('TRACE', '#five #savedamage click end');   
+            that._lg.log('TRACE', '#five #reportanotherdamage', '#five #savedamage click end');   
         }); 
 
         /**
@@ -592,7 +592,7 @@ var ScreenFiveView = Stapes.subclass({
                 return false;
             }            
 
-            that._lg.log('TRACE', '#five .bxslider-five-b li a click start');
+            that._lg.log('TRACE', '#five .bxslider-five-b li a', '#five .bxslider-five-b li a click start');
 
             e.preventDefault();
             window.localStorage.setItem('latest_damage_index', $(this).attr('id'));
@@ -601,7 +601,7 @@ var ScreenFiveView = Stapes.subclass({
 
             $.mobile.changePage('#four');
 
-            that._lg.log('TRACE', '#five .bxslider-five-b li a click end');        
+            that._lg.log('TRACE', '#five .bxslider-five-b li a', '#five .bxslider-five-b li a click end');        
         });        
   
     },
@@ -659,7 +659,7 @@ var ScreenFiveView = Stapes.subclass({
         this._wrapper.clearNavigatorCache();
         this._wrapper.clearNavigatorHistory();
         
-        this._lg.log('DEBUG', ' number of damages ' + this._current_tt.damages.length);        
+        this._lg.log('DEBUG', '#five render', ' number of damages ' + this._current_tt.damages.length);        
 
         if ( this._current_tt !== null &&
                 this._current_tt.damages instanceof Array && 
@@ -693,7 +693,7 @@ var ScreenFiveView = Stapes.subclass({
 
         var tt_list = JSON.parse(window.localStorage.getItem('tt_list'));
         if (tt_list !== null && this._current_tt !== null && tt_list.html !== '') {
-            this._lg.log('DEBUG', 'reloading slider for troubleticketlist  to position ' + tt_list.position);        
+            this._lg.log('DEBUG', '#five render', 'reloading slider for troubleticketlist  to position ' + tt_list.position);        
 
             $('.bxslider-five-a').html(tt_list.html);
             console.log(tt_list.html);
