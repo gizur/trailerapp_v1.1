@@ -42,6 +42,20 @@ var ScreenFourView = Stapes.subclass({
             _latest_damage_index: -1,
             _wrapper: aWrapper
         });
+        
+        this.validate = function() {
+        	var valid = true;
+            
+        	valid = valid && this._wrapper.checkLength($('#four #damagetype option:selected'), 0, this._language.translate('Please select a damage type'), this._language.translate('Error'));
+            
+            if(valid)
+            valid = valid && this._wrapper.checkLength($('#four #damageposition option:selected'), 0, this._language.translate('Please select a damage position'), this._language.translate('Error'));
+
+            if(valid)
+            valid = valid && this._wrapper.checkLength($('#four #drivercauseddamage option:selected'), 0, this._language.translate('Please select, if damage was caused by driver or not'), this._language.translate('Error'));
+
+            return valid;
+        };
 
     },
     /**
@@ -78,164 +92,53 @@ var ScreenFourView = Stapes.subclass({
 
             that._lg.log('TRACE', '#four #damagetype option:selected' + $('#four #damagetype option:selected').text());
 
-            if ($('#four #damagetype option:selected').attr('value') === '') {
-
-                /**
-                 * Save the current state of page
-                 */
-
-                current_tt = JSON.parse(window.localStorage.getItem('current_tt'));
-
-                damage = {
-                    'damagetype': escapeHtmlEntities($('#four #damagetype option:selected').text()),
-                    'damageposition': escapeHtmlEntities($('#four #damageposition option:selected').text()),
-                    'drivercauseddamage': escapeHtmlEntities($('#four #drivercauseddamage option:selected').attr('value'))
-                };
-
-                documents = [];
-
-                $('.bxslider-four img').each(function() {
-                    that._lg.log('TRACE', '#four #savedamage found image ' + $(this).attr('src'));
-                    documents.push({path: $(this).attr('src')});
-                });
-
-                damage.documents = documents;
-
-                if (!(current_tt.damages !== undefined && current_tt.damages instanceof Array)) {
-                    current_tt.damages = [];
-                    current_tt.damages.push(damage);
-                } else {
-                    current_tt.damages[that._latest_damage_index] = damage;
-                }
-
-                that._lg.log('TRACE', '#four #savedamage current_tt' + JSON.stringify(current_tt));
-
-                window.localStorage.setItem('current_tt', JSON.stringify(current_tt));
-
-                $('#a_dialog_validation_damagetype').click();
-                return false;
-            }
-
             that._lg.log('TRACE', '#four #damageposition option:selected' + $('#four #damageposition option:selected').text());
 
-            if ($('#four #damageposition option:selected').attr('value') === '') {
-
-                /**
-                 * Save the current state of page
-                 */
-
-                current_tt = JSON.parse(window.localStorage.getItem('current_tt'));
-
-                damage = {
-                    'damagetype': escapeHtmlEntities($('#four #damagetype option:selected').text()),
-                    'damageposition': escapeHtmlEntities($('#four #damageposition option:selected').text()),
-                    'drivercauseddamage': escapeHtmlEntities($('#four #drivercauseddamage option:selected').attr('value'))
-                };
-
-                documents = [];
-
-                $('.bxslider-four img').each(function() {
-                    that._lg.log('TRACE', '#four #savedamage found image ' + $(this).attr('src'));
-                    documents.push({path: $(this).attr('src')});
-                });
-
-                damage.documents = documents;
-
-                if (!(current_tt.damages !== undefined && current_tt.damages instanceof Array)) {
-                    current_tt.damages = [];
-                    current_tt.damages.push(damage);
-                } else {
-                    current_tt.damages[that._latest_damage_index] = damage;
-                }
-
-                that._lg.log('TRACE', '#four #savedamage current_tt' + JSON.stringify(current_tt));
-
-                window.localStorage.setItem('current_tt', JSON.stringify(current_tt));
-
-                $('#a_dialog_validation_damageposition').click();
-                return false;
-            }
-
             that._lg.log('DEBUG', '#four #drivercauseddamage option:selected' + $('#four #drivercauseddamage option:selected').attr('value'));
-
-            if ($('#four #drivercauseddamage option:selected').attr('value') === '') {
-
-                /**
-                 * Save the current state of page
-                 */
-
-                current_tt = JSON.parse(window.localStorage.getItem('current_tt'));
-
-                damage = {
-                    'damagetype': escapeHtmlEntities($('#four #damagetype option:selected').text()),
-                    'damageposition': escapeHtmlEntities($('#four #damageposition option:selected').text()),
-                    'drivercauseddamage': escapeHtmlEntities($('#four #drivercauseddamage option:selected').attr('value'))
-                };
-
-                documents = [];
-
-                $('.bxslider-four img').each(function() {
-                    that._lg.log('TRACE', '#four #savedamage found image ' + $(this).attr('src'));
-                    documents.push({path: $(this).attr('src')});
-                });
-
-                damage.documents = documents;
-
-                if (!(current_tt.damages !== undefined && current_tt.damages instanceof Array)) {
-                    current_tt.damages = [];
-                    current_tt.damages.push(damage);
-                } else {
-                    current_tt.damages[that._latest_damage_index] = damage;
-                }
-
-                that._lg.log('TRACE', '#four #savedamage current_tt' + JSON.stringify(current_tt));
-
-                window.localStorage.setItem('current_tt', JSON.stringify(current_tt));
-
-                $('#a_dialog_validation_drivercauseddamage').click();
-                return false;
+            
+            
+            if(that.validate()) {
+	            current_tt = JSON.parse(window.localStorage.getItem('current_tt'));
+	
+	            damage = {
+	                'damagetype': escapeHtmlEntities($('#four #damagetype option:selected').text()),
+	                'damageposition': escapeHtmlEntities($('#four #damageposition option:selected').text()),
+	                'drivercauseddamage': escapeHtmlEntities($('#four #drivercauseddamage option:selected').attr('value'))
+	            };
+	
+	            documents = [];
+	
+	            $('.bxslider-four img').each(function() {
+	                that._lg.log('DEBUG', '#four #savedamage found image ' + $(this).attr('src'));
+	                documents.push({path: $(this).attr('src')});
+	            });
+	
+	            damage.documents = documents;
+	
+	            if (!(current_tt.damages instanceof Array)) {
+	
+	                that._lg.log('TRACE', '#four current_tt.damages not instanceof Array');
+	
+	                current_tt.damages = [];
+	                current_tt.damages.push(damage);
+	            } else {
+	
+	                that._lg.log('TRACE', '#four current_tt.damages instanceof Array');
+	                if (that._latest_damage_index !== -1) {
+	                    current_tt.damages[that._latest_damage_index] = damage;
+	                } else {
+	                    current_tt.damages.push(damage);
+	                }
+	            }
+	
+	            that._lg.log('TRACE', '#four #savedamage current_tt' + JSON.stringify(current_tt));
+	
+	            window.localStorage.setItem('current_tt', JSON.stringify(current_tt));
+	
+	            $.mobile.changePage('#five');
             }
-
-            current_tt = JSON.parse(window.localStorage.getItem('current_tt'));
-
-            damage = {
-                'damagetype': escapeHtmlEntities($('#four #damagetype option:selected').text()),
-                'damageposition': escapeHtmlEntities($('#four #damageposition option:selected').text()),
-                'drivercauseddamage': escapeHtmlEntities($('#four #drivercauseddamage option:selected').attr('value'))
-            };
-
-            documents = [];
-
-            $('.bxslider-four img').each(function() {
-                that._lg.log('DEBUG', '#four #savedamage found image ' + $(this).attr('src'));
-                documents.push({path: $(this).attr('src')});
-            });
-
-            damage.documents = documents;
-
-            if (!(current_tt.damages instanceof Array)) {
-
-                that._lg.log('TRACE', '#four current_tt.damages not instanceof Array');
-
-                current_tt.damages = [];
-                current_tt.damages.push(damage);
-            } else {
-
-                that._lg.log('TRACE', '#four current_tt.damages instanceof Array');
-                if (that._latest_damage_index !== -1) {
-                    current_tt.damages[that._latest_damage_index] = damage;
-                } else {
-                    current_tt.damages.push(damage);
-                }
-            }
-
-            that._lg.log('TRACE', '#four #savedamage current_tt' + JSON.stringify(current_tt));
-
-            window.localStorage.setItem('current_tt', JSON.stringify(current_tt));
-
-            $.mobile.changePage('#five');
-
-            that._lg.log('TRACE', '#four #savedamage click end');
+            
+            that._lg.log('TRACE', '#four #savedamage click end');            
         });
 
         $('#four #deletedamage').unbind('click').click(function(e) {
@@ -258,15 +161,15 @@ var ScreenFourView = Stapes.subclass({
 
                     that._lg.log('TRACE', '#four #deletedamage refresh current page ');
 
-                    $.mobile.changePage('#four', {allowSamePageTransition: true, transition: 'none', showLoadMsg: false, reloadPage: false});
+                    $.mobile.changePage('#five');
+                    //Jonas Email 11-10-2013
+                    //$.mobile.changePage('#four', {allowSamePageTransition: true, transition: 'none', showLoadMsg: false, reloadPage: false});
 
                 } else {
 
                     that._lg.log('TRACE', '#four #deletedamage redirect to screen five ');
                     
-                    // Freshdesk #74
-                    $.mobile.changePage('#four', {allowSamePageTransition: true, transition: 'none', showLoadMsg: false, reloadPage: false});
-                    //$.mobile.changePage('#five');
+                    $.mobile.changePage('#five');
                 }
             } else {
             	$.mobile.changePage('#four', {allowSamePageTransition: true, transition: 'none', showLoadMsg: false, reloadPage: false});
@@ -282,37 +185,8 @@ var ScreenFourView = Stapes.subclass({
             that._lg.log('DEBUG', '#four #takephoto success $(.bxslider-four).html()' + $('.bxslider-four').html());
 
             if ($('.bxslider-four img').length > 2) {
-
-                var current_tt = JSON.parse(window.localStorage.getItem('current_tt'));
-
-                var damage = {
-                    'damagetype': escapeHtmlEntities($('#four #damagetype option:selected').text()),
-                    'damageposition': escapeHtmlEntities($('#four #damageposition option:selected').text()),
-                    'drivercauseddamage': escapeHtmlEntities($('#four #drivercauseddamage option:selected').attr('value'))
-                };
-
-                var documents = [];
-
-                $('.bxslider-four img').each(function() {
-                    that._lg.log('TRACE', '#four #savedamage found image ' + $(this).attr('src'));
-                    documents.push({path: $(this).attr('src')});
-                });
-
-                damage.documents = documents;
-
-                if (!(current_tt.damages !== undefined && current_tt.damages instanceof Array)) {
-                    current_tt.damages = [];
-                    current_tt.damages.push(damage);
-                } else {
-                    current_tt.damages[that._latest_damage_index] = damage;
-                }
-
-                that._lg.log('TRACE', '#four #savedamage current_tt' + JSON.stringify(current_tt));
-
-                window.localStorage.setItem('current_tt', JSON.stringify(current_tt));
-
-                $('#a_dialog_validation_picture').click();
-                return;
+            	that._wrapper.showAlert(that._language.translate("You cannot add more than 3 pictures."), that._language.translate("Error"));
+                return false;
             }
 
             var success = function(imageURL) {
@@ -324,9 +198,6 @@ var ScreenFourView = Stapes.subclass({
                 }
 
                 $('.bxslider-four').prepend('<li><img style="width:100%;height:auto;" src="' + imageURL + '"/></li>');
-                //$('.four-picture').html('<img style="width:100%;height:auto;" src="' + imageURL + '"/>');
-                //$('.four-picture').css('height','auto');
-                //$('.four-picture').css('line-height','normal');
                 window.slider_four.reloadSlider();
                 that._lg.log('DEBUG', '#four #takephoto success $(.bxslider-four).html()' + $('.bxslider-four').html());
             };

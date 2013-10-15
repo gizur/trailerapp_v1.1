@@ -84,7 +84,33 @@ var Wrapper = (function() {
                 title,     // title
                 labels     // buttonLabels
             );
-        }        
+        },        
+        showAlert: function (msg, title) {
+            navigator.notification.alert(
+                msg,
+                function(){},
+                title
+            );
+        },
+        /**
+         * Validations Methods
+         */
+        checkLength: function(obj, min, msg, title){
+        	if(obj.attr('value') === '') {
+        		navigator.notification.alert(msg, function(){}, title); 
+        		return false;
+        	} else
+        		return true;
+        },
+        
+        checkUndefined: function(obj, msg, title){
+        	if(typeof obj.attr('value') === 'undefined' ||
+        			obj.attr('value') === '') {
+        		navigator.notification.alert(msg, function(){}, title);
+        		return false;
+        	} else
+        		return true;
+        },
     });
 
     return Wrapper;

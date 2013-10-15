@@ -71,7 +71,7 @@ var Language = Stapes.subclass({
                 'Password has been reset successfully' : 'Lösen har nollställts',
                 'All Damages have been reported successfully' : 'Skadorna har rapporterats',
                 'Please select if sealed or not' : 'Ange om trailern är plomberad eller ej',
-                'You cannot add more than 3 pictures' : 'Du kan inte lägga till mer än 3 bilder',
+                'You cannot add more than 3 pictures.' : 'Du kan inte lägga till mer än 3 bilder.',
                 'Only some damages have been reported successfully' : 'Endast några skador har rapporterats',
                 'Your changes will not be saved.' : 'Dina ändringar kommer inte att sparas.',
                 'Please select a damage type' : 'Ange typ av skada',
