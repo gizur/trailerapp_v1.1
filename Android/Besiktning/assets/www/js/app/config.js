@@ -23,7 +23,7 @@ var Config = {
                 buffer_size : (10 * 1024) //10kB
             },
         },
-        level : 'TRACE',
+        level : 'FATAL',
     },
     cacheRefreshTime : 1000*60*60*12, // 12 Hours in Milli Seconds ( (((12 hrs * 60) min * 60 ) Sec * 1000 ) Milli Seconds )
     imageQuality : 35,
