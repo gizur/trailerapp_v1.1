@@ -21,13 +21,13 @@ var Config = {
             loggly : {
                 key : 'a631e820-9cec-418e-950b-1a3132c6b03a',
                 buffer_size : (10 * 1024) //10kB
-            }
+            },
         },
-        level : 'FATAL'
+        level : 'TRACE',
     },
     cacheRefreshTime : 1000*60*60*12, // 12 Hours in Milli Seconds ( (((12 hrs * 60) min * 60 ) Sec * 1000 ) Milli Seconds )
     imageQuality : 35,
-    imageTargetWidth : 1024
+    imageTargetWidth : 1024,
 };
 
  /**

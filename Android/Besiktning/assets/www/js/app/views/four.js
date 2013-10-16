@@ -161,9 +161,9 @@ var ScreenFourView = Stapes.subclass({
 
                     that._lg.log('TRACE', '#four #deletedamage', '#four #deletedamage refresh current page ');
 
-                    $.mobile.changePage('#five');
+                    //$.mobile.changePage('#five');
                     //Jonas Email 11-10-2013
-                    //$.mobile.changePage('#four', {allowSamePageTransition: true, transition: 'none', showLoadMsg: false, reloadPage: false});
+                    $.mobile.changePage('#four', {allowSamePageTransition: true, transition: 'none', showLoadMsg: false, reloadPage: false});
 
                 } else {
 

@@ -5,7 +5,7 @@
 /*global node_unit:true, exports:false*/
 
 /**
- * Object Config
+ * Object App
  * 
  * @fileoverview Application file 
  * @author prabhat.khera@essindia.co.in (Prabhat Khera)
@@ -13,18 +13,8 @@
  * @see http://google-styleguide.googlecode.com/svn/trunk/javascriptguide.xml
  */
 
-var lg = new Logger(Config.log.level, Config.log.type, Config.log.config);
-var req = new Request(Config.url, undefined, Config.log);
-var usr = new User(req, Config.log);
-var language = new Language(undefined, Config.log);
-var wrapper = new Wrapper(lg);
-    
 var App = {
-    _lg : lg,
-    _req : req,
-    _usr : usr,
-    _lang : language,
-    _wrapper : wrapper
+    _lg : new Logger(Config.log.level, Config.log.type, Config.log.config)
 };
 
  /**

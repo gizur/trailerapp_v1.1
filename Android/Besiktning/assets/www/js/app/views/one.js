@@ -229,7 +229,7 @@ var ScreenOneView = Stapes.subclass({
 
                 that._tt_list.html = tt_list_html;
                 that._tt_list.position = 0;
-                window.localStorage.setItem('tt_list', '#one select#trailerid', JSON.stringify(that._tt_list));
+                window.localStorage.setItem('tt_list', JSON.stringify(that._tt_list));
 
                 window.slider_one.reloadSlider();
                 that._lg.log('TRACE', '#one select#trailerid', ' fetch tt success : end ');
@@ -655,9 +655,9 @@ var ScreenOneView = Stapes.subclass({
              * to slider
              * 
              */
-
+            
             this._tt_list = JSON.parse(window.localStorage.getItem('tt_list'));
-
+            
             this._lg.log('DEBUG', '#one$render', 'tt_list : ' + JSON.stringify(this._tt_list));
 
             var empty = ($('#one select#trailerid').val().length > 0) && ($('#one select#trailertype').val().length > 0);

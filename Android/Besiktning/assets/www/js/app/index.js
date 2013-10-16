@@ -32,6 +32,11 @@ function changepage(page) {
     var wrapper = App._wrapper;
     var language = App._lang;
     
+    if (page !== "contact" && page !== "settings" && !App._usr.get('authenticated')) {
+    	$.mobile.changePage("#settings");
+    	return;
+    }
+    
     if (window.currentObj !== null) {
         console.log(JSON.stringify(window.currentObj));
         for (index in window.currentObj) {
@@ -510,9 +515,7 @@ $(document).bind('pagebeforechange', function(e, data) {
         }
         App._lg.log('TRACE', 'gta-page$pagebeforechange', "END pagebeforechange");
     } catch (err) {
-
         App._lg.log('FATAL', 'gta-page$pagebeforechange', JSON.stringify(err));
-
     }
 
 });
@@ -526,6 +529,20 @@ $(document).bind('pagebeforechange', function(e, data) {
 document.addEventListener("deviceready", function() {
 
     "use strict";
+    
+    var lg = new Logger(Config.log.level, Config.log.type, Config.log.config);
+    var req = new Request(Config.url, undefined, Config.log);
+    var usr = new User(req, Config.log);
+    var language = new Language(undefined, Config.log);
+    var wrapper = new Wrapper(lg);
+    
+    App = {
+		_lg : lg,
+		_req : req,
+		_usr : usr,
+		_lang : language,
+		_wrapper : wrapper
+    };
     
     /**
      * this variable is used to 
@@ -591,69 +608,69 @@ document.addEventListener("deviceready", function() {
      * Localization
      */
 
-    if (wrapper.isGlobalization()) {
-        wrapper.getPreferredLanguage(
-                function(lang) {
-                    var language = new Language(lang.value, Config.log);
+    if (App._wrapper.isGlobalization()) {
+        App._wrapper.getPreferredLanguage(
+            function(lang) {
+                var language = new Language(lang.value, Config.log);
+
+                /**
+                 * Check if the language exists; if yes
+                 * replace all english to selected language.
+                 */
+
+                if (language.hasLanguage()) {
 
                     /**
-                     * Check if the language exists; if yes
-                     * replace all english to selected language.
+                     * Find all text nodes and replace them
+                     * with its equivalent in given language
                      */
 
-                    if (language.hasLanguage()) {
+                    $("*").each(function() {
+                        if ($(this).children().length === 0) {
 
-                        /**
-                         * Find all text nodes and replace them
-                         * with its equivalent in given language
-                         */
+                            /**
+                             * Get all words of the language
+                             */
 
-                        $("*").each(function() {
-                            if ($(this).children().length === 0) {
+                            var words = language.get(lang.value);
 
-                                /**
-                                 * Get all words of the language
-                                 */
+                            /**
+                             * For each word replace with translated
+                             */
 
-                                var words = language.get(lang.value);
-
-                                /**
-                                 * For each word replace with translated
-                                 */
-
-                                for (var english in words) {
-                                    if (words.hasOwnProperty(english)) {
-                                        $(this).text($(this).text().replace(english, words[english]));
-                                    }
+                            for (var english in words) {
+                                if (words.hasOwnProperty(english)) {
+                                    $(this).text($(this).text().replace(english, words[english]));
                                 }
                             }
-                        });
-                    }
-
-                    /**
-                     * Change Page to page one and remove 
-                     * splash screen from browser history
-                     */
-
-                    App._wrapper.clearNavigatorHistory();
-                    
-                    if(!App._usr.get('refreshTime')) {
-                		window.refreshCache = true;
-                		$.mobile.changePage('#settings');
-                		return;
-                	} else {
-                		var diff = new Date().getTime() - usr.get('refreshTime');
-                		App._lg.log('DEBUG', 'deviceready', 'Last cache refresh time : ' + usr.get('refreshTime'));
-                		App._lg.log('DEBUG', 'deviceready', "Cache time differance : " + diff + " milliseconds.");
-                		if (diff > Config.cacheRefreshTime) {
-                			window.refreshCache = true;
-                			$.mobile.changePage('#settings');
-                    		return;
-                		} else {
-                			$.mobile.changePage('#one');
-                		}
-                	}                    
+                        }
+                    });
                 }
+
+                /**
+                 * Change Page to page one and remove 
+                 * splash screen from browser history
+                 */
+
+                App._wrapper.clearNavigatorHistory();
+                
+                if(!App._usr.get('refreshTime')) {
+            		window.refreshCache = true;
+            		$.mobile.changePage('#settings');
+            		return;
+            	} else {
+            		var diff = new Date().getTime() - usr.get('refreshTime');
+            		App._lg.log('DEBUG', 'deviceready', 'Last cache refresh time : ' + usr.get('refreshTime'));
+            		App._lg.log('DEBUG', 'deviceready', "Cache time differance : " + diff + " milliseconds.");
+            		if (diff > Config.cacheRefreshTime) {
+            			window.refreshCache = true;
+            			$.mobile.changePage('#settings');
+                		return;
+            		} else {
+            			$.mobile.changePage('#one');
+            		}
+            	}
+            }
         );
     }
 }, false);

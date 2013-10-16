@@ -105,7 +105,7 @@ var Doc = Stapes.subclass({
 
         this._usr.send(
             'GET', 
-            'DocumentAttachments/' + this.get('id') + "/" + this.isPath,
+            'DocumentAttachments/' + this.get('id') + "/" + isPath,
             '',
             successCbWrapper,
             errorCbWrapper

@@ -84,8 +84,7 @@ var TroubleTicketCollection = Stapes.subclass({
         var successCbWrapper = function(data){
 
             that._lg.log('DEBUG', 'js/models/troubleticketcollection', 'received TroubleTickets ' + data.result.length);
-            //that._lg.log('DEBUG', ' received TroubleTickets ' + JSON.stringify(data.result));
-
+            
             $.each(data.result, function(index, item){
                 var tt = new TroubleTicket();
                 tt.set(item);

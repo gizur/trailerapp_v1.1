@@ -655,7 +655,6 @@ var ScreenFiveView = Stapes.subclass({
          * Page Inititialize
          * -----------------
          */
-
         this._wrapper.clearNavigatorCache();
         this._wrapper.clearNavigatorHistory();
         

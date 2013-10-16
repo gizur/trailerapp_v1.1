@@ -208,7 +208,7 @@ var User = Stapes.subclass({
              * Saving user attr to cache
              */
 
-            that._storage.setItem('user', 'js/models/user', JSON.stringify(that.getAll()));  
+            that._storage.setItem('user', JSON.stringify(that.getAll()));  
 
             if (typeof data.contactinfo !== 'undefined') {
                 that._lg.log('DEBUG', 'js/models/user', 'authenticate#successWrapper#attributes saved to cache data.contactinfo : ' + data.contactinfo);                

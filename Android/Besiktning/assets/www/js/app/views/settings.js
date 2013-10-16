@@ -149,6 +149,7 @@ var ScreenSettingsView = Stapes.subclass({
 
                         if (cacheErrorList.length === 0) { 
                         	
+                        	window.refreshCache = false;
                         	$('#a_dialog_success_cache').click();
                             that._wrapper.clearNavigatorHistory();
 
@@ -487,6 +488,8 @@ var ScreenSettingsView = Stapes.subclass({
         } else {
             this.disableChangePasswordButton();
         }
+        
+        //alert(window.changeInPage);
 
         if (window.changeInPage === false) {
 	        $('#settings_username').val(this._usr.get('username'));
