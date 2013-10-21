@@ -136,6 +136,7 @@ var ScreenFourView = Stapes.subclass({
 	            window.localStorage.setItem('current_tt', JSON.stringify(current_tt));
 	
 	            $.mobile.changePage('#five');
+	            //resetFormFour();	            
             }
             
             that._lg.log('TRACE', '#four #savedamage', '#four #savedamage click end');            
@@ -160,16 +161,17 @@ var ScreenFourView = Stapes.subclass({
                 if (current_tt.damages.length === 0) {
 
                     that._lg.log('TRACE', '#four #deletedamage', '#four #deletedamage refresh current page ');
-
-                    //$.mobile.changePage('#five');
-                    //Jonas Email 11-10-2013
-                    $.mobile.changePage('#four', {allowSamePageTransition: true, transition: 'none', showLoadMsg: false, reloadPage: false});
+                    
+                    $.mobile.changePage('#five');
+                    //resetFormFour();
+                    //$.mobile.changePage('#four', {allowSamePageTransition: true, transition: 'none', showLoadMsg: false, reloadPage: false});
 
                 } else {
 
                     that._lg.log('TRACE', '#four #deletedamage', '#four #deletedamage redirect to screen five ');
                     
                     $.mobile.changePage('#five');
+                    //resetFormFour();                    
                 }
             } else {
             	$.mobile.changePage('#four', {allowSamePageTransition: true, transition: 'none', showLoadMsg: false, reloadPage: false});
@@ -212,7 +214,8 @@ var ScreenFourView = Stapes.subclass({
 
             that._wrapper.getPicture(success, fail, {quality: Config.imageQuality,
                 destinationType: Camera.DestinationType.FILE_URI,
-                targetWidth: Config.imageTargetWidth
+                targetWidth: Config.imageTargetWidth,
+                correctOrientation: false
             });
         });
 
@@ -357,7 +360,7 @@ var ScreenFourView = Stapes.subclass({
                         this._lg.log('DEBUG', '#four$render', 'selected damagetype : ' + enum_damagetype[index].value);
                     }
 
-                    $('#four select#damagetype').append('<option ' + selected + ' value="' + enum_damagetype[index].value + '">' + enum_damagetype[index].label + '</option>');
+                    $('#four select#damagetype').append('<option ' + selected + ' value="' + enum_damagetype[index].value + '">' + this._language.translate(enum_damagetype[index].label) + '</option>');
                 }
             }
 

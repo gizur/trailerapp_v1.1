@@ -218,6 +218,7 @@ var ScreenFiveView = Stapes.subclass({
                      * Reset Forms
                      */
                     resetFormOne();
+                    cleanCurrentTT();
                     resetFormFour();
                     
                     $('#a_dialog_success_damagereported').click();
@@ -598,7 +599,7 @@ var ScreenFiveView = Stapes.subclass({
             window.localStorage.setItem('latest_damage_index', $(this).attr('id'));
 
             that.enable();
-
+            
             $.mobile.changePage('#four');
 
             that._lg.log('TRACE', '#five .bxslider-five-b li a', '#five .bxslider-five-b li a click end');        
@@ -660,33 +661,37 @@ var ScreenFiveView = Stapes.subclass({
         
         this._lg.log('DEBUG', '#five render', ' number of damages ' + this._current_tt.damages.length);        
 
-        if ( this._current_tt !== null &&
-                this._current_tt.damages instanceof Array && 
-                this._current_tt.damages.length > 0) {
+        if ( this._current_tt !== null ) {
 
-            $('#five .bxslider-five-b').html('');
+            var html = "";
 
-            /**
-             * Remove blank saved damages
-             */
-            for (var index in this._current_tt.damages) {
-                if (this._current_tt.damages.hasOwnProperty(index)){
-                	var str = ' - ' + this._language.translate('Select One') + ' - ';
-                	if (this._current_tt.damages[index].damageposition === str || 
-                			this._current_tt.damages[index].damagetype === str ||
-                			this._current_tt.damages[index].drivercauseddamage === '' ||
-                			typeof this._current_tt.damages[index].damageposition === 'undefined' ||
-                			typeof this._current_tt.damages[index].damagetype === 'undefined') {
-                		this._current_tt.damages.splice(index,1);
-                	}
-                }
+            if ( this._current_tt.damages instanceof Array && 
+            		this._current_tt.damages.length > 0 ) {
+	            /**
+	             * Remove blank saved damages
+	             */
+	            for (var index in this._current_tt.damages) {
+	                if (this._current_tt.damages.hasOwnProperty(index)){
+	                	var str = ' - ' + this._language.translate('Select One') + ' - ';
+	                	if (this._current_tt.damages[index].damageposition === str || 
+	                			this._current_tt.damages[index].damagetype === str ||
+	                			this._current_tt.damages[index].drivercauseddamage === '' ||
+	                			typeof this._current_tt.damages[index].damageposition === 'undefined' ||
+	                			typeof this._current_tt.damages[index].damagetype === 'undefined') {
+	                		this._current_tt.damages.splice(index,1);
+	                	}
+	                }
+	            }
+	            
+	            for (var index in this._current_tt.damages) {
+	                if (this._current_tt.damages.hasOwnProperty(index)){
+	                	html += "<li><center><div style='height:60px;'><a id='" + index + "' href='javascript:void(0);'>" + this._current_tt.damages[index].damageposition + '<br/>' + this._current_tt.damages[index].damagetype + "</a></div></center></li>";
+	                }
+	            }
+            } else {
+            	html = "<li><center><div style='height:60px;'>" + this._language.translate('No Damages Reported') + "</div></center></li>";
             }
-            
-            for (var index in this._current_tt.damages) {
-                if (this._current_tt.damages.hasOwnProperty(index)){
-                    $('#five .bxslider-five-b').append("<li><center><div style='height:60px;'><a id='" + index + "' href='javascript:void(0);'>" + this._current_tt.damages[index].damageposition + '<br/>' + this._current_tt.damages[index].damagetype + "</a></div></center></li>");
-                }
-            }
+            $('#five .bxslider-five-b').empty().html(html).collapsibleset();
             window.slider_five_b.reloadSlider();  
         } 
 
@@ -694,12 +699,12 @@ var ScreenFiveView = Stapes.subclass({
         if (tt_list !== null && this._current_tt !== null && tt_list.html !== '') {
             this._lg.log('DEBUG', '#five render', 'reloading slider for troubleticketlist  to position ' + tt_list.position);        
 
-            $('.bxslider-five-a').html(tt_list.html);
-            console.log(tt_list.html);
+            $('.bxslider-five-a').html(tt_list.html).collapsibleset();
             window.slider_five_a.reloadSlider();
             window.slider_five_a.goToSlide(tt_list.position);
         } else {
             $('#one #troubleticketlist').html("<li><center><div style='height:60px;'>" + this._language.translate('No Damages Reported') + "</div></center></li>");
+            $('#one #troubleticketlist').collapsibleset();
             window.slider_five_a.reloadSlider();       
         }
         

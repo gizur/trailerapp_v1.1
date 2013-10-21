@@ -80,7 +80,7 @@ var ScreenContactView = Stapes.subclass({
 
             var contact_html = window.localStorage.getItem('contact');
 
-            this._lg.log('DEBUG',' contact_html ' + contact_html);
+            this._lg.log('DEBUG', '#contact$render', ' contact_html ' + contact_html);
 
             if (contact_html === null) {
                 $('#contact div[data-role=navbar]').siblings().remove();
@@ -94,7 +94,18 @@ var ScreenContactView = Stapes.subclass({
                     'in order to setup an account.</p></div>')).insertAfter('#contact div[data-role=navbar]');
             } else {
                 $('#contact div[data-role=navbar]').siblings().remove();
-                $('<div>' + contact_html + '</div>').insertAfter('#contact div[data-role=navbar]');
+                
+                var contactHtml = JSON.parse(contact_html);
+                var language = window.localStorage.getItem('language');
+                var address = '';
+                
+                if (language === null || typeof contactHtml[language] === 'undefined') {
+                	address = contactHtml['english'];
+                } else {
+                	address = contactHtml[language];
+                }
+                
+                $('<div>' + address + '</div>').insertAfter('#contact div[data-role=navbar]');
 
                 $('#contact div[data-role=navbar]').siblings().find('a');
 

@@ -135,8 +135,16 @@ var Language = Stapes.subclass({
                 'of' : 'av',
                 'Sending' : 'Skickar',
                 'Warning' : 'Varning'
-            }
-        );
+        });
+        
+        this.set('English', {
+        	 'Aggregatk&aring;pa' : 'Ciller',
+        	 'Trailersidor' : 'Cabinet Side',
+        	 'Underk&ouml;rningsskydd' : 'Bumber',
+        	 'D&ouml;rrar' : 'Rear Doors',
+        	 'Skyddspl&aring;tar' : 'Cover',
+        	 'St&ouml;dbensfot' : 'Landing Legs'
+        });
 
         if (typeof language !== 'undefined') {
             this.setLanguage(language);

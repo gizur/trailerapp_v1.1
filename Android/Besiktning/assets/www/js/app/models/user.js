@@ -36,7 +36,6 @@ var User = Stapes.subclass({
          * method from outside of here.
          * Arggghh Stapes!!!!
          */
-
         if (typeof aLogConfig === 'undefined') {
             aLogConfig = {
                 level  : 'FATAL',
@@ -72,7 +71,7 @@ var User = Stapes.subclass({
 
         var attrs = this._storage.getItem('user');
 
-        this._lg.log('DEBUG', 'js/models/user', 'stored attrs: ' + attrs);
+        lg.log('DEBUG', 'js/models/user', 'stored attrs: ' + attrs);
 
         if (attrs) {
 
@@ -95,7 +94,7 @@ var User = Stapes.subclass({
             }); 
         }
 
-        this._lg.log('DEBUG', 'js/models/user', 'effective attrs: ' + JSON.stringify(this.getAll()));
+        lg.log('DEBUG', 'js/models/user', 'effective attrs: ' + JSON.stringify(this.getAll()));
     },
 
     /**
@@ -144,7 +143,7 @@ var User = Stapes.subclass({
                     typeof data.error.message !== 'undefined' &&
                     data.error.message === 'Invalid Username and Password') {
 
-                	that._wrapper.clearNavigatorHistory();
+                    that._wrapper.clearNavigatorHistory();
 
                     /**
                      * Set authenticated flag off

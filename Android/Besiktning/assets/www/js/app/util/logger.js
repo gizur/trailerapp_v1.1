@@ -170,22 +170,25 @@ var Logger = (function() {
          */
 
         _logLoggly : function(loglevel, prefix, message) {
-            console.log(loglevel + ' : ' + (new Date()).toString()  + ' : ' + this._trace_id); 
-
-            if (typeof (new Error()).stack !== 'undefined') {           
-                console.log($.trim((new Error()).stack.split("\n")[4]).replace('at ',''));
-            }
-
-            /**
-             * Check if message is an object or a string
-             */
-
-            if (typeof message === 'object') {
-                console.log(prefix + ' : ' + JSON.stringify(message));
-            } else {
-                console.log(prefix + ' : ' + message);
-            }
-
+        	
+        	// CONSOLE LOG ONLY IN CASE OF DEBUG AND TRACE
+        	if(this._enum_level[loglevel] < 3) {
+	            console.log(loglevel + ' : ' + (new Date()).toString()  + ' : ' + this._trace_id); 
+	
+	            if (typeof (new Error()).stack !== 'undefined') {           
+	                console.log($.trim((new Error()).stack.split("\n")[4]).replace('at ',''));
+	            }
+	
+	            /**
+	             * Check if message is an object or a string
+	             */
+	
+	            if (typeof message === 'object') {
+	                console.log(prefix + ' : ' + JSON.stringify(message));
+	            } else {
+	                console.log(prefix + ' : ' + message);
+	            }
+        	}
             /**
              * Create the body which needs to be sent; teh Payload
              */

@@ -68,6 +68,8 @@ function changepage(page) {
     		if(button === 1){
     			resetFormFour();
     			resetFormOne();
+    			cleanCurrentTT();
+    			
     			$.mobile.changePage("#one");
     			return true;
     		} else {
@@ -103,7 +105,9 @@ function changepage(page) {
     }
 }
 
-function resetFormFour(){               
+function resetFormFour(){      
+	window.changeInPage = false;
+	
 	$('#four #damagetype').attr('value', '');
     $('#four #damageposition').attr('value', '');
     $('#four #drivercauseddamage').attr('value', '');
@@ -115,9 +119,13 @@ function resetFormFour(){
 	$('#four #damagetype').selectmenu('refresh');
     $('#four #damageposition').selectmenu('refresh');
     $('#four #drivercauseddamage').selectmenu('refresh');
+    
+    $('.bxslider-four').html("<li><center><div style='height:60px;width:200px;'>" + App._lang.translate('No Picture(s) Attached') + "</div></center></li>");
+    window.slider_four.reloadSlider();
 }
 
 function resetFormOne(){
+	window.changeInPage = false;
 	$('#one #trailertype').attr('value', '');
     $('#one #trailerid').attr('value', '');
     $('#one #place').attr('value', '');
@@ -131,6 +139,11 @@ function resetFormOne(){
     $('#one #place').selectmenu('refresh');
     $('#one input[name=sealed]').attr('checked', false).checkboxradio("refresh");
     
+    $('#one #troubleticketlist').html("<li><center><div style='height:60px;'>" + App._lang.translate('No Damages Reported') + "</div></center></li>");
+    window.slider_one.reloadSlider();
+}
+
+function cleanCurrentTT(){    
     window.localStorage.removeItem('tt_list');
     window.localStorage.removeItem('current_tt');
 }
@@ -206,6 +219,8 @@ $(document).delegate('#four', 'pageshow', function() {
     window.prevPage = 'four';
     window.surveyPage = 'four';
 
+    resetFormOne();
+    
     var pageFour = new ScreenFourView(App._usr, App._lg, App._lang, App._wrapper);
     pageFour.bindEventHandlers();
     pageFour.render();
@@ -271,6 +286,8 @@ $(document).delegate('#five', 'pageshow', function() {
     window.prevPage = 'five';
     window.surveyPage = 'five';
 
+    resetFormFour();
+    
     var pageFive = new ScreenFiveView(App._usr, App._lg, App._lang, App._wrapper);
     pageFive.bindEventHandlers();
     pageFive.render();
@@ -530,20 +547,6 @@ document.addEventListener("deviceready", function() {
 
     "use strict";
     
-    var lg = new Logger(Config.log.level, Config.log.type, Config.log.config);
-    var req = new Request(Config.url, undefined, Config.log);
-    var usr = new User(req, Config.log);
-    var language = new Language(undefined, Config.log);
-    var wrapper = new Wrapper(lg);
-    
-    App = {
-		_lg : lg,
-		_req : req,
-		_usr : usr,
-		_lang : language,
-		_wrapper : wrapper
-    };
-    
     /**
      * this variable is used to 
      * validate if change in page has done.
@@ -654,7 +657,10 @@ document.addEventListener("deviceready", function() {
 
                 App._wrapper.clearNavigatorHistory();
                 
-                if(!App._usr.get('refreshTime')) {
+                if (!App._usr.get('authenticated')) {
+                	$.mobile.changePage("#settings");
+                	return;
+                } else if(!App._usr.get('refreshTime')) {
             		window.refreshCache = true;
             		$.mobile.changePage('#settings');
             		return;

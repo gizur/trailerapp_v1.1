@@ -468,8 +468,7 @@ var ScreenSettingsView = Stapes.subclass({
         $('#settings #forgot_password').data('disabled', false);
         $('#settings #forgot_password').removeClass('ui-disabled');
 
-    },     
-
+    },
     /**
      * Render page
      *   
