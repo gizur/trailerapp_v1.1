@@ -66,11 +66,13 @@ function changepage(page) {
     		window.prevPage !== "settings" && window.prevPage !== "contact"){
     	var confirm = function(button){
     		if(button === 1){
+    			window.changeInPage = false;
+    			
     			resetFormFour();
     			resetFormOne();
     			cleanCurrentTT();
     			
-    			$.mobile.changePage("#one");
+    			$.mobile.changePage("#one", {allowSamePageTransition: true, transition: 'none', showLoadMsg: false, reloadPage: false});
     			return true;
     		} else {
     			return false;
