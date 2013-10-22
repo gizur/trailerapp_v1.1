@@ -105,39 +105,6 @@ var DocCollection = Stapes.subclass({
 
         };
 
-        var errorCb = function(jqxhr, status, er) {
-
-            jqxhr = status = er = undefined;
-
-            that._lg.log('TRACE', 'js/models/doccollection', 'download errorCb : start');
-
-            dc_success.splice(0,1);
-
-            /**
-             * Start downloading first document in the stack
-             */
-
-            while (dcc.length !== 0) {
-                dc = dcc.splice(0,1);
-                if ( dc[0] instanceof Doc ) {
-                    dc_success.push(dc[0]);
-                    that._lg.log('DEBUG', 'js/models/doccollection', ' errorCb downloading file id : ' + dc[0].get('id'));
-                    successCb();
-                    //dc[0].download(successCb, errorCb);
-                    break;
-                }
-            }
-
-            if (dcc.length === 0) {
-                if (typeof completedCb !== 'undefined') {
-                    completedCb(dc_success);            
-                }
-            }
-
-            that._lg.log('TRACE', 'js/models/doccollection', 'download errorCb : end');
-
-        };
-
         /**
          * Start downloading first document in the stack
          */

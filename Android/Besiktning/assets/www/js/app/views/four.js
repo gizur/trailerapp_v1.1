@@ -212,11 +212,15 @@ var ScreenFourView = Stapes.subclass({
 
             };
 
-            that._wrapper.getPicture(success, fail, {quality: Config.imageQuality,
-                destinationType: Camera.DestinationType.FILE_URI,
-                targetWidth: Config.imageTargetWidth,
-                correctOrientation: false
-            });
+            try {
+	            that._wrapper.getPicture(success, fail, {quality: Config.imageQuality,
+	                destinationType: Camera.DestinationType.FILE_URI,
+	                targetWidth: Config.imageTargetWidth,
+	                correctOrientation: false
+	            });
+            } catch (err) {
+            	that._lg.log('FATAL', '#four #takephoto', 'Fail : ' + JSON.stringify(err));
+            }
         });
 
         $('#four select#damagetype').unbind('change').bind('change', function() {

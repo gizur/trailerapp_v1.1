@@ -143,7 +143,8 @@ var Language = Stapes.subclass({
         	 'Underk&ouml;rningsskydd' : 'Bumber',
         	 'D&ouml;rrar' : 'Rear Doors',
         	 'Skyddspl&aring;tar' : 'Cover',
-        	 'St&ouml;dbensfot' : 'Landing Legs'
+        	 'St&ouml;dbensfot' : 'Landing Legs',
+        	 'Tak' : 'Roof'
         });
 
         if (typeof language !== 'undefined') {
