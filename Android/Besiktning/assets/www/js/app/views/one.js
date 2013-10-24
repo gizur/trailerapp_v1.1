@@ -513,6 +513,7 @@ var ScreenOneView = Stapes.subclass({
         		$('#one select#place').selectmenu('refresh');
         		
         		$('#one input[name=sealed]').attr('checked', this.htmlDecode(this._current_tt.sealed)).checkboxradio("refresh");
+        		$('#one #sealed').controlgroup();
         		
         		this._tt_list = JSON.parse(window.localStorage.getItem('tt_list'));
         		var empty = ($('#one select#trailerid').val().length > 0) && ($('#one select#trailertype').val().length > 0);
@@ -522,9 +523,11 @@ var ScreenOneView = Stapes.subclass({
 
                     $('#one #troubleticketlist').html(this._tt_list.html);
                     window.slider_one.goToSlide(this._tt_list.position);
+                    window.slider_one.reloadSlider();
                 } else {
                     window.localStorage.removeItem('tt_list');
-                    $('#one #troubleticketlist').html("<li><center><div style='height:60px;'>" + this._language.translate('No Damages Reported') + "</div></center></li>");                    
+                    $('#one #troubleticketlist').html("<li><center><div style='height:60px;'>" + this._language.translate('No Damages Reported') + "</div></center></li>");
+                    window.slider_one.reloadSlider();                    
                 }
         	}
         	
@@ -535,7 +538,7 @@ var ScreenOneView = Stapes.subclass({
                 sealed: $('#one input[name=sealed]:checked').val()
             };
         }
-        window.slider_one.reloadSlider();
+        
         window.changeInPage = false;
     },
     /**

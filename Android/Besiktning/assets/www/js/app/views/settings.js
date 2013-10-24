@@ -295,6 +295,9 @@ var ScreenSettingsView = Stapes.subclass({
 
                 var success = function( data ){
 
+                	// Set Authenticated = false
+                    that._usr.setAuthenticated(false);
+                    
                     that._lg.log('TRACE', '#dialog_resetpassword_confirm #resetpassword', ' password reset successfully ' + JSON.stringify(data));
                     
                     that._wrapper.clearNavigatorHistory();

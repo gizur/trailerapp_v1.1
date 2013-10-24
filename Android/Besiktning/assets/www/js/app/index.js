@@ -359,7 +359,9 @@ $(document).delegate('#settings', 'pageshow', function() {
     }
 });
 
-
+/**
+ * Render pages when cache completed
+ */
 $(document).delegate('#dialog_success_cache', 'pageshow', function(){
     
     /**
@@ -376,6 +378,7 @@ $(document).delegate('#dialog_success_cache', 'pageshow', function(){
 $(document).delegate('#dialog_notify_changevalidation', 'pagebeforeshow', function() {
     $(this).page('destroy').page();
 });
+
 /**
  * Page Before Change
  * Executed before transition or change between any pages

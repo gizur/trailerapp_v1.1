@@ -345,6 +345,8 @@ var ScreenFourView = Stapes.subclass({
                 'drivercauseddamage': $('#four #drivercauseddamage option:selected').text()
             };
         }
+        
+        window.changeInPage = false;
     },
     /**
      * Render page
