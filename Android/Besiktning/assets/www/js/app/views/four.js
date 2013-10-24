@@ -101,9 +101,9 @@ var ScreenFourView = Stapes.subclass({
 	            current_tt = JSON.parse(window.localStorage.getItem('current_tt'));
 	
 	            damage = {
-	                'damagetype': escapeHtmlEntities($('#four #damagetype option:selected').text()),
-	                'damageposition': escapeHtmlEntities($('#four #damageposition option:selected').text()),
-	                'drivercauseddamage': escapeHtmlEntities($('#four #drivercauseddamage option:selected').attr('value'))
+	                'damagetype': escapeHtmlEntities($('#four #damagetype').val()),
+	                'damageposition': escapeHtmlEntities($('#four #damageposition').val()),
+	                'drivercauseddamage': escapeHtmlEntities($('#four #drivercauseddamage').val())
 	            };
 	
 	            documents = [];
@@ -135,7 +135,7 @@ var ScreenFourView = Stapes.subclass({
 	
 	            window.localStorage.setItem('current_tt', JSON.stringify(current_tt));
 	
-	            $.mobile.changePage('#five');
+	            $.mobile.changePage('#five', {transition: 'none', showLoadMsg: false, reloadPage: false});
 	            //resetFormFour();	            
             }
             
@@ -162,7 +162,7 @@ var ScreenFourView = Stapes.subclass({
 
                     that._lg.log('TRACE', '#four #deletedamage', '#four #deletedamage refresh current page ');
                     
-                    $.mobile.changePage('#five');
+                    $.mobile.changePage('#five', {transition: 'none', showLoadMsg: false, reloadPage: false});
                     //resetFormFour();
                     //$.mobile.changePage('#four', {allowSamePageTransition: true, transition: 'none', showLoadMsg: false, reloadPage: false});
 
@@ -170,7 +170,7 @@ var ScreenFourView = Stapes.subclass({
 
                     that._lg.log('TRACE', '#four #deletedamage', '#four #deletedamage redirect to screen five ');
                     
-                    $.mobile.changePage('#five');
+                    $.mobile.changePage('#five', {transition: 'none', showLoadMsg: false, reloadPage: false});
                     //resetFormFour();                    
                 }
             } else {
@@ -264,29 +264,19 @@ var ScreenFourView = Stapes.subclass({
         });
 
     },
-    /**
-     * Render page
-     *   
-     * @return {void} 
-     */
-
-    render: function() {
-
-        "use strict";
-
-        /**
-         * Clear browser cache if any
-         */
-
-        this._wrapper.clearNavigatorCache();
+    
+    htmlDecode: function(value){ 
+	  return $('<div/>').html(value).text(); 
+	},
+	
+    setValues: function(){
+    	this._wrapper.clearNavigatorCache();
         this._wrapper.clearNavigatorHistory();
 
         if (window.changeInPage === false) {
-            var current_tt = JSON.parse(window.localStorage.getItem('current_tt'));
-
-            this._lg.log('DEBUG', '#four$render', '#four current_tt ' + window.localStorage.getItem('current_tt'));
-
-            /**
+        	var current_tt = JSON.parse(window.localStorage.getItem('current_tt'));
+        	
+        	/**
              * The index of the last damage added
              */
 
@@ -306,197 +296,135 @@ var ScreenFourView = Stapes.subclass({
                 this._lg.log('DEBUG', '#four$render', ' latest damage index from cache : ' + this._latest_damage_index);
                 window.localStorage.removeItem('latest_damage_index');
             }
+            
+            if (current_tt !== null && current_tt.damages instanceof Array) {
+	            
+            	$('#four select#damagetype').attr('value', this.htmlDecode(current_tt.damages[this._latest_damage_index].damagetype));
+	            $('#four select#damagetype').selectmenu('refresh');
+	            
+	            $('#four select#damagetype').change();
+	            
+	            $('#four select#damageposition').attr('value', this.htmlDecode(current_tt.damages[this._latest_damage_index].damageposition));
+	            $('#four select#damageposition').selectmenu('refresh');
+	            
+	            $("#four select#drivercauseddamage").attr('value', this.htmlDecode(current_tt.damages[this._latest_damage_index].drivercauseddamage));
+	            $('#four select#drivercauseddamage').selectmenu('refresh');
+	            
+	            $('.bxslider-four').html("<li><center><div style='height:60px;width:200px;'>" + this._language.translate('No Picture(s) Attached') + "</div></center></li>");
 
-            this._lg.log('DEBUG', '#four$render', ' current_tt.damages instanceof Array : ' + (current_tt.damages instanceof Array));
+	            /**
+	             * Document pictures enum loading
+	             */
 
-            /**
-             * string var to store the selected status
-             */
+	            if (this._latest_damage_index !== -1 &&
+	                    (current_tt.damages[this._latest_damage_index].documents instanceof Array)) {
+	                if (current_tt.damages[this._latest_damage_index].documents.length > 0) {
 
-            var selected;
+	                    $('.bxslider-four').html('');
+	                    for (index in current_tt.damages[this._latest_damage_index].documents) {
 
+	                        if (current_tt.damages[this._latest_damage_index].documents.hasOwnProperty(index)) {
+	                            this._lg.log('DEBUG', '#four$render', ' document path ' + current_tt.damages[this._latest_damage_index].documents[index].path);
+	                            $('.bxslider-four').append('<li><img style="width:100%;height:auto;" src="' + current_tt.damages[this._latest_damage_index].documents[index].path + '"/></li>');
+	                        }
+	                    }
+	                } else {
+	                    this._lg.log('DEBUG', '#four$render', ' no documents found ');
+	                }
+	            }
 
-
-            /**
-             * Load the filtered enum_damagetype / enum_damageposition into the select menu
-             * and refresh both damagetype and damageposition select menu
-             * as jquery mobile needs this, else it does not reflect 
-             * on the UI.
-             */
-
-            this._lg.log('TRACE', '#four$render', 'start loading values to select menu');
-
-            var dmg = new Damage(this._usr, Config.log);
-            var enum_damagetype = dmg.get('enum_damagetype');
-            var enum_damageposition;
-
-            this._lg.log('DEBUG', '#four$render', 'enum_damagetype : ' + JSON.stringify(enum_damagetype));
-
-            $('#four select#damagetype').html('');
-            $('#four select#damagetype').append('<option value=""> - ' + this._language.translate('Select One') + ' - </option>');
-            for (var index in enum_damagetype) {
-
-                if (enum_damagetype.hasOwnProperty(index)) {
-
-                    //Load value from cache
-                    selected = '';
-
-                    if (current_tt !== null && this._latest_damage_index !== -1) {
-                        this._lg.log('DEBUG', '#four$render', ' selected check damagetype : enum_damagetype[index].value ' + enum_damagetype[index].value);
-                        this._lg.log('DEBUG', '#four$render', ' selected check damagetype- : current_tt.damages[this._latest_damage_index].damagetype ' + current_tt.damages[this._latest_damage_index].damagetype);
-                    }
-
-                    if (current_tt !== null &&
-                            this._latest_damage_index !== -1 &&
-                            enum_damagetype[index].value === current_tt.damages[this._latest_damage_index].damagetype) {
-                        selected = 'selected="selected"';
-
-                        this._lg.log('DEBUG', '#four$render', ' typeof enum_damagetype[index].dependency.damageposition ' + typeof enum_damagetype[index].dependency.damageposition);
-
-                        if (typeof enum_damagetype[index].dependency !== 'undefined' &&
-                                typeof enum_damagetype[index].dependency.damageposition !== 'undefined') {
-
-                            this._lg.log('DEBUG', '#four$render', ' JSON.stringify(enum_damagetype[index].dependency.damageposition) ' + JSON.stringify(enum_damagetype[index].dependency.damageposition));
-
-                            enum_damageposition = enum_damagetype[index].dependency.damageposition;
-                        }
-
-                        this._lg.log('DEBUG', '#four$render', 'selected damagetype : ' + enum_damagetype[index].value);
-                    }
-
-                    $('#four select#damagetype').append('<option ' + selected + ' value="' + enum_damagetype[index].value + '">' + this._language.translate(enum_damagetype[index].label) + '</option>');
-                }
+	            window.slider_four.reloadSlider();
+            } else {
+            	$('.bxslider-four').html("<li><center><div style='height:60px;width:200px;'>" + this._language.translate('No Picture(s) Attached') + "</div></center></li>");
+            	window.slider_four.reloadSlider();
             }
-
-            $('#four select#damagetype').selectmenu('refresh');
-
-            /**
-             * Damge position enum loading to select menu
-             */
-
-            if (typeof enum_damageposition === 'undefined') {
-                enum_damageposition = dmg.get('enum_damageposition');
-            }
-
-            this._lg.log('DEBUG', '#four$render', 'enum_damageposition : ' + JSON.stringify(enum_damageposition));
-
-            $('#four select#damageposition').html('');
-            $('#four select#damageposition').append('<option value=""> - ' + this._language.translate('Select One') + ' - </option>');
-
-            for (index in enum_damageposition) {
-
-                if (enum_damageposition.hasOwnProperty(index)) {
-
-                    /**
-                     * Load value from cache
-                     */
-
-                    selected = '';
-
-                    if (current_tt !== null &&
-                            this._latest_damage_index !== -1 &&
-                            enum_damageposition[index].value === current_tt.damages[this._latest_damage_index].damageposition) {
-                        selected = 'selected="selected"';
-                        this._lg.log('DEBUG', '#four$render', 'selected damageposition : ' + enum_damageposition[index].value);
-                    }
-
-                    $('#four select#damageposition').append('<option ' + selected + ' value="' + enum_damageposition[index].value + '">' + enum_damageposition[index].label + '</option>');
-
-                }
-
-            }
-
-            $('#four select#damageposition').selectmenu('refresh');
-
-            /**
-             * Show the delete button or not
-             */
-
-            if (this._latest_damage_index === -1) {
-
-                this._lg.log('DEBUG', '#four$render', ' this._latest_damage_index ' + this._latest_damage_index);
-
-                if (typeof current_tt.damages !== 'undefined') {
-                    this._lg.log('DEBUG', '#four$render', ' current_tt.damages.length ' + current_tt.damages.length);
-                }
-            }
-
-            if (this._latest_damage_index !== -1) {
-
-                this._lg.log('DEBUG', '#four$render', '(current_tt.damages[this._latest_damage_index].documents instanceof Array) ' + (current_tt.damages[this._latest_damage_index].documents instanceof Array));
-
-                if ((current_tt.damages[this._latest_damage_index].documents instanceof Array)) {
-                    this._lg.log('DEBUG', '#four$render', 'current_tt.damages[this._latest_damage_index].documents.length ' + current_tt.damages[this._latest_damage_index].documents.length);
-                }
-            }
-
-            $('.bxslider-four').html("<li><center><div style='height:60px;width:200px;'>" + this._language.translate('No Picture(s) Attached') + "</div></center></li>");
-
-            /**
-             * Document pictures enum loading
-             */
-
-            if (this._latest_damage_index !== -1 &&
-                    (current_tt.damages[this._latest_damage_index].documents instanceof Array)) {
-
-                if (current_tt.damages[this._latest_damage_index].documents.length > 0) {
-
-                    $('.bxslider-four').html('');
-                    for (index in current_tt.damages[this._latest_damage_index].documents) {
-
-                        if (current_tt.damages[this._latest_damage_index].documents.hasOwnProperty(index)) {
-                            this._lg.log('DEBUG', '#four$render', ' document path ' + current_tt.damages[this._latest_damage_index].documents[index].path);
-                            $('.bxslider-four').append('<li><img style="width:100%;height:auto;" src="' + current_tt.damages[this._latest_damage_index].documents[index].path + '"/></li>');
-                        }
-
-                    }
-
-                } else {
-
-                    this._lg.log('DEBUG', '#four$render', ' no documents found ');
-
-                }
-            }
-
-            window.slider_four.reloadSlider();
-
-            //Driver caused enum loading to select menu
-            this._lg.log('TRACE', '#four$render', 'damage caused damage start ');
-            var enum_drivercauseddamage = dmg.get('enum_drivercauseddamage');
-
-            this._lg.log('DEBUG', '#four$render', 'enum_drivercauseddamage : ' + JSON.stringify(enum_drivercauseddamage));
-
-            $('#four select#drivercauseddamage').html('');
-            $('#four select#drivercauseddamage').append('<option value=""> - ' + this._language.translate('Select One') + ' - </option>');
-            for (index in enum_drivercauseddamage) {
-                if (enum_drivercauseddamage.hasOwnProperty(index)) {
-                    $('#four select#drivercauseddamage').append('<option value="' + enum_drivercauseddamage[index].value + '">' + this._language.translate(enum_drivercauseddamage[index].label) + '</option>');
-                }
-            }
-
-            if (this._latest_damage_index !== -1) {
-
-                this._lg.log('DEBUG', '#four$render', 'drivercauseddamage ' + current_tt.damages[this._latest_damage_index].drivercauseddamage);
-                $("#four select#drivercauseddamage option[value='" + current_tt.damages[this._latest_damage_index].drivercauseddamage + "']").attr("selected", "selected");
-
-            }
-
-            $('#four select#drivercauseddamage').selectmenu('refresh');
-
-            this._lg.log('TRACE', '#four$render', 'end loading values to select menu');
-
-            /**
-             * Current Object is used to 
-             * verify if user has modified anything
-             * on the page.
-             */
+            
             window.currentObj = {
                 'damagetype': $('#four #damagetype option:selected').text(),
                 'damageposition': $('#four #damageposition option:selected').text(),
                 'drivercauseddamage': $('#four #drivercauseddamage option:selected').text()
             };
-
         }
-        window.changeInPage = false;
+    },
+    /**
+     * Render page
+     *   
+     * @return {void} 
+     */
+
+    render: function() {
+
+        "use strict";
+        /**
+         * Load the filtered enum_damagetype / enum_damageposition into the select menu
+         * and refresh both damagetype and damageposition select menu
+         * as jquery mobile needs this, else it does not reflect 
+         * on the UI.
+         */
+
+        this._lg.log('TRACE', '#four$render', 'start loading values to select menu');
+
+        var dmg = new Damage(this._usr, Config.log);
+        var enum_damagetype = dmg.get('enum_damagetype');
+        var enum_damageposition;
+
+        this._lg.log('DEBUG', '#four$render', 'enum_damagetype : ' + JSON.stringify(enum_damagetype));
+
+        $('#four select#damagetype').html('');
+        $('#four select#damagetype').append('<option value=""> - ' + this._language.translate('Select One') + ' - </option>');
+        for (var index in enum_damagetype) {
+
+            if (enum_damagetype.hasOwnProperty(index)) {
+                $('#four select#damagetype').append('<option value="' + enum_damagetype[index].value + '">' + this._language.translate(enum_damagetype[index].label) + '</option>');
+            }
+        }
+
+        /**
+         * Damge position enum loading to select menu
+         */
+
+        if (typeof enum_damageposition === 'undefined') {
+            enum_damageposition = dmg.get('enum_damageposition');
+        }
+
+        this._lg.log('DEBUG', '#four$render', 'enum_damageposition : ' + JSON.stringify(enum_damageposition));
+
+        $('#four select#damageposition').html('');
+        $('#four select#damageposition').append('<option value=""> - ' + this._language.translate('Select One') + ' - </option>');
+
+        for (index in enum_damageposition) {
+
+            if (enum_damageposition.hasOwnProperty(index)) {
+                $('#four select#damageposition').append('<option value="' + enum_damageposition[index].value + '">' + enum_damageposition[index].label + '</option>');
+            }
+        }
+
+        //Driver caused enum loading to select menu
+        this._lg.log('TRACE', '#four$render', 'damage caused damage start ');
+        var enum_drivercauseddamage = dmg.get('enum_drivercauseddamage');
+
+        this._lg.log('DEBUG', '#four$render', 'enum_drivercauseddamage : ' + JSON.stringify(enum_drivercauseddamage));
+
+        $('#four select#drivercauseddamage').html('');
+        $('#four select#drivercauseddamage').append('<option value=""> - ' + this._language.translate('Select One') + ' - </option>');
+        for (index in enum_drivercauseddamage) {
+            if (enum_drivercauseddamage.hasOwnProperty(index)) {
+                $('#four select#drivercauseddamage').append('<option value="' + enum_drivercauseddamage[index].value + '">' + this._language.translate(enum_drivercauseddamage[index].label) + '</option>');
+            }
+        }
+
+        this._lg.log('TRACE', '#four$render', 'end loading values to select menu');
+        
+        $('.bxslider-four').html("<li><center><div style='height:60px;width:200px;'>" + this._language.translate('No Picture(s) Attached') + "</div></center></li>");
+
+        window.slider_four.reloadSlider();
+        
+        $('#four #damagetype').selectmenu();
+        $('#four #damageposition').selectmenu();
+        $('#four #drivercauseddamage').selectmenu();
+        
+    	$('#four #damagetype').selectmenu('refresh');
+        $('#four #damageposition').selectmenu('refresh');
+        $('#four #drivercauseddamage').selectmenu('refresh');
     }
 });

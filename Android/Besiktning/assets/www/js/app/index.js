@@ -87,7 +87,7 @@ function changepage(page) {
     		if(button === 1){
     			window.changeInPage = false; 
     			window.localStorage.removeItem('current_tt');
-    			$.mobile.changePage("#" + page);
+    			$.mobile.changePage("#" + page, {transition: 'none', showLoadMsg: false, reloadPage: false});
     			return true;
     		} else {
     			return false;
@@ -190,7 +190,7 @@ $(document).delegate('#one', 'pageshow', function() {
          * -------------------
          */
 
-        pageOne.render();
+        pageOne.setValues();
 
         /**
          * Only once this page is completed logger should be allowed 
@@ -225,7 +225,7 @@ $(document).delegate('#four', 'pageshow', function() {
     
     var pageFour = new ScreenFourView(App._usr, App._lg, App._lang, App._wrapper);
     pageFour.bindEventHandlers();
-    pageFour.render();
+    pageFour.setValues();
 
 });
 
@@ -359,6 +359,19 @@ $(document).delegate('#settings', 'pageshow', function() {
     }
 });
 
+
+$(document).delegate('#dialog_success_cache', 'pageshow', function(){
+    
+    /**
+	 * Render the page one and four
+	 * may have any change in picklists
+	 */
+	var pageOne = new ScreenOneView(App._usr, App._lg, App._lang, App._wrapper);
+    pageOne.render();
+    
+    var pageFour = new ScreenFourView(App._usr, App._lg, App._lang, App._wrapper);
+    pageFour.render();    
+});
 
 $(document).delegate('#dialog_notify_changevalidation', 'pagebeforeshow', function() {
     $(this).page('destroy').page();
@@ -540,6 +553,17 @@ $(document).bind('pagebeforechange', function(e, data) {
 });
 
 /**
+ * Mobile Init
+ * Set some global config
+ */
+$(document).bind("mobileinit", function(){
+	$.extend(  $.mobile , {
+		defaultPageTransition: 'none', defaultDialogTransition: 'none',
+		 showPageLoadingMsg: false
+	});
+});
+
+/**
  * Device Ready
  * Shows and splash screen and waits for the cordova
  * API to be loaded. Once done changes to page one
@@ -681,4 +705,9 @@ document.addEventListener("deviceready", function() {
             }
         );
     }
+    var pageOne = new ScreenOneView(App._usr, App._lg, App._lang, App._wrapper);
+    pageOne.render();
+    
+    var pageFour = new ScreenFourView(App._usr, App._lg, App._lang, App._wrapper);
+    pageFour.render();
 }, false);

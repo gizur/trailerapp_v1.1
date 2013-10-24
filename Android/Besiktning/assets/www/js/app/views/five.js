@@ -577,7 +577,7 @@ var ScreenFiveView = Stapes.subclass({
 
             that.enable();
 
-            $.mobile.changePage('#four');  
+            $.mobile.changePage('#four', {transition: 'none', showLoadMsg: false, reloadPage: false});  
 
             that._lg.log('TRACE', '#five #reportanotherdamage', '#five #savedamage click end');   
         }); 
@@ -600,7 +600,7 @@ var ScreenFiveView = Stapes.subclass({
 
             that.enable();
             
-            $.mobile.changePage('#four');
+            $.mobile.changePage('#four', {transition: 'none', showLoadMsg: false, reloadPage: false});
 
             that._lg.log('TRACE', '#five .bxslider-five-b li a', '#five .bxslider-five-b li a click end');        
         });        

@@ -47,7 +47,7 @@ var Language = Stapes.subclass({
         }
 
         this.extend({
-            _lg : new Logger('DEBUG', aLogConfig.type, aLogConfig.config)
+            _lg : new Logger(aLogConfig.type, aLogConfig.type, aLogConfig.config)
         });
 
         /**

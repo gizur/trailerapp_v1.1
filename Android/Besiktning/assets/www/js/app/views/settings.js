@@ -150,6 +150,7 @@ var ScreenSettingsView = Stapes.subclass({
                         if (cacheErrorList.length === 0) { 
                         	
                         	window.refreshCache = false;
+                            
                         	$('#a_dialog_success_cache').click();
                             that._wrapper.clearNavigatorHistory();
 

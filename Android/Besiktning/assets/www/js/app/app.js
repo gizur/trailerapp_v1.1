@@ -14,11 +14,11 @@
  */
 
 var lg = new Logger(Config.log.level, Config.log.type, Config.log.config);
-    var req = new Request(Config.url, undefined, Config.log);
-    var usr = new User(req, Config.log);
-    var language = new Language(undefined, Config.log);
-    var wrapper = new Wrapper(lg);
-    
+var req = new Request(Config.url, undefined, Config.log);
+var usr = new User(req, Config.log);
+var language = new Language(undefined, Config.log);
+var wrapper = new Wrapper(lg);
+
 var App = {
 	_lg : lg,
 	_req : req,
