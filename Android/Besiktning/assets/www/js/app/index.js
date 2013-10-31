@@ -26,7 +26,7 @@
  */
 
 function changepage(page) {
-    window.changeInPage = false;
+    App.changeInPage = false;
     
     var lg = App._lg;
     var wrapper = App._wrapper;
@@ -37,23 +37,23 @@ function changepage(page) {
     	return;
     }
     
-    if (window.currentObj !== null) {
-        console.log(JSON.stringify(window.currentObj));
-        for (index in window.currentObj) {
-            if (window.currentObj.hasOwnProperty(index)) {
+    if (App.currentObj !== null) {
+        console.log(JSON.stringify(App.currentObj));
+        for (index in App.currentObj) {
+            if (App.currentObj.hasOwnProperty(index)) {
                 console.log("Fetching " + index);
 
-                var val = $('#' + window.prevPage + " #" + index).val();
+                var val = $('#' + App.prevPage + " #" + index).val();
                 
-                if ($('#' + window.prevPage + " #" + index).is('select'))
-                    val = $('#' + window.prevPage + " #" + index + " option:selected").text();
+                if ($('#' + App.prevPage + " #" + index).is('select'))
+                    val = $('#' + App.prevPage + " #" + index + " option:selected").text();
 
-                if ($('#' + window.prevPage + " input[name=" + index + "]").is(':radio'))
-                    val = $('#' + window.prevPage + " input[name=" + index + "]:checked").val();
+                if ($('#' + App.prevPage + " input[name=" + index + "]").is(':radio'))
+                    val = $('#' + App.prevPage + " input[name=" + index + "]:checked").val();
 
-                if (val !== window.currentObj[index]) {
-                    console.log(val + " Not matched " + window.currentObj[index]);
-                    window.changeInPage = true;
+                if (val !== App.currentObj[index]) {
+                    console.log(val + " Not matched " + App.currentObj[index]);
+                    App.changeInPage = true;
                     break;
                 }
             } else {
@@ -62,11 +62,11 @@ function changepage(page) {
         }
     }
 
-    if(page === "one" && (window.changeInPage || window.prevPage === "four" || window.prevPage === "five") && 
-    		window.prevPage !== "settings" && window.prevPage !== "contact"){
+    if(page === "one" && (App.changeInPage || App.prevPage === "four" || App.prevPage === "five") && 
+    		App.prevPage !== "settings" && App.prevPage !== "contact"){
     	var confirm = function(button){
     		if(button === 1){
-    			window.changeInPage = false;
+    			App.changeInPage = false;
     			
     			resetFormFour();
     			resetFormOne();
@@ -81,12 +81,17 @@ function changepage(page) {
     	
     	wrapper.showConfirm(language.translate("Your changes will not be saved."), confirm, language.translate("Warning"), language.translate("Confirm,Cancel"));    		
     	
-    } else if (window.changeInPage && page !== window.prevPage) {
+    } else if (App.changeInPage && page !== App.prevPage) {
     	
     	var confirm = function(button){
     		if(button === 1){
-    			window.changeInPage = false; 
-    			window.localStorage.removeItem('current_tt');
+    			App.changeInPage = false; 
+    			
+    			if(App.prevPage === "one")
+    				resetFormOne();
+    			if(App.prevPage === "four")
+    				resetFormFour();
+    			
     			$.mobile.changePage("#" + page, {transition: 'none', showLoadMsg: false, reloadPage: false});
     			return true;
     		} else {
@@ -96,9 +101,9 @@ function changepage(page) {
     	
     	wrapper.showConfirm(language.translate("You have made changes. If you continue, your changes will not be saved."), confirm, language.translate("Warning"), language.translate("Continue,Cancel"));
 	} else  {
-		if( (window.prevPage === "contact" || window.prevPage === "settings") && page === 'one') {
-			if(typeof window.surveyPage !== 'undefined')
-				$.mobile.changePage("#" + window.surveyPage);
+		if( (App.prevPage === "contact" || App.prevPage === "settings") && page === 'one') {
+			if(typeof App.surveyPage !== 'undefined')
+				$.mobile.changePage("#" + App.surveyPage);
 			else
 				$.mobile.changePage("#" + page);
 		} else {
@@ -108,7 +113,7 @@ function changepage(page) {
 }
 
 function resetFormFour(){      
-	window.changeInPage = false;
+	App.changeInPage = false;
 	
 	$('#four #damagetype').attr('value', '');
     $('#four #damageposition').attr('value', '');
@@ -123,11 +128,11 @@ function resetFormFour(){
     $('#four #drivercauseddamage').selectmenu('refresh');
     
     $('.bxslider-four').html("<li><center><div style='height:60px;width:200px;'>" + App._lang.translate('No Picture(s) Attached') + "</div></center></li>");
-    window.slider_four.reloadSlider();
+    App.slider_four.reloadSlider();
 }
 
 function resetFormOne(){
-	window.changeInPage = false;
+	App.changeInPage = false;
 	$('#one #trailertype').attr('value', '');
     $('#one #trailerid').attr('value', '');
     $('#one #place').attr('value', '');
@@ -142,7 +147,7 @@ function resetFormOne(){
     $('#one input[name=sealed]').attr('checked', false).checkboxradio("refresh");
     
     $('#one #troubleticketlist').html("<li><center><div style='height:60px;'>" + App._lang.translate('No Damages Reported') + "</div></center></li>");
-    window.slider_one.reloadSlider();
+    App.slider_one.reloadSlider();
 }
 
 function cleanCurrentTT(){    
@@ -160,8 +165,8 @@ $(document).delegate('#one', 'pageshow', function() {
 
     "use strict";
 
-    window.prevPage = 'one';
-    window.surveyPage = 'one';
+    App.prevPage = 'one';
+    App.surveyPage = 'one';
 
     try {
 
@@ -182,14 +187,19 @@ $(document).delegate('#one', 'pageshow', function() {
          * ------------------
          */
 
-        pageOne.bindEventHandlers();
-
         /**
          * -------------------
          * Render the page
          * -------------------
          */
-
+        
+        if(!App.pageOneLoaded) {
+            pageOne.render();
+            App.pageOneLoaded = true;
+            $.mobile.changePage('#one', {allowSamePageTransition: true, transition: 'none', showLoadMsg: false, reloadPage: false});
+        }
+                     
+        pageOne.bindEventHandlers();
         pageOne.setValues();
 
         /**
@@ -204,8 +214,6 @@ $(document).delegate('#one', 'pageshow', function() {
     	App._lg.log('FATAL', 'gta-page#one$pageshow', JSON.stringify(err));
 
     }
-
-    App._lg.log('DEBUG', 'gta-page#one$pageshow', '#one #troubleticketlist html : ' + $('#one #troubleticketlist').html());
 });
 
 /**
@@ -218,12 +226,18 @@ $(document).delegate('#four', 'pageshow', function() {
 
     "use strict";
 
-    window.prevPage = 'four';
-    window.surveyPage = 'four';
+    App.prevPage = 'four';
+    App.surveyPage = 'four';
 
     resetFormOne();
     
     var pageFour = new ScreenFourView(App._usr, App._lg, App._lang, App._wrapper);
+    
+    if(!App.pageFourLoaded) {
+        pageFour.render();
+        App.pageFourLoaded = true;
+    }
+    
     pageFour.bindEventHandlers();
     pageFour.setValues();
 
@@ -239,7 +253,7 @@ $(document).delegate('#two', 'pageshow', function(e, data) {
 
     "use strict";
 
-    window.prevPage = 'two';
+    App.prevPage = 'two';
 
     var pageTwo = new ScreenTwoView(App._lg, App._lang, App._wrapper);
     pageTwo.bindEventHandlers();
@@ -259,7 +273,7 @@ $(document).delegate('#three', 'pageshow', function(e, data) {
 
     "use strict";
 
-    window.prevPage = 'three';
+    App.prevPage = 'three';
     
     var base64_image = window.localStorage.getItem(window.localStorage.getItem('details_doc_id'));
     
@@ -285,8 +299,8 @@ $(document).delegate('#five', 'pageshow', function() {
 
     "use strict";
 
-    window.prevPage = 'five';
-    window.surveyPage = 'five';
+    App.prevPage = 'five';
+    App.surveyPage = 'five';
 
     resetFormFour();
     
@@ -316,7 +330,7 @@ $(document).delegate('#contact', 'pageshow', function() {
      * Environment SetUp
      */
 
-    window.prevPage = 'contact';
+    App.prevPage = 'contact';
     
     var pageContact = new ScreenContactView(App._lg, App._wrapper);
     pageContact.bindEventHandlers();
@@ -335,7 +349,7 @@ $(document).delegate('#settings', 'pageshow', function() {
 
     "use strict";
 
-    window.prevPage = 'settings';
+    App.prevPage = 'settings';
 
     try {
 
@@ -346,9 +360,9 @@ $(document).delegate('#settings', 'pageshow', function() {
         
         App._lg.log('TRACE', 'gta-page#settings$pageshow', 'page loaded');
         
-        if (App._usr.get('authenticated') && window.refreshCache) {
+        if (App._usr.get('authenticated') && App.refreshCache) {
         	// Login again
-        	window.refreshCache = false;
+        	App.refreshCache = false;
 	        $('#settings_save').click();
         }
 
@@ -368,11 +382,8 @@ $(document).delegate('#dialog_success_cache', 'pageshow', function(){
 	 * Render the page one and four
 	 * may have any change in picklists
 	 */
-	var pageOne = new ScreenOneView(App._usr, App._lg, App._lang, App._wrapper);
-    pageOne.render();
-    
-    var pageFour = new ScreenFourView(App._usr, App._lg, App._lang, App._wrapper);
-    pageFour.render();    
+    App.pageOneLoaded = false;
+    App.pageFourLoaded = false;
 });
 
 $(document).delegate('#dialog_notify_changevalidation', 'pagebeforeshow', function() {
@@ -390,7 +401,9 @@ $(document).bind('pagebeforechange', function(e, data) {
     "use strict";
 
     try {
-
+    	if(typeof App._lg === "undefined")
+        	new Logger(Config.log.level, Config.log.type, Config.log.config);
+    	
     	var to = data.toPage,
                 from = data.options.fromPage;
 
@@ -429,7 +442,7 @@ $(document).bind('pagebeforechange', function(e, data) {
              */
 
             App._lg.log('DEBUG', 'gta-page$pagebeforechange', 'usr.authenticated: ' + usr.get('authenticated'));
-            App._lg.log('DEBUG', 'gta-page$pagebeforechange', ' to.attr(id): ' + to.attr('id'));
+            //App._lg.log('DEBUG', 'gta-page$pagebeforechange', ' to.attr(id): ' + to.attr('id'));
 
             if (to.attr('id') === 'settings') {
 
@@ -580,61 +593,10 @@ document.addEventListener("deviceready", function() {
      * this variable is used to 
      * validate if change in page has done.
      */
-    window.changeInPage = false;
+    App.changeInPage = false;
     
-    /**
-     * Slider widget
-     */
-
-    window.slider_five_a = $('.bxslider-five-a').bxSlider({
-        infiniteLoop: true,
-        hideControlOnEnd: true,
-        pager: true,
-        pagerSelector: '#pager-five-a',
-        pagerType: 'short',
-        useCSS: false,
-        swipeThreshold: 10
-    });
-
-    window.slider_five_b = $('.bxslider-five-b').bxSlider({
-        infiniteLoop: true,
-        hideControlOnEnd: true,
-        pager: true,
-        pagerSelector: '#pager-five-b',
-        pagerType: 'short',
-        useCSS: false,
-        swipeThreshold: 10
-    });
-
-    window.slider_one = $('.bxslider-one').bxSlider({
-        infiniteLoop: true,
-        hideControlOnEnd: true,
-        pager: true,
-        pagerSelector: '#pager-one',
-        pagerType: 'short',
-        useCSS: false,
-        swipeThreshold: 10
-    });
-
-    window.slider_four = $('.bxslider-four').bxSlider({
-        infiniteLoop: false,
-        hideControlOnEnd: true,
-        pager: true,
-        pagerSelector: '#pager-four',
-        pagerType: 'short',
-        useCSS: false,
-        swipeThreshold: 10
-    });
-
-    window.slider_two = $('.bxslider-two').bxSlider({
-        infiniteLoop: false,
-        hideControlOnEnd: true,
-        pager: true,
-        pagerSelector: '#pager-two',
-        pagerType: 'short',
-        useCSS: false,
-        swipeThreshold: 10
-    });
+    if(typeof App._lg === "undefined")
+    	new Logger(Config.log.level, Config.log.type, Config.log.config);
 
     /**
      * Localization
@@ -687,30 +649,25 @@ document.addEventListener("deviceready", function() {
                 App._wrapper.clearNavigatorHistory();
                 
                 if (!App._usr.get('authenticated')) {
-                	$.mobile.changePage("#settings");
+                	$.mobile.changePage("#settings", {transition: 'none', showLoadMsg: false, reloadPage: false});
                 	return;
                 } else if(!App._usr.get('refreshTime')) {
-            		window.refreshCache = true;
-            		$.mobile.changePage('#settings');
+            		App.refreshCache = true;
+            		$.mobile.changePage('#settings', {transition: 'none', showLoadMsg: false, reloadPage: false});
             		return;
             	} else {
             		var diff = new Date().getTime() - usr.get('refreshTime');
             		App._lg.log('DEBUG', 'deviceready', 'Last cache refresh time : ' + usr.get('refreshTime'));
             		App._lg.log('DEBUG', 'deviceready', "Cache time differance : " + diff + " milliseconds.");
             		if (diff > Config.cacheRefreshTime) {
-            			window.refreshCache = true;
-            			$.mobile.changePage('#settings');
+            			App.refreshCache = true;
+            			$.mobile.changePage('#settings', {transition: 'none', showLoadMsg: false, reloadPage: false});
                 		return;
             		} else {
-            			$.mobile.changePage('#one');
+            			$.mobile.changePage('#one', {transition: 'none', showLoadMsg: false, reloadPage: false});
             		}
             	}
             }
         );
     }
-    var pageOne = new ScreenOneView(App._usr, App._lg, App._lang, App._wrapper);
-    pageOne.render();
-    
-    var pageFour = new ScreenFourView(App._usr, App._lg, App._lang, App._wrapper);
-    pageFour.render();
 }, false);

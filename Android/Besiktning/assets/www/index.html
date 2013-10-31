@@ -9,7 +9,8 @@
 	<link href="css/jquery.bxslider.css" rel="stylesheet" />	
 	
     <!--lib-->
-    <script src="js/lib/cordova.js"></script>
+    <script src="cordova.js"></script>
+    <!-- script src="cordova_plugins.js"></script>  -->
 	<script src="js/lib/jquery.mobile-1.2.1/jquery-1.8.3.min.js"></script>  
 	<script src="js/lib/jquery.mobile-1.2.1/jquery.mobile-1.2.1.min.js"></script>
 	<script src="js/lib/jquery.bxslider.js"></script>
@@ -46,13 +47,13 @@
     <script src="js/app/app.js"></script>
 </head>
 <body> 
-<div data-role="page" id="splash">
+<!--<div data-role="page" id="splash">
 	<div data-role="content">
     	<div>
         	<img style="display:block;width:100%;height:auto;" src="img/splash.png"/>
         </div>
     </div>
-</div>
+</div>-->
 <!-- Start of first page: #one -->
 <div data-role="page" id="one">
 	<div data-role="content" >	
@@ -144,7 +145,7 @@
                 </li>
             </ul>
         </div>
-		<p><a href="#one" onclick="window.changeInPage = true;" data-role="button" data-inline="true" data-icon="back">Back</a></p>
+		<p><a href="#one" onclick="App.changeInPage = true;" data-role="button" data-inline="true" data-icon="back">Back</a></p>
         <h3>Damage Information</h3>
         <div data-role="fieldcontain">
             <label for="damagetype">

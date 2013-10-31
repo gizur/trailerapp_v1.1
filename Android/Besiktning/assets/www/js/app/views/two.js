@@ -34,7 +34,17 @@ var ScreenTwoView = Stapes.subclass({
          * method from outside of here.
          * Arggghh Stapes!!!!
          */
-
+        if(typeof App.slider_two.reloadSlider === "undefined") {
+            App.slider_two = $('.bxslider-two').bxSlider({
+                infiniteLoop: false,
+                hideControlOnEnd: true,
+                pager: true,
+                pagerSelector: '#pager-two',
+                pagerType: 'short',
+                useCSS: false,
+                swipeThreshold: 10
+            });
+        }
         this.extend({
             _lg : aLog,
             _language : aLanguage,
@@ -85,7 +95,7 @@ var ScreenTwoView = Stapes.subclass({
         $('#two #damagetype').val(tt.damagetype);
         $('#two #damageposition').val(tt.damageposition);
         
-        $('#two a[data-icon="back"]').attr('onclick', 'window.changeInPage = true;');
+        $('#two a[data-icon="back"]').attr('onclick', 'App.changeInPage = true;');
 
         /**
          * Load images
@@ -122,8 +132,8 @@ var ScreenTwoView = Stapes.subclass({
                 "</div></center></li>");
         }
 
-        window.changeInPage = false;
-        window.slider_two.reloadSlider();
+        App.changeInPage = false;
+        App.slider_two.reloadSlider();
         return false;
     }
 });

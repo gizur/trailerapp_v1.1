@@ -24,9 +24,66 @@ var App = {
 	_req : req,
 	_usr : usr,
 	_lang : language,
-	_wrapper : wrapper
+	_wrapper : wrapper,
+    changeInPage : false,
+    pageOneLoaded : false,
+    pageFourLoaded : false
 };
 
+
+/**
+ * Slider widget
+ */
+
+App.slider_five_a = $('.bxslider-five-a').bxSlider({
+    infiniteLoop: true,
+    hideControlOnEnd: true,
+    pager: true,
+    pagerSelector: '#pager-five-a',
+    pagerType: 'short',
+    useCSS: false,
+    swipeThreshold: 10
+});
+
+App.slider_five_b = $('.bxslider-five-b').bxSlider({
+    infiniteLoop: true,
+    hideControlOnEnd: true,
+    pager: true,
+    pagerSelector: '#pager-five-b',
+    pagerType: 'short',
+    useCSS: false,
+    swipeThreshold: 10
+});
+
+App.slider_one = $('.bxslider-one').bxSlider({
+    infiniteLoop: true,
+    hideControlOnEnd: true,
+    pager: true,
+    pagerSelector: '#pager-one',
+    pagerType: 'short',
+    useCSS: false,
+    swipeThreshold: 10
+});
+
+App.slider_four = $('.bxslider-four').bxSlider({
+    infiniteLoop: false,
+    hideControlOnEnd: true,
+    pager: true,
+    pagerSelector: '#pager-four',
+    pagerType: 'short',
+    useCSS: false,
+    swipeThreshold: 10
+});
+
+App.slider_two = $('.bxslider-two').bxSlider({
+    infiniteLoop: false,
+    hideControlOnEnd: true,
+    pager: true,
+    pagerSelector: '#pager-two',
+    pagerType: 'short',
+    useCSS: false,
+    swipeThreshold: 10
+});
  /**
  * For node-unit test
  */

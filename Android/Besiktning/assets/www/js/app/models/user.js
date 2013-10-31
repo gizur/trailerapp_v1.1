@@ -71,7 +71,8 @@ var User = Stapes.subclass({
 
         var attrs = this._storage.getItem('user');
 
-        lg.log('DEBUG', 'js/models/user', 'stored attrs: ' + attrs);
+        if(typeof attrs === "object")
+        	this._lg.log('DEBUG', 'js/models/user', 'stored attrs: ' + JSON.stringify(attrs));
 
         if (attrs) {
 
@@ -93,8 +94,9 @@ var User = Stapes.subclass({
                 'refreshTime' : ''
             }); 
         }
-
-        lg.log('DEBUG', 'js/models/user', 'effective attrs: ' + JSON.stringify(this.getAll()));
+        
+        if(typeof this.getAll() !== "undefined" && typeof this.getAll() === "object")
+        	this._lg.log('DEBUG', 'js/models/user', 'effective attrs: ' + JSON.stringify(this.getAll()));
     },
 
     /**

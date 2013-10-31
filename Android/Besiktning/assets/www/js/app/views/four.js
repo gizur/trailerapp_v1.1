@@ -43,6 +43,18 @@ var ScreenFourView = Stapes.subclass({
             _wrapper: aWrapper
         });
         
+        if(typeof App.slider_four.reloadSlider === "undefined") {
+            App.slider_four = $('.bxslider-four').bxSlider({
+                infiniteLoop: false,
+                hideControlOnEnd: true,
+                pager: true,
+                pagerSelector: '#pager-four',
+                pagerType: 'short',
+                useCSS: false,
+                swipeThreshold: 10
+            });
+        }
+        
         this.validate = function() {
         	var valid = true;
             
@@ -200,7 +212,7 @@ var ScreenFourView = Stapes.subclass({
                 }
 
                 $('.bxslider-four').prepend('<li><img style="width:100%;height:auto;" src="' + imageURL + '"/></li>');
-                window.slider_four.reloadSlider();
+                App.slider_four.reloadSlider();
                 that._lg.log('DEBUG', '#four #takephoto', '#four #takephoto success $(.bxslider-four).html()' + $('.bxslider-four').html());
             };
 
@@ -273,7 +285,7 @@ var ScreenFourView = Stapes.subclass({
     	this._wrapper.clearNavigatorCache();
         this._wrapper.clearNavigatorHistory();
 
-        if (window.changeInPage === false) {
+        if (App.changeInPage === false) {
         	var current_tt = JSON.parse(window.localStorage.getItem('current_tt'));
         	
         	/**
@@ -333,20 +345,20 @@ var ScreenFourView = Stapes.subclass({
 	                }
 	            }
 
-	            window.slider_four.reloadSlider();
+	            App.slider_four.reloadSlider();
             } else {
             	$('.bxslider-four').html("<li><center><div style='height:60px;width:200px;'>" + this._language.translate('No Picture(s) Attached') + "</div></center></li>");
-            	window.slider_four.reloadSlider();
+            	App.slider_four.reloadSlider();
             }
             
-            window.currentObj = {
+            App.currentObj = {
                 'damagetype': $('#four #damagetype option:selected').text(),
                 'damageposition': $('#four #damageposition option:selected').text(),
                 'drivercauseddamage': $('#four #drivercauseddamage option:selected').text()
             };
         }
         
-        window.changeInPage = false;
+        App.changeInPage = false;
     },
     /**
      * Render page
@@ -419,7 +431,7 @@ var ScreenFourView = Stapes.subclass({
         
         $('.bxslider-four').html("<li><center><div style='height:60px;width:200px;'>" + this._language.translate('No Picture(s) Attached') + "</div></center></li>");
 
-        window.slider_four.reloadSlider();
+        App.slider_four.reloadSlider();
         
         $('#four #damagetype').selectmenu();
         $('#four #damageposition').selectmenu();

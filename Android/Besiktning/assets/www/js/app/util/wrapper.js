@@ -96,8 +96,8 @@ var Wrapper = (function() {
          * Validations Methods
          */
         checkLength: function(obj, min, msg, title){
-        	if(obj.attr('value') === '') {
-        		navigator.notification.alert(msg, function(){}, title); 
+        	if(obj.attr('value').length <= min) {
+                navigator.notification.alert(msg, function(){}, title); 
         		return false;
         	} else
         		return true;

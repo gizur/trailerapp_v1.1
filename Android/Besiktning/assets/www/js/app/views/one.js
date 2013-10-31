@@ -27,7 +27,7 @@ var ScreenOneView = Stapes.subclass({
     constructor: function(aUsr, aLog, aLanguage, aWrapper) {
 
         "use strict";
-
+        
         /**
          * Set pseudo private vars
          * please dont change this using <objname>._privatevarname
@@ -55,11 +55,25 @@ var ScreenOneView = Stapes.subclass({
             _tt_list: {},
             _wrapper: aWrapper
         });
-        
+           
+        /**
+         * IF App.slider_one does not have reloadSlider function
+         */
+        if(typeof App.slider_one.reloadSlider === "undefined") {
+            App.slider_one = $('.bxslider-one').bxSlider({
+                infiniteLoop: true,
+                hideControlOnEnd: true,
+                pager: true,
+                pagerSelector: '#pager-one',
+                pagerType: 'short',
+                useCSS: false,
+                swipeThreshold: 10
+            });
+        }
+    
         this.validate = function() {
         	var valid = true;
-            
-        	valid = valid && this._wrapper.checkLength($('#one #trailertype option:selected'), 0, this._language.translate('Please select Trailer Type'), this._language.translate('Error'));
+            valid = valid && this._wrapper.checkLength($('#one #trailertype option:selected'), 0, this._language.translate('Please select Trailer Type'), this._language.translate('Error'));
             
             if(valid)
             valid = valid && this._wrapper.checkLength($('#one #trailerid option:selected'), 0, this._language.translate('Please select a Trailer'), this._language.translate('Error'));
@@ -92,13 +106,14 @@ var ScreenOneView = Stapes.subclass({
 
         $('#one select#trailertype').unbind('change').change(function() {
             that._lg.log('TRACE', '#one select#trailertype', 'trailertype change event start');
-
+            
             /**
              * Update the existing damage slider to default state
              */
-            $('#one #troubleticketlist').html("<li><center><div style='height:60px;'>" + that._language.translate('No Damages Reported') + "</div></center></li>");
-            window.slider_one.reloadSlider();
-
+            $('#one #troubleticketlist').empty().html("<li><center><div style='height:60px;'>" + App._lang.translate('No Damages Reported') + "</div></center></li>");
+            App.slider_one.reloadSlider();
+                                                             
+                                                             
             /**
              * Create the assetcollection object
              * this object automatically loads the cached
@@ -157,8 +172,8 @@ var ScreenOneView = Stapes.subclass({
             /**
              * Update the existing damage slider to default state
              */
-            $('#one #troubleticketlist').html("<li><center><div style='height:60px;'>" + that._language.translate('No Damages Reported') + "</div></center></li>");
-            window.slider_one.reloadSlider();
+            //$('#one #troubleticketlist').html("<li><center><div style='height:60px;'>" + that._language.translate('No Damages Reported') + "</div></center></li>");
+            //App.slider_one.reloadSlider();
 
             /**
              * Create the assetcollection object
@@ -230,8 +245,8 @@ var ScreenOneView = Stapes.subclass({
                 that._tt_list.html = tt_list_html;
                 that._tt_list.position = 0;
                 window.localStorage.setItem('tt_list', JSON.stringify(that._tt_list));
-
-                window.slider_one.reloadSlider();
+                
+                App.slider_one.reloadSlider();
                 that._lg.log('TRACE', '#one select#trailerid', ' fetch tt success : end ');
             };
 
@@ -275,7 +290,7 @@ var ScreenOneView = Stapes.subclass({
 
             that._lg.log('TRACE', '#one #reportsurvey', 'reportsurvey click START');
 
-            window.changeInPage = false;
+            App.changeInPage = false;
 
             /**
              * Save the state of page one
@@ -371,7 +386,7 @@ var ScreenOneView = Stapes.subclass({
 
             that._lg.log('TRACE', '#one #reportsurvey', 'reportdamage click START');
 
-            window.changeInPage = false;
+            App.changeInPage = false;
             
             if (that._current_tt === null) {
                 that._current_tt = {};
@@ -415,7 +430,7 @@ var ScreenOneView = Stapes.subclass({
             e.preventDefault();
             e.stopPropagation();
 
-            window.changeInPage = true;
+            App.changeInPage = true;
             
             var tt = new TroubleTicket(that._usr, Config.log);
 
@@ -425,7 +440,7 @@ var ScreenOneView = Stapes.subclass({
             // Save the position
 
             that._tt_list = JSON.parse(window.localStorage.getItem('tt_list'));
-            that._tt_list.position = window.slider_one.getCurrentSlide();
+            that._tt_list.position = App.slider_one.getCurrentSlide();
             window.localStorage.setItem('tt_list', JSON.stringify(that._tt_list));
             
             var id = $(this).attr('id');
@@ -495,17 +510,18 @@ var ScreenOneView = Stapes.subclass({
     
     setValues: function() {
     	"use strict";
-        
+        try{
         this._wrapper.clearNavigatorCache();
         this._wrapper.clearNavigatorHistory();
         
-        if (window.changeInPage === false) {
+        if (App.changeInPage === false) {
         	if (this._current_tt !== null){
+                                    
         		$('#one select#trailertype').attr('value', this.htmlDecode(this._current_tt.trailertype));
         		$('#one select#trailertype').selectmenu('refresh');
-        		
-        		$('#one select#trailertype').change();
-        		
+                
+                $('#one select#trailertype').trigger("change");
+                
         		$('#one select#trailerid').attr('value', this.htmlDecode(this._current_tt.trailerid));
         		$('#one select#trailerid').selectmenu('refresh');
         		
@@ -522,24 +538,30 @@ var ScreenOneView = Stapes.subclass({
                     this._lg.log('DEBUG', 'reloading slider for troubleticketlist to position ' + this._tt_list.position);
 
                     $('#one #troubleticketlist').html(this._tt_list.html);
-                    window.slider_one.goToSlide(this._tt_list.position);
-                    window.slider_one.reloadSlider();
+                    App.slider_one.goToSlide(this._tt_list.position);
+                    App.slider_one.reloadSlider();
                 } else {
                     window.localStorage.removeItem('tt_list');
                     $('#one #troubleticketlist').html("<li><center><div style='height:60px;'>" + this._language.translate('No Damages Reported') + "</div></center></li>");
-                    window.slider_one.reloadSlider();                    
+                    App.slider_one.reloadSlider();                    
                 }
-        	}
-        	
-        	window.currentObj = {
+            } else {
+                window.localStorage.removeItem('tt_list');
+                $('#one #troubleticketlist').html("<li><center><div style='height:60px;'>" + this._language.translate('No Damages Reported') + "</div></center></li>");
+                App.slider_one.reloadSlider();
+            }
+                                    
+        	App.currentObj = {
                 trailertype: $('#one #trailertype option:selected').text(),
                 trailerid: $('#one #trailerid option:selected').text(),
                 place: $('#one #place option:selected').text(),
                 sealed: $('#one input[name=sealed]:checked').val()
             };
         }
-        
-        window.changeInPage = false;
+        }catch(err){
+            this._lg.log('FATAL', '#one$setValues', err.message);
+        }
+        App.changeInPage = false;
     },
     /**
      * Render page
@@ -550,6 +572,7 @@ var ScreenOneView = Stapes.subclass({
     render: function() {
 
         "use strict";
+        try{
         
         /**
          * Load from cache if available
@@ -655,14 +678,19 @@ var ScreenOneView = Stapes.subclass({
 
         $('#one select#place').selectmenu();
         $('#one select#place').selectmenu('refresh');
-
+                                    
         /**
          * Load the perviously fetched tt list from cache
          * to slider
          * 
          */
-        
-        $('#one #troubleticketlist').html("<li><center><div style='height:60px;'>" + this._language.translate('No Damages Reported') + "</div></center></li>");
-        window.slider_one.reloadSlider();
+
+        $('#one #troubleticketlist').html("<li><center><div style='height:60px;'>" + App._lang.translate('No Damages Reported') + "</div></center></li>");
+                                    
+        App.slider_one.reloadSlider();
+                                    
+        }catch(err){
+            this._lg.log('FATAL', '#one$render', err.message);
+        }
     }
 });

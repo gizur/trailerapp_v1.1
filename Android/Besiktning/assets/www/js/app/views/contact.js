@@ -124,6 +124,6 @@ var ScreenContactView = Stapes.subclass({
          * verify if user has modified anything
          * on the page.
          */
-        window.currentObj = {};
+        App.currentObj = {};
     }
 });

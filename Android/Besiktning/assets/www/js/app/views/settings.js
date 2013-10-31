@@ -79,7 +79,7 @@ var ScreenSettingsView = Stapes.subclass({
 
                 }
                 
-                window.changeInPage = false;
+                App.changeInPage = false;
                 
                 /**
                  * Storage place for the list of cache items which
@@ -149,7 +149,7 @@ var ScreenSettingsView = Stapes.subclass({
 
                         if (cacheErrorList.length === 0) { 
                         	
-                        	window.refreshCache = false;
+                        	App.refreshCache = false;
                             
                         	$('#a_dialog_success_cache').click();
                             that._wrapper.clearNavigatorHistory();
@@ -403,7 +403,7 @@ var ScreenSettingsView = Stapes.subclass({
   
         $('#settings_username').unbind('keyup').bind('keyup', function(){
 
-            that._lg.log('DEBUG', '#settings_username', "$('#settings #settings_username').bind('change')");
+            App._lg.log('DEBUG', '#settings_username', "$('#settings #settings_username').bind('change')");
 
             if ($(this).val() === '') {
                 that.disableForgotPasswordButton();
@@ -492,14 +492,14 @@ var ScreenSettingsView = Stapes.subclass({
             this.disableChangePasswordButton();
         }
         
-        //alert(window.changeInPage);
+        //alert(App.changeInPage);
 
-        if (window.changeInPage === false) {
+        if (App.changeInPage === false) {
 	        $('#settings_username').val(this._usr.get('username'));
 	        $('#settings_password').val(this._usr.get('password'));
 	        $('#settings_client_id').val(this._req.getClientId());
 
-	        window.currentObj = {
+	        App.currentObj = {
 	        	'settings_username' : $('#settings_username').val(),
 	        	'settings_password' : $('#settings_password').val(),
 	        	'settings_client_id' : $('#settings_client_id').val()

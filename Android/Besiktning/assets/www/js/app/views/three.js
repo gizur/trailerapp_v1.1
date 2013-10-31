@@ -69,6 +69,6 @@ var ScreenThreeView = Stapes.subclass({
         this._wrapper.clearNavigatorCache();
         this._wrapper.clearNavigatorHistory();
         
-        window.changeInPage = false;
+        App.changeInPage = false;
     }
 });

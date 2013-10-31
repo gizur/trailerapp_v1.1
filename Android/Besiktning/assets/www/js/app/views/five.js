@@ -46,8 +46,32 @@ var ScreenFiveView = Stapes.subclass({
 
             current_tt = null;
 
-        }  
-
+        }
+        
+        if(typeof App.slider_five_a.reloadSlider === "undefined") {
+            App.slider_five_a = $('.bxslider-five-a').bxSlider({
+                infiniteLoop: true,
+                hideControlOnEnd: true,
+                pager: true,
+                pagerSelector: '#pager-five-a',
+                pagerType: 'short',
+                useCSS: false,
+                swipeThreshold: 10
+            });
+        }
+        
+        if(typeof App.slider_five_b.reloadSlider === "undefined") {
+            App.slider_five_b = $('.bxslider-five-b').bxSlider({
+                infiniteLoop: true,
+                hideControlOnEnd: true,
+                pager: true,
+                pagerSelector: '#pager-five-b',
+                pagerType: 'short',
+                useCSS: false,
+                swipeThreshold: 10
+            });
+        }
+        
         this.extend({
             _lg : aLog,
             _language : aLanguage,
@@ -99,7 +123,7 @@ var ScreenFiveView = Stapes.subclass({
                 // Save the position
 
                 that._tt_list = JSON.parse(window.localStorage.getItem('tt_list'));
-                that._tt_list.position = window.slider_five_a.getCurrentSlide();
+                that._tt_list.position = App.slider_five_a.getCurrentSlide();
                 window.localStorage.setItem('tt_list', JSON.stringify(that._tt_list));
                 
                 var id = $(this).attr('id');
@@ -692,7 +716,7 @@ var ScreenFiveView = Stapes.subclass({
             	html = "<li><center><div style='height:60px;'>" + this._language.translate('No Damages Reported') + "</div></center></li>";
             }
             $('#five .bxslider-five-b').empty().html(html).collapsibleset();
-            window.slider_five_b.reloadSlider();  
+            App.slider_five_b.reloadSlider();  
         } 
 
         var tt_list = JSON.parse(window.localStorage.getItem('tt_list'));
@@ -700,12 +724,12 @@ var ScreenFiveView = Stapes.subclass({
             this._lg.log('DEBUG', '#five render', 'reloading slider for troubleticketlist  to position ' + tt_list.position);        
 
             $('.bxslider-five-a').html(tt_list.html).collapsibleset();
-            window.slider_five_a.reloadSlider();
-            window.slider_five_a.goToSlide(tt_list.position);
+            App.slider_five_a.reloadSlider();
+            App.slider_five_a.goToSlide(tt_list.position);
         } else {
             $('#one #troubleticketlist').html("<li><center><div style='height:60px;'>" + this._language.translate('No Damages Reported') + "</div></center></li>");
             $('#one #troubleticketlist').collapsibleset();
-            window.slider_five_a.reloadSlider();       
+            App.slider_five_a.reloadSlider();       
         }
         
         /**
@@ -713,7 +737,7 @@ var ScreenFiveView = Stapes.subclass({
          * verify if user has modified anything
          * on the page.
          */
-        window.changeInPage = false;
-        window.currentObj = {};
+        App.changeInPage = false;
+        App.currentObj = {};
     }
 });
