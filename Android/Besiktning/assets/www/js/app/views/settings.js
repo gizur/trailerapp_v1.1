@@ -42,7 +42,26 @@ var ScreenSettingsView = Stapes.subclass({
             _usr : aUsr,
             _req : aReq,
             _wrapper: aWrapper
-        });
+        });       
+
+        
+        this.openBasicDialog = function(header, body){
+        	$('.modal').modal('hide');
+        	
+        	$('#basicDialogButtonHeader').empty().html(header);
+        	$('#basicDialogButtonBody p').empty().html(body);
+        	
+        	$('#basicDialogButton').modal('show');
+        };
+        
+        this.openBasicDialogWithoutBtn = function(header, body){
+        	$('.modal').modal('hide');
+        	
+        	$('#basicDialogHeader').empty().html(header);
+        	$('#basicDialogBody p').empty().html(body);
+        	
+        	$('#basicDialog').modal('show');
+        };
 
     },
 
@@ -58,11 +77,19 @@ var ScreenSettingsView = Stapes.subclass({
 
         var that = this;
 
+        $('#showSurveyPageBtn').unbind('click').bind('click', function(){
+        	app.currentObj = {
+	        	'settings_username' : $('#settings_username').val(),
+	        	'settings_password' : $('#settings_password').val(),
+	        	'settings_client_id' : $('#settings_client_id').val()
+    	    };
+        	$('#pages-tab a[href="#survey"]').click();
+        }),
         /**
          * Saving the username, password and client id 
          * and authenticating it
          */
-
+        
         $('#settings_save').unbind('click').bind('click', function() {
             try {
 
@@ -79,15 +106,15 @@ var ScreenSettingsView = Stapes.subclass({
 
                 }
                 
-                App.changeInPage = false;
+                app.changeInPage = false;
                 
                 /**
                  * Storage place for the list of cache items which
                  * were cache and which weren't.
                  */
 
-                var cacheSuccessList = [];
-                var cacheErrorList = [];
+                var cacheSuccessList = {};
+                var cacheErrorList = {};
 
                 /**
                  * Log it
@@ -101,7 +128,11 @@ var ScreenSettingsView = Stapes.subclass({
                  * Show popup right away
                  */
 
-                $('#a_dialog_authenticating').click();
+                $('#authDialogHeader').empty().html(app._lang.translate('Authenticating'));
+            	$('#authDialogBody').empty().html(app._lang.translate('Please wait') + " ...");
+            	
+            	$('#authDialog').modal('show');
+                //$('#a_dialog_authenticating').click();
 
                 /**
                  * Clear back button history so that if the user clicks on 
@@ -133,35 +164,46 @@ var ScreenSettingsView = Stapes.subclass({
                  */
 
                 that._usr.on('cache complete', function(status){
-                    if (status.success) {
-                        cacheSuccessList.push(status.name);
-                        $('#dialog_success_login div[data-role=content]').children().eq(2).html(that._language.translate('Completed') + ' ' + cacheSuccessList.length  + ' ' + that._language.translate('of') + ' 7');
-                        $('#dialog_success_login').page();
+                    if (status.success === true) {
+                        cacheSuccessList[status.name] = true;
+                        var keys = Object.keys(cacheSuccessList);
+                        $('#authDialogBody').empty().html(that._language.translate('Completed') + ' ' + keys.length  + ' ' + that._language.translate('of') + ' 7');
                     } else {
-                        cacheErrorList.push(status.name);
+                        cacheErrorList[status.name] = false;
                     }
 
                     /**
                      * Check if all cache calls have completed
                      */
 
-                    if ((cacheSuccessList.length + cacheErrorList.length) === 7) {
+                    var skeys = Object.keys(cacheSuccessList);
+                    var ekeys = Object.keys(cacheErrorList);
+                    
+                    if ((skeys.length + ekeys.length) === 7) {
 
-                        if (cacheErrorList.length === 0) { 
+                        if (ekeys.length === 0) { 
                         	
-                        	App.refreshCache = false;
+                        	app.refreshCache = false;
                             
-                        	$('#a_dialog_success_cache').click();
-                            that._wrapper.clearNavigatorHistory();
+                        	$('.modal').modal('hide');
+                        	
+                        	$('#authSuccessDialogHeader').empty().html(app._lang.translate('Success'));
+                        	$('#authSuccessDialogBody').empty().html(app._lang.translate('Authenticated successfully and Cache built successfully') + '.');
+                        	
+                        	$('#authSuccessDialog').modal('show');
 
                         } else {
                         	
                         	that._usr.setAuthenticated(false);
-                            $('#a_dialog_error_cache').click();
-
-                            that._wrapper.clearNavigatorHistory();
+                        	
+                        	$('.modal').modal('hide');
+                        	
+                        	$('#errorDialogHeader').empty().html(app._lang.translate('Unable to build cache'));
+                        	$('#errorDialogBody').empty().html(app._lang.translate('Please try again, If the problem persists please contact the Gizur Saas Account holders') + '.');
+                        	
+                        	$('#errorDialog').modal('show');
                         }
-                        cacheSuccessList = cacheErrorList = [];
+                        cacheSuccessList = cacheErrorList = {};
                     }
                 });
                 
@@ -190,8 +232,7 @@ var ScreenSettingsView = Stapes.subclass({
                     /**
                      * start caching picklists
                      */
-                    $('#dialog_success_login div[data-role=content]').children().eq(2).html(that._language.translate('Completed') + ' 0 ' + that._language.translate('of') + ' 7');
-                    //cacheSuccessList = cacheErrorList = [];
+                    
                     tt.getEnumPlace(successCb, errorCb);
                     tt.getEnumSealed(successCb, errorCb);
 
@@ -225,9 +266,18 @@ var ScreenSettingsView = Stapes.subclass({
                         that._wrapper.clearNavigatorHistory();
 
                         if (data.error.message === 'Invalid Username and Password') {
-                            $('#a_dialog_error_invalidcredentials').click();
+                        	$('.modal').modal('hide');
+                        	
+                        	$('#errorDialogHeader').empty().html(app._lang.translate('Error'));
+                        	$('#errorDialogBody').empty().html(app._lang.translate('Your username and password settings are invalid. Please enter valid settings and try again.'));
+                        	
+                        	$('#errorDialog').modal('show');
                         } else {
-                            $('#a_dialog_error_general').click();
+                        	$('.modal').modal('hide');
+                        	$('#errorDialogHeader').empty().html(app._lang.translate('Error'));
+                        	$('#errorDialogBody').empty().html(app._lang.translate('Contact Gizur Saas Account holders, details are available under Contact tab') + '.');
+                        	
+                        	$('#errorDialog').modal('show');
                         }
 
                     } catch (err) {
@@ -250,13 +300,7 @@ var ScreenSettingsView = Stapes.subclass({
                  */
 
                 that._usr.set('username', $('#settings_username').val());
-                that._usr.set('password', $('#settings_password').val());
-
-                /**
-                 * Set return point if no internet connection is found
-                 */
-
-                $('#dialog_nointernet a[data-role=button]').attr('href', '#settings');                
+                that._usr.set('password', $('#settings_password').val());          
 
                 /**
                  * This caches both the username, password and 
@@ -276,7 +320,13 @@ var ScreenSettingsView = Stapes.subclass({
             
             try {
 
-                $('#a_dialog_resetpassword_confirm').click();
+            	var attr = $(this).attr('disabled');
+        		
+        		if(attr === true || attr === 'disabled')
+        			return false;
+        		
+            	$('.modal').modal('hide');
+                $('#dialog_resetpassword_confirm').modal('show');
 
             } catch (err) {
 
@@ -292,17 +342,29 @@ var ScreenSettingsView = Stapes.subclass({
                 e.preventDefault();
 
                 that._wrapper.clearNavigatorHistory();
+                
+                // Set Authenticated = false
+                that._usr.setAuthenticated(false);
 
+                that.openBasicDialogWithoutBtn(app._lang.translate("Processing"), app._lang.translate("Please wait") + " ...");
+                
                 var success = function( data ){
+                	
+                	$('#settings_password').val('');
+                	
+                	that.disableChangePasswordButton();
+                	
+                	app.currentObj = {
+        	        	'settings_username' : $('#settings_username').val(),
+        	        	'settings_password' : $('#settings_password').val(),
+        	        	'settings_client_id' : $('#settings_client_id').val()
+        	        };
 
-                	// Set Authenticated = false
-                    that._usr.setAuthenticated(false);
-                    
-                    that._lg.log('TRACE', '#dialog_resetpassword_confirm #resetpassword', ' password reset successfully ' + JSON.stringify(data));
+                	that._lg.log('TRACE', '#dialog_resetpassword_confirm #resetpassword', ' password reset successfully ' + JSON.stringify(data));
                     
                     that._wrapper.clearNavigatorHistory();
 
-                    $('#a_dialog_resetpassword_success').click();
+                    that.openBasicDialog(app._lang.translate("Forget Password"), app._lang.translate("Password has been reset successfully. Please check your mail for the new password."))
 
                 };
 
@@ -314,7 +376,7 @@ var ScreenSettingsView = Stapes.subclass({
 
                     that._wrapper.clearNavigatorHistory();
 
-                    $('#a_dialog_resetpassword_error').click();                    
+                    that.openBasicDialog(app._lang.translate("Forget Password"), app._lang.translate("Unable to reset password. Please try again, If the problem persists please contact the Gizur Saas Account holders."))
 
                 };                
 
@@ -334,10 +396,18 @@ var ScreenSettingsView = Stapes.subclass({
         $('#change_password').unbind('click').bind( 'click', function () {
 
         	try {
+        		var attr = $(this).attr('disabled');
+        		
+        		if(attr === true || attr === 'disabled')
+        			return false;
 
                 $('#dialog_changepassword input').val('');
                 $('#dialog_changepassword #message').html('');
-                $('#a_dialog_changepassword').click();
+                
+                
+                $('.modal').modal('hide');
+                $('#dialog_changepassword').modal('show');
+                
 
             } catch (err) {
 
@@ -349,23 +419,43 @@ var ScreenSettingsView = Stapes.subclass({
 
         $('#dialog_changepassword input').unbind('keyup').bind('keyup', function(){
             if ($('#dialog_changepassword input').val() !== '') {
-                $('#dialog_changepassword #message').html('');
+                $('#dialog_changepassword #message').html('').removeClass('alert');
             }            
         });
 
+        $('#dialog_changepassword #change_cancel').unbind('click').bind('click', function(e){
+        	e.preventDefault();
+            
+            var attr = $(this).attr('disabled');
+    		
+    		if(attr === true || attr === 'disabled')
+    			return false;
+    		
+    		$('.modal').modal('hide');
+        });
+        
         $('#dialog_changepassword #change').unbind('click').bind('click', function(e){
 
             try {
 
                 e.preventDefault();
+                
+                var attr = $(this).attr('disabled');
+        		
+        		if(attr === true || attr === 'disabled')
+        			return false;
+        		
+        		$(this).attr('disabled', 'disabled');
+        		$("#dialog_changepassword .dialog_changepassword_btn").attr('disabled', 'disabled');
 
                 that._wrapper.clearNavigatorHistory();
 
                 if ($('#dialog_changepassword input').val() === '') {
-                    $('#dialog_changepassword #message').html('New Password cannot be blank');
+                    $('#dialog_changepassword #message').html(app._lang.translate('New Password cannot be blank') + ".").addClass('alert');
                     return false;
                 }
-
+                
+                that.openBasicDialogWithoutBtn(app._lang.translate("Processing"), app._lang.translate("Please wait") + " ...");
 
                 var success = function( data ){
 
@@ -373,8 +463,18 @@ var ScreenSettingsView = Stapes.subclass({
 
                     that._wrapper.clearNavigatorHistory();
 
+                    app.currentObj = {
+        	        	'settings_username' : $('#settings_username').val(),
+        	        	'settings_password' : $('#dialog_changepassword #newpassword').val(),
+        	        	'settings_client_id' : $('#settings_client_id').val()
+        	        };
+                    
+                    $('#settings_password').val($('#dialog_changepassword #newpassword').val());
                     $('#dialog_changepassword #newpassword').val('');
-                    $('#a_dialog_changepassword_success').click();
+                    
+                    $("#dialog_changepassword .dialog_changepassword_btn").removeAttr('disabled');
+                    
+                    that.openBasicDialog(app._lang.translate("Success"), app._lang.translate("Password Changed successfully") + ".");
 
                 };
 
@@ -382,12 +482,13 @@ var ScreenSettingsView = Stapes.subclass({
 
                     jqxhr = status = er = undefined;
 
-                    that._lg.log('TRACE', '#dialog_changepassword #change', ' error changing password ' + jqxhr.responseText);
-
                     that._wrapper.clearNavigatorHistory();
 
                     $('#dialog_changepassword #newpassword').val('');
-                    $('#a_dialog_changepassword_error').click();                    
+                    
+                    $("#dialog_changepassword .dialog_changepassword_btn").removeAttr('disabled');
+                    
+                    that.openBasicDialog(app._lang.translate("Error"), app._lang.translate("Unable to change password. Please try again, If the problem persists please contact the Gizur Saas Account holders."));                    
 
                 };
                 
@@ -403,7 +504,7 @@ var ScreenSettingsView = Stapes.subclass({
   
         $('#settings_username').unbind('keyup').bind('keyup', function(){
 
-            App._lg.log('DEBUG', '#settings_username', "$('#settings #settings_username').bind('change')");
+            app._lg.log('DEBUG', '#settings_username', "$('#settings #settings_username').bind('change')");
 
             if ($(this).val() === '') {
                 that.disableForgotPasswordButton();
@@ -424,8 +525,8 @@ var ScreenSettingsView = Stapes.subclass({
 
         "use strict";
 
-        $('#settings #change_password').data('disabled', true);
-        $('#settings #change_password').addClass('ui-disabled');
+        $('#settings #change_password').attr('disabled', 'disabled');
+        $('#settings #change_password').removeClass('btn-primary');
 
     },
 
@@ -439,8 +540,8 @@ var ScreenSettingsView = Stapes.subclass({
 
         "use strict";
 
-        $('#settings #change_password').data('disabled', false);
-        $('#settings #change_password').removeClass('ui-disabled');
+        $('#settings #change_password').removeAttr('disabled');
+        $('#settings #change_password').addClass('btn-primary');
 
     }, 
 
@@ -454,8 +555,8 @@ var ScreenSettingsView = Stapes.subclass({
 
         "use strict";
 
-        $('#settings #forgot_password').data('disabled', true);
-        $('#settings #forgot_password').addClass('ui-disabled');
+        $('#settings #forgot_password').attr('disabled', 'disabled');
+        $('#settings #forgot_password').removeClass('btn-primary');
 
     },
 
@@ -469,8 +570,8 @@ var ScreenSettingsView = Stapes.subclass({
 
         "use strict";
 
-        $('#settings #forgot_password').data('disabled', false);
-        $('#settings #forgot_password').removeClass('ui-disabled');
+        $('#settings #forgot_password').removeAttr('disabled');
+        $('#settings #forgot_password').addClass('btn-primary');
 
     },
     /**
@@ -491,15 +592,13 @@ var ScreenSettingsView = Stapes.subclass({
         } else {
             this.disableChangePasswordButton();
         }
-        
-        //alert(App.changeInPage);
 
-        if (App.changeInPage === false) {
-	        $('#settings_username').val(this._usr.get('username'));
+        if (app.changeInPage === false) {
+        	$('#settings_username').val(this._usr.get('username'));
 	        $('#settings_password').val(this._usr.get('password'));
 	        $('#settings_client_id').val(this._req.getClientId());
 
-	        App.currentObj = {
+	        app.currentObj = {
 	        	'settings_username' : $('#settings_username').val(),
 	        	'settings_password' : $('#settings_password').val(),
 	        	'settings_client_id' : $('#settings_client_id').val()

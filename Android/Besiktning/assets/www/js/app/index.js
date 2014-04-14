@@ -1,673 +1,159 @@
-/*jshint forin:true, noarg:true, noempty:true, eqeqeq:true, 
- bitwise:true, strict:true, undef:false, unused:true, 
- curly:true, browser:true, indent:4, maxerr:50 */
+var app = {
+    // application Constructor
+    initialize: function() {
+    	/**
+		 * Slider widget
+		 */
 
-/*global window:true*/
+		this.slider_five_a = $('.bxslider-five-a').bxSlider({
+		    infiniteLoop: false,
+		    hideControlOnEnd: true,
+		    pager: true,
+		    pagerSelector: '#pager-five-a',
+		    pagerType: 'short',
+		    useCSS: false,
+		    swipeThreshold: 10,
+		    responsive: false,
+		    adaptiveHeight: true,
+		    onSliderLoad: function(ci) {
+		    	window.localStorage.setItem('details_tt_id', $( ".bxslider-five-a li:nth-child(" + (ci + 1) + ") a" ).attr('id'));
+		    },
+		    onSlideAfter: function(se, oi, ci){
+		    	window.localStorage.setItem('details_tt_id', $( ".bxslider-five-a li:nth-child(" + (ci + 1) + ") a" ).attr('id'));
+		    }
+		});
 
-/**
- *
- * Mobile App basedon Phonegap (Apache Cordova)
- * 
- * Application works over REST API 
- * 
- * @since     20 April 2013
- * @author    anshuk.kumar@essindia.co.in (Anshuk Kumar)
- * @preserve  copyright 2013 Gizur AB 
- */
+		this.slider_five_b = $('.bxslider-five-b').bxSlider({
+		    infiniteLoop: false,
+		    hideControlOnEnd: true,
+		    pager: true,
+		    pagerSelector: '#pager-five-b',
+		    pagerType: 'short',
+		    useCSS: false,
+		    swipeThreshold: 10,
+		    responsive: false,
+		    adaptiveHeight: true,
+		    onSliderLoad: function(ci) {
+		    	window.localStorage.setItem('latest_damage_index', $( ".bxslider-five-b li:nth-child(" + (ci + 1) + ") a" ).attr('id'));
+		    },
+		    onSlideAfter: function(se, oi, ci){
+		    	window.localStorage.setItem('latest_damage_index', $( ".bxslider-five-b li:nth-child(" + (ci + 1) + ") a" ).attr('id'));
+		    }
+		});
 
-/**
- * @function changepage
- * 
- * Change page by id
- * Used in changing page having input, select and checkboxes 
- * If changes detected in any field, it shows a alert dialog
- * 
- * @param {string} to page id
- */
+		this.slider_one = $('.bxslider-one').bxSlider({
+		    infiniteLoop: false,
+		    hideControlOnEnd: true,
+		    pager: true,
+		    pagerSelector: '#pager-one',
+		    pagerType: 'short',
+		    useCSS: false,
+		    swipeThreshold: 10,
+		    responsive: false,
+		    adaptiveHeight: true,
+		    onSliderLoad: function(ci) {
+		    	window.localStorage.setItem('details_tt_id', $( ".bxslider-one li:nth-child(" + (ci + 1) + ") a" ).attr('id'));
+		    },
+		    onSlideAfter: function(se, oi, ci){
+		    	window.localStorage.setItem('details_tt_id', $( ".bxslider-one li:nth-child(" + (ci + 1) + ") a" ).attr('id'));
+		    }
+		});
 
-function changepage(page) {
-    App.changeInPage = false;
-    
-    var lg = App._lg;
-    var wrapper = App._wrapper;
-    var language = App._lang;
-    
-    if (page !== "contact" && page !== "settings" && !App._usr.get('authenticated')) {
-    	$.mobile.changePage("#settings");
-    	return;
-    }
-    
-    if (App.currentObj !== null) {
-        console.log(JSON.stringify(App.currentObj));
-        for (index in App.currentObj) {
-            if (App.currentObj.hasOwnProperty(index)) {
-                console.log("Fetching " + index);
+		this.slider_four = $('.bxslider-four').bxSlider({
+		    infiniteLoop: false,
+		    hideControlOnEnd: true,
+		    pager: true,
+		    pagerSelector: '#pager-four',
+		    pagerType: 'short',
+		    useCSS: false,
+		    swipeThreshold: 10,
+		    responsive: false,
+		    adaptiveHeight: true
+		});
 
-                var val = $('#' + App.prevPage + " #" + index).val();
-                
-                if ($('#' + App.prevPage + " #" + index).is('select'))
-                    val = $('#' + App.prevPage + " #" + index + " option:selected").text();
-
-                if ($('#' + App.prevPage + " input[name=" + index + "]").is(':radio'))
-                    val = $('#' + App.prevPage + " input[name=" + index + "]:checked").val();
-
-                if (val !== App.currentObj[index]) {
-                    console.log(val + " Not matched " + App.currentObj[index]);
-                    App.changeInPage = true;
-                    break;
-                }
-            } else {
-                console.log(index + " does not hasOwnProperty.");
-            }
-        }
-    }
-
-    if(page === "one" && (App.changeInPage || App.prevPage === "four" || App.prevPage === "five") && 
-    		App.prevPage !== "settings" && App.prevPage !== "contact"){
-    	var confirm = function(button){
-    		if(button === 1){
-    			App.changeInPage = false;
-    			
-    			resetFormFour();
-    			resetFormOne();
-    			cleanCurrentTT();
-    			
-    			$.mobile.changePage("#one", {allowSamePageTransition: true, transition: 'none', showLoadMsg: false, reloadPage: false});
-    			return true;
-    		} else {
-    			return false;
-    		}
-    	};
+		this.slider_two = $('.bxslider-two').bxSlider({
+		    infiniteLoop: false,
+		    hideControlOnEnd: true,
+		    pager: true,
+		    pagerSelector: '#pager-two',
+		    pagerType: 'short',
+		    useCSS: false,
+		    swipeThreshold: 10,
+		    adaptiveHeight: true
+		});
+		
+		this._lg = new Logger(Config.log.level, Config.log.type, Config.log.config);
+		this._req = new Request(Config.url, undefined, Config.log);
+		this._usr = new User(this._req, Config.log);
+		this._lang = new Language(undefined, Config.log);
+		this._wrapper = new Wrapper(this._lg);
+		this.changeInPage = false;
+		this.pageOneLoaded = false;
+		this.pageFourLoaded = false;
+		
+		/**
+		 * Bind Events
+		 */
+        this.bindEvents();
+    },
+    // Bind Event Listeners
+    //
+    // Bind any events that are required on startup. Common events are:
+    // 'load', 'deviceready', 'offline', and 'online'.
+    bindEvents: function() {
+        document.addEventListener('deviceready', this.onDeviceReady, false);
+    },
+    // deviceready Event Handler
+    //
+    // The scope of 'this' is the event. In order to call the 'receivedEvent'
+    // function, we must explicity call 'app.receivedEvent(...);'
+    onDeviceReady: function() {
+        app.receivedEvent('deviceready');
+    },
+    // Update DOM on a Received Event
+    receivedEvent: function(id) {
+    	console.log('Received Event: ' + id);
     	
-    	wrapper.showConfirm(language.translate("Your changes will not be saved."), confirm, language.translate("Warning"), language.translate("Confirm,Cancel"));    		
-    	
-    } else if (App.changeInPage && page !== App.prevPage) {
-    	
-    	var confirm = function(button){
-    		if(button === 1){
-    			App.changeInPage = false; 
-    			
-    			if(App.prevPage === "one")
-    				resetFormOne();
-    			if(App.prevPage === "four")
-    				resetFormFour();
-    			
-    			$.mobile.changePage("#" + page, {transition: 'none', showLoadMsg: false, reloadPage: false});
-    			return true;
-    		} else {
-    			return false;
-    		}
-    	};
-    	
-    	wrapper.showConfirm(language.translate("You have made changes. If you continue, your changes will not be saved."), confirm, language.translate("Warning"), language.translate("Continue,Cancel"));
-	} else  {
-		if( (App.prevPage === "contact" || App.prevPage === "settings") && page === 'one') {
-			if(typeof App.surveyPage !== 'undefined')
-				$.mobile.changePage("#" + App.surveyPage);
-			else
-				$.mobile.changePage("#" + page);
-		} else {
-			$.mobile.changePage("#" + page);
-		}
+		if (app._wrapper.isGlobalization()) {
+	        app._wrapper.getPreferredLanguage(
+	            function(lang) {
+	                var language = new Language(lang.value, Config.log);
+
+	                /**
+	                 * Check if the language exists; if yes
+	                 * replace all english to selected language.
+	                 */
+
+	                if (language.hasLanguage()) {
+
+	                    /**
+	                     * Find all text nodes and replace them
+	                     * with its equivalent in given language
+	                     */
+
+	                    $("*").each(function() {
+	                        if ($(this).children().length === 0) {
+
+	                            /**
+	                             * Get all words of the language
+	                             */
+
+	                            var words = language.get(lang.value);
+
+	                            /**
+	                             * For each word replace with translated
+	                             */
+
+	                            for (var english in words) {
+	                                if (words.hasOwnProperty(english)) {
+	                                    $(this).text($(this).text().replace(english, words[english]));
+	                                }
+	                            }
+	                        }
+	                    });
+	                }	                
+	            }
+	        );
+	    }
     }
-}
-
-function resetFormFour(){      
-	App.changeInPage = false;
-	
-	$('#four #damagetype').attr('value', '');
-    $('#four #damageposition').attr('value', '');
-    $('#four #drivercauseddamage').attr('value', '');
-    
-    $('#four #damagetype').selectmenu();
-    $('#four #damageposition').selectmenu();
-    $('#four #drivercauseddamage').selectmenu();
-    
-	$('#four #damagetype').selectmenu('refresh');
-    $('#four #damageposition').selectmenu('refresh');
-    $('#four #drivercauseddamage').selectmenu('refresh');
-    
-    $('.bxslider-four').html("<li><center><div style='height:60px;width:200px;'>" + App._lang.translate('No Picture(s) Attached') + "</div></center></li>");
-    App.slider_four.reloadSlider();
-}
-
-function resetFormOne(){
-	App.changeInPage = false;
-	$('#one #trailertype').attr('value', '');
-    $('#one #trailerid').attr('value', '');
-    $('#one #place').attr('value', '');
-    
-    $('#one #trailertype').selectmenu();
-    $('#one #trailerid').selectmenu();
-    $('#one #place').selectmenu();
-    
-	$('#one #trailertype').selectmenu('refresh');
-    $('#one #trailerid').selectmenu('refresh');
-    $('#one #place').selectmenu('refresh');
-    $('#one input[name=sealed]').attr('checked', false).checkboxradio("refresh");
-    
-    $('#one #troubleticketlist').html("<li><center><div style='height:60px;'>" + App._lang.translate('No Damages Reported') + "</div></center></li>");
-    App.slider_one.reloadSlider();
-}
-
-function cleanCurrentTT(){    
-    window.localStorage.removeItem('tt_list');
-    window.localStorage.removeItem('current_tt');
-}
-
-/**
- * Screen One Init
- * Creates Survey
- *
- */
-
-$(document).delegate('#one', 'pageshow', function() {
-
-    "use strict";
-
-    App.prevPage = 'one';
-    App.surveyPage = 'one';
-
-    try {
-
-        /**
-         * Environment
-         */
-
-    	App._lg.log('TRACE', 'gta-page#one$pageshow', 'page loaded');
-        
-        var pageOne = new ScreenOneView(App._usr, App._lg, App._lang, App._wrapper);
-
-        //For Debugging : The line below must be commented
-        //window.localStorage.removeItem('17x519_tt');
-
-        /**
-         * ------------------
-         * Event Bindings
-         * ------------------
-         */
-
-        /**
-         * -------------------
-         * Render the page
-         * -------------------
-         */
-        
-        if(!App.pageOneLoaded) {
-            pageOne.render();
-            App.pageOneLoaded = true;
-            $.mobile.changePage('#one', {allowSamePageTransition: true, transition: 'none', showLoadMsg: false, reloadPage: false});
-        }
-                     
-        pageOne.bindEventHandlers();
-        pageOne.setValues();
-
-        /**
-         * Only once this page is completed logger should be allowed 
-         * to send logs to server
-         */
-
-        App._lg.appLoadingComplete();
-
-    } catch (err) {
-
-    	App._lg.log('FATAL', 'gta-page#one$pageshow', JSON.stringify(err));
-
-    }
-});
-
-/**
- * Screen Four Init
- * Creates Damage and adds pictures
- *
- */
-
-$(document).delegate('#four', 'pageshow', function() {
-
-    "use strict";
-
-    App.prevPage = 'four';
-    App.surveyPage = 'four';
-
-    resetFormOne();
-    
-    var pageFour = new ScreenFourView(App._usr, App._lg, App._lang, App._wrapper);
-    
-    if(!App.pageFourLoaded) {
-        pageFour.render();
-        App.pageFourLoaded = true;
-    }
-    
-    pageFour.bindEventHandlers();
-    pageFour.setValues();
-
-});
-
-/**
- * Screen Two Init
- * Shows details of Trouble Ticket
- *
- */
-
-$(document).delegate('#two', 'pageshow', function(e, data) {
-
-    "use strict";
-
-    App.prevPage = 'two';
-
-    var pageTwo = new ScreenTwoView(App._lg, App._lang, App._wrapper);
-    pageTwo.bindEventHandlers();
-    pageTwo.render();
-
-    e.preventDefault();
-    e.stopPropagation();
-});
-
-/**
- * Screen Three Init
- * Shows the image in full view
- *
- */
-
-$(document).delegate('#three', 'pageshow', function(e, data) {
-
-    "use strict";
-
-    App.prevPage = 'three';
-    
-    var base64_image = window.localStorage.getItem(window.localStorage.getItem('details_doc_id'));
-    
-    $('#three img').attr('src', base64_image);
-    $('#three img').css('width', ($(document).width() - 20));
-    $('#three img').css('height', 'auto');
-    $('#three img').attr('cache', "yes");
-    $('#three img').attr('refresh', "360");
-
-    e.preventDefault();
-    
-    var pageThree = new ScreenThreeView(App._usr, App._lg, App._lang, App._wrapper);
-    pageThree.render();
-});
-
-/**
- * Screen Five Init
- * Shows summary of trouble ticket to be submitted
- *
- */
-
-$(document).delegate('#five', 'pageshow', function() {
-
-    "use strict";
-
-    App.prevPage = 'five';
-    App.surveyPage = 'five';
-
-    resetFormFour();
-    
-    var pageFive = new ScreenFiveView(App._usr, App._lg, App._lang, App._wrapper);
-    pageFive.bindEventHandlers();
-    pageFive.render();
-
-    /**
-     * Only once this page is completed logger should be allowed 
-     * to send logs to server
-     */
-
-    App._lg.appLoadingComplete();
-});
-
-/**
- * Screen Contact Init
- * Shows contact information sent from the server
- *
- */
-
-$(document).delegate('#contact', 'pageshow', function() {
-
-    "use strict";
-
-    /**
-     * Environment SetUp
-     */
-
-    App.prevPage = 'contact';
-    
-    var pageContact = new ScreenContactView(App._lg, App._wrapper);
-    pageContact.bindEventHandlers();
-    pageContact.render();
-
-});
-
-
-/**
- * Screen Setting Init
- * Shows settings page which holds the credentails and client id
- * info
- */
-
-$(document).delegate('#settings', 'pageshow', function() {
-
-    "use strict";
-
-    App.prevPage = 'settings';
-
-    try {
-
-        var pageSettings = new ScreenSettingsView(App._usr, App._lg, App._lang, App._req, App._wrapper);
-
-        pageSettings.render();
-        pageSettings.bindEventHandlers();
-        
-        App._lg.log('TRACE', 'gta-page#settings$pageshow', 'page loaded');
-        
-        if (App._usr.get('authenticated') && App.refreshCache) {
-        	// Login again
-        	App.refreshCache = false;
-	        $('#settings_save').click();
-        }
-
-    } catch (err) {
-
-        App._lg.log('FATAL', 'gta-page#settings$pageshow', JSON.stringify(err));
-
-    }
-});
-
-/**
- * Render pages when cache completed
- */
-$(document).delegate('#dialog_success_cache', 'pageshow', function(){
-    
-    /**
-	 * Render the page one and four
-	 * may have any change in picklists
-	 */
-    App.pageOneLoaded = false;
-    App.pageFourLoaded = false;
-});
-
-$(document).delegate('#dialog_notify_changevalidation', 'pagebeforeshow', function() {
-    $(this).page('destroy').page();
-});
-
-/**
- * Page Before Change
- * Executed before transition or change between any pages
- * 
- */
-
-$(document).bind('pagebeforechange', function(e, data) {
-
-    "use strict";
-
-    try {
-    	if(typeof App._lg === "undefined")
-        	new Logger(Config.log.level, Config.log.type, Config.log.config);
-    	
-    	var to = data.toPage,
-                from = data.options.fromPage;
-
-        App._lg.log('TRACE', 'gta-page$pagebeforechange', typeof to);
-        App._lg.log('TRACE', 'gta-page$pagebeforechange', ' $.mobile.urlHistory :' + JSON.stringify($.mobile.urlHistory.stack));
-
-        /**
-         * Clear any browser cache
-         */
-
-        App._wrapper.clearNavigatorCache();
-
-        /**
-         * The type of to is object when there is a transition from
-         * one page to another.
-         */
-
-        if (typeof to === 'object') {
-
-            /**
-             * If the User is not authenticated so after load
-             * the user should be redirected to settings page
-             */
-
-            if (to.attr('id') === 'one' && !usr.get('authenticated')) {
-                App._lg.log('TRACE', 'gta-page$pagebeforechange', ' Application loaded and user is not authenticated ');
-                e.preventDefault();
-                $.mobile.changePage('#settings');
-                return;
-            }
-
-            /**
-             * Access Control
-             * Check if the user is authenticated
-             * if not show him the access denied page
-             */
-
-            App._lg.log('DEBUG', 'gta-page$pagebeforechange', 'usr.authenticated: ' + usr.get('authenticated'));
-            //App._lg.log('DEBUG', 'gta-page$pagebeforechange', ' to.attr(id): ' + to.attr('id'));
-
-            if (to.attr('id') === 'settings') {
-
-                $('#' + to.attr('id') + ' div[data-role=navbar] li a.page-settings').addClass('ui-btn-active');
-
-            }
-
-            if (to.attr('id') === 'contact') {
-
-                $('#' + to.attr('id') + ' div[data-role=navbar] li a.page-contact').addClass('ui-btn-active');
-
-            }
-
-
-            if (!App._usr.get('authenticated')) {
-
-                /**
-                 * If user is not authenticated
-                 */
-
-                if (to.attr('id') === 'one' ||
-                        to.attr('id') === 'two' ||
-                        to.attr('id') === 'three' ||
-                        to.attr('id') === 'four' ||
-                        to.attr('id') === 'five') {
-                    e.preventDefault();
-
-                    /**
-                     * remove active class on button
-                     * otherwise button would remain highlighted
-                     */
-
-                    $.mobile.activePage
-                            .find('.ui-btn-active')
-                            .removeClass('ui-btn-active');
-
-                    /**
-                     * Show Access denied pop up
-                     */
-
-                    $('#dialog div[data-role=header]').html('<h3>Access Denied</h3>');
-                    $('#dialog div[data-role=content]').children().first().html('You have not been authenticated. Please enter valid credentials and click save.');
-                    $('#a_dialog').click();
-                }
-            } else {
-
-                /**
-                 * If user is authenticated
-                 */
-
-                if (to.attr('id') === 'one' ||
-                        to.attr('id') === 'two' ||
-                        to.attr('id') === 'three' ||
-                        to.attr('id') === 'four' ||
-                        to.attr('id') === 'five') {
-
-                    $('#' + to.attr('id') + ' div[data-role=navbar] li a.page-one').addClass('ui-btn-active');
-
-                }
-
-                if (to.attr('id') === 'four' ||
-                        to.attr('id') === 'five') {
-
-                    /**
-                     * The user reaches here when he clicks the pop up's
-                     * back button after sending the damages to server
-                     */
-
-                    if (window.localStorage.getItem('current_tt') === null ||
-                            window.localStorage.getItem('current_tt') === false) {
-                        $.mobile.changePage('#one');
-                        return;
-                    }
-                }
-            }
-
-        }
-
-        /**
-         * The type of to is string when there is a transition from
-         * no page to another i.e. during click of back button
-         */
-
-        if (typeof to === 'string') {
-            var u = $.mobile.path.parseUrl(to);
-            to = u.hash || '#' + u.pathname.substring(1);
-
-            if (from) {
-                from = '#' + from.attr('id');
-            }
-
-            App._lg.log('DEBUG', 'gta-page$pagebeforechange', 'To page: ' + to);
-            App._lg.log('DEBUG', 'gta-page$pagebeforechange', 'usr.authenticated: ' + usr.get('authenticated'));
-
-            /**
-             * If user is authenticated
-             */
-
-            if (to === '#four' ||
-                    to === '#five') {
-
-                /**
-                 * The user reaches here when he clicks the pop up's
-                 * back button after sending the damages to server
-                 */
-
-                if (window.localStorage.getItem('current_tt') === null ||
-                        window.localStorage.getItem('current_tt') === false) {
-
-                    /**
-                     * Changing page to one if there is not tt in cache
-                     */
-
-                    App._lg.log('TRACE', 'gta-page$pagebeforechange', ' changing to page one ');
-                    $.mobile.changePage('#one');
-                }
-            }
-        }
-        App._lg.log('TRACE', 'gta-page$pagebeforechange', "END pagebeforechange");
-    } catch (err) {
-        App._lg.log('FATAL', 'gta-page$pagebeforechange', JSON.stringify(err));
-    }
-
-});
-
-/**
- * Mobile Init
- * Set some global config
- */
-$(document).bind("mobileinit", function(){
-	$.extend(  $.mobile , {
-		defaultPageTransition: 'none', defaultDialogTransition: 'none',
-		 showPageLoadingMsg: false
-	});
-});
-
-/**
- * Device Ready
- * Shows and splash screen and waits for the cordova
- * API to be loaded. Once done changes to page one
- */
-
-document.addEventListener("deviceready", function() {
-
-    "use strict";
-    
-    /**
-     * this variable is used to 
-     * validate if change in page has done.
-     */
-    App.changeInPage = false;
-    
-    if(typeof App._lg === "undefined")
-    	new Logger(Config.log.level, Config.log.type, Config.log.config);
-
-    /**
-     * Localization
-     */
-
-    if (App._wrapper.isGlobalization()) {
-        App._wrapper.getPreferredLanguage(
-            function(lang) {
-                var language = new Language(lang.value, Config.log);
-
-                /**
-                 * Check if the language exists; if yes
-                 * replace all english to selected language.
-                 */
-
-                if (language.hasLanguage()) {
-
-                    /**
-                     * Find all text nodes and replace them
-                     * with its equivalent in given language
-                     */
-
-                    $("*").each(function() {
-                        if ($(this).children().length === 0) {
-
-                            /**
-                             * Get all words of the language
-                             */
-
-                            var words = language.get(lang.value);
-
-                            /**
-                             * For each word replace with translated
-                             */
-
-                            for (var english in words) {
-                                if (words.hasOwnProperty(english)) {
-                                    $(this).text($(this).text().replace(english, words[english]));
-                                }
-                            }
-                        }
-                    });
-                }
-
-                /**
-                 * Change Page to page one and remove 
-                 * splash screen from browser history
-                 */
-
-                App._wrapper.clearNavigatorHistory();
-                
-                if (!App._usr.get('authenticated')) {
-                	$.mobile.changePage("#settings", {transition: 'none', showLoadMsg: false, reloadPage: false});
-                	return;
-                } else if(!App._usr.get('refreshTime')) {
-            		App.refreshCache = true;
-            		$.mobile.changePage('#settings', {transition: 'none', showLoadMsg: false, reloadPage: false});
-            		return;
-            	} else {
-            		var diff = new Date().getTime() - usr.get('refreshTime');
-            		App._lg.log('DEBUG', 'deviceready', 'Last cache refresh time : ' + usr.get('refreshTime'));
-            		App._lg.log('DEBUG', 'deviceready', "Cache time differance : " + diff + " milliseconds.");
-            		if (diff > Config.cacheRefreshTime) {
-            			App.refreshCache = true;
-            			$.mobile.changePage('#settings', {transition: 'none', showLoadMsg: false, reloadPage: false});
-                		return;
-            		} else {
-            			$.mobile.changePage('#one', {transition: 'none', showLoadMsg: false, reloadPage: false});
-            		}
-            	}
-            }
-        );
-    }
-}, false);
+};

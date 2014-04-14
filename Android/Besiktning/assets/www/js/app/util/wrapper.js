@@ -111,6 +111,15 @@ var Wrapper = (function() {
         	} else
         		return true;
         },
+        
+        checkUndefinedValue: function(val, msg, title){
+        	if(typeof val === 'undefined' ||
+        			val === '') {
+        		navigator.notification.alert(msg, function(){}, title);
+        		return false;
+        	} else
+        		return true;
+        },
     });
 
     return Wrapper;

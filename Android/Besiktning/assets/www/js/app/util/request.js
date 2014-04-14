@@ -142,7 +142,7 @@ var Request = Stapes.subclass({
 
                 that._lg.log('DEBUG', 'js/util/request', 'Request#send#successCbWrapper : ' + JSON.stringify(data));
 
-                $.mobile.loading('hide');
+                //$.mobile.loading('hide');
 
                 if (typeof successCb === 'function') {
                     successCb(data);
@@ -160,28 +160,39 @@ var Request = Stapes.subclass({
                      * Hide the loading GIF animation
                      */
 
-                    $.mobile.loading('hide');
+                    //$.mobile.loading('hide');
 
                     if ((jqxhr.status === 0 || status === null) && !silent) {
 
-                        $('#a_dialog_nointernet').click();
+                    	
+                    	$('.modal').modal('hide');
+                    	
+                    	$('#errorDialogHeader').empty().html(app._lang.translate('Connection Error'));
+                    	$('#errorDialogBody').empty().html(app._lang.translate('Please check your internet connection and try again') + '.');
+                    	
+                    	$('#errorDialog').modal('show');
 
                     } else {
 
                         var data;
-
+                        
                         try {
                             data = JSON.parse(jqxhr.responseText);
                         } catch (err) {
                             data = null;
                         }
-
+                        
                         if (data !== null &&
                                 typeof data.error !== 'undefined' &&
                                 typeof data.error.message !== 'undefined' &&
                                 data.error.message === 'Client ID not found') {
 
-                            $('#a_dialog_error_clientid').click();
+                        	$('.modal').modal('hide');
+                        	
+                        	$('#errorDialogHeader').empty().html(app._lang.translate('Error'));
+                        	$('#errorDialogBody').empty().html(app._lang.translate('Provided client ID is not valid') + '.');
+                        	
+                        	$('#errorDialog').modal('show');
 
                         } else {
 
@@ -200,7 +211,7 @@ var Request = Stapes.subclass({
 
             };
 
-            $.mobile.loading('show', {theme: "b", text: "Please wait...", textonly: false});
+            //$.mobile.loading('show', {theme: "b", text: "Please wait...", textonly: false});
 
             this._lg.log('DEBUG', 'js/util/request', 'Request#send : url ' + this._base_url + url);
             this._lg.log('DEBUG', 'js/util/request', 'Request#send : body ' + JSON.stringify(body));
@@ -279,7 +290,7 @@ var Request = Stapes.subclass({
             }
         } catch (err) {
 
-            this._lg.log('FATAL', 'js/util/request', JSON.stringify(err));
+            this._lg.log('FATAL', 'js/util/request', err.message + " : " + JSON.stringify(err));
 
         }
     }

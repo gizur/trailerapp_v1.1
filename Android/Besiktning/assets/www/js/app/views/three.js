@@ -69,6 +69,32 @@ var ScreenThreeView = Stapes.subclass({
         this._wrapper.clearNavigatorCache();
         this._wrapper.clearNavigatorHistory();
         
-        App.changeInPage = false;
+        app.changeInPage = false;
+        app.currentObj = {};
     }
+});
+
+ScreenThreeView.extend({
+	_render : function(){
+		app.prevPage = 'three';
+	    
+	    var base64_image = window.localStorage.getItem(window.localStorage.getItem('details_doc_id'));
+	    
+	    $('#three img').attr('src', base64_image);
+	    $('#three img').css('width', ($(document).width() - 20));
+	    $('#three img').css('height', 'auto');
+	    $('#three img').attr('cache', "yes");
+	    $('#three img').attr('refresh', "360");
+	    
+	    var pageThree = new ScreenThreeView(app._usr, app._lg, app._lang, app._wrapper);
+	    pageThree.render();
+	},
+	_show: function(){
+		$('.page-surveys').hide();
+		$('#three').show();
+	},
+	_back: function(){
+		$('.page-surveys').hide();
+		$('#two').show();
+	}
 });

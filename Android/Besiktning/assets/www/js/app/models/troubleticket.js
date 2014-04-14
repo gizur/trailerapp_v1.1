@@ -376,7 +376,6 @@ var TroubleTicket = Stapes.subclass({
             data.ticket_title = 'Survey Reported for ' + data.trailerid; //this.get('trailerid'),
             data.ticketstatus = 'Closed';
             data.reportdamage = 'No';
-
             this._usr.send(
                 'POST', 
                 'HelpDesk',
@@ -389,7 +388,6 @@ var TroubleTicket = Stapes.subclass({
 
         } else {
             var docs = this.get('damage').get('docs').getAll();
-
             for (var index in docs) {
                 if (docs.hasOwnProperty(index)) {
                     files.push(docs[index].get('path'));

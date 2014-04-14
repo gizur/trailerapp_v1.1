@@ -14,19 +14,19 @@
  */
 
 var Config = {
-    url : 'https://gizur.com/api/', //'https://c2.gizur.com/api/','http://phpapplications-env-sixmtjkbzs.elasticbeanstalk.com/api/', //
+    url : 'http://gizurnew-env.elasticbeanstalk.com/api/', //'https://gizur.com/api/', //'https://c2.gizur.com/api/', //'http://phpapplications-env-sixmtjkbzs.elasticbeanstalk.com/api/'
     log : {
-        type : 'loggly',
+        type : 'loggly',//'loggly', // console
         config : {
             loggly : {
                 key : 'a631e820-9cec-418e-950b-1a3132c6b03a',
-                buffer_size : (10 * 1024) //10kB
+                buffer_size : (2 * 1024) //10kB
             },
         },
         level : 'FATAL',
     },
     cacheRefreshTime : 1000*60*60*12, // 12 Hours in Milli Seconds ( (((12 hrs * 60) min * 60 ) Sec * 1000 ) Milli Seconds )
-    imageQuality : 35,
+    imageQuality : 50,
     imageTargetWidth : 1024,
 };
 

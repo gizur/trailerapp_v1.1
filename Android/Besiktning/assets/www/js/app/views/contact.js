@@ -50,12 +50,13 @@ var ScreenContactView = Stapes.subclass({
 
         "use strict";
 
-        $('#contact').off('swiperight');
+        //$('#contact').off('swiperight');
 
-        $('#contact').on('swiperight',function(){
+        $('#contacts-box').unbind('dblclick').bind('dblclick',function(){
+        	alert("12345");
             if ($('#trace_id').length === 0) {
                 var trace_id = window.localStorage.getItem('trace_id');
-                $('<div id="trace_id"><p style="text-align:center;">' + trace_id + '<p></div>').insertAfter('#contact div[data-role=navbar]');
+                $('#contacts-box-trace').empty().html('<div id="trace_id"><p style="text-align:center;">' + trace_id + '<p></div>');
             }
         });        
   
@@ -83,17 +84,17 @@ var ScreenContactView = Stapes.subclass({
             this._lg.log('DEBUG', '#contact$render', ' contact_html ' + contact_html);
 
             if (contact_html === null) {
-                $('#contact div[data-role=navbar]').siblings().remove();
+                $('#contacts-box').empty();
 
                 this._lg.log('DEBUG', " $('#contact div[data-role=navbar]') " + $('#contact div[data-role=navbar]').length);            
 
-                $(  '<div><p>An account needs to setup in order to use '.concat(
+                $('#contacts-box').html('<div><p>An account needs to setup in order to use '.concat(
                     'this service. Please contact ' ,
                     '<a href="mailto://sales@gizur.com">sales@gizur.com' ,
                     '</a> ' ,
-                    'in order to setup an account.</p></div>')).insertAfter('#contact div[data-role=navbar]');
+                    'in order to setup an account.</p></div>'));
             } else {
-                $('#contact div[data-role=navbar]').siblings().remove();
+            	$('#contacts-box').empty();
                 
                 var contactHtml = JSON.parse(contact_html);
                 var language = window.localStorage.getItem('language');
@@ -105,9 +106,7 @@ var ScreenContactView = Stapes.subclass({
                 	address = contactHtml[language];
                 }
                 
-                $('<div>' + address + '</div>').insertAfter('#contact div[data-role=navbar]');
-
-                $('#contact div[data-role=navbar]').siblings().find('a');
+                $('#contacts-box').html('<div>' + address + '</div>');
 
             }
 
@@ -124,6 +123,6 @@ var ScreenContactView = Stapes.subclass({
          * verify if user has modified anything
          * on the page.
          */
-        App.currentObj = {};
+        app.currentObj = {};
     }
 });

@@ -62,6 +62,10 @@ var Language = Stapes.subclass({
                 'Please try again, If the problem persists please contact the Gizur Saas Account holders' : 'Försök igen, Kontakta Gizur SaaS support om problemet kvarstår',
                 'All fields (username, password and client id) must be filled' : 'Alla fält (användarnamn, lösenord och klient id) måste fyllas i',
                 'You have made changes. If you continue, your changes will not be saved.': 'Du har gjort ändringar. Om du fortsätter kommer inte dina ändringar att sparas.',
+                "Unable to reset password. Please try again, If the problem persists please contact the Gizur Saas Account holders." : "Kunde inte nollställa lösen. Försök igen, Kontakta Gizur SaaS support om problemet kvarstår.",
+                "Unable to change password. Please try again, If the problem persists please contact the Gizur Saas Account holders." : "Kunde inte ändra lösen. Försök igen, Kontakta Gizur SaaS support om problemet kvarstår.",
+                "Your username and password settings are invalid. Please enter valid settings and try again." : "Ditt användarnamn eller lösenord är ogiltigt. Ange giltiga inställningar och försök igen.",
+                'Password has been reset successfully. Please check your mail for the new password.' : 'Lösen har nollställts. Ett nytt lösen har mailat.',
                 'Please select, if damage was caused by driver or not' : 'Välj om skadan orsakats av chauffören eller ej',
                 'Are you sure you want to reset your password' : 'Vill du verkligen nollställa lösen',
                 'Specify the damage in the direction the trailer moves' : 'Skadan anges I trailerns färdriktning',
@@ -69,11 +73,13 @@ var Language = Stapes.subclass({
                 'Please check your internet connection and try again' : 'Kontrollera internetuppkopplingen och försök igen',        
                 'Authenticated successfully and Cache built successfully' : 'Autensiering lyckades och cache är klar',
                 'Password has been reset successfully' : 'Lösen har nollställts',
-                'All Damages have been reported successfully' : 'Skadorna har rapporterats',
+                'All Damages have been reported successfully' : 'Kontrollbesiktning har rapporterats',
                 'Please select if sealed or not' : 'Ange om trailern är plomberad eller ej',
                 'You cannot add more than 3 pictures.' : 'Du kan inte lägga till mer än 3 bilder.',
                 'Only some damages have been reported successfully' : 'Endast några skador har rapporterats',
                 'Your changes will not be saved.' : 'Dina ändringar kommer inte att sparas.',
+                'Do you really want to delete the damage' : 'Vill du verkligen radera skadan',
+                'New Password cannot be blank' : 'Nytt lösenord kan inte vara tomt',
                 'Please select a damage type' : 'Ange typ av skada',
                 'Please select a damage position' : 'Ange position för skadan',                
                 'Please select Trailer Type' : 'Välj en trailer typ',
@@ -96,8 +102,9 @@ var Language = Stapes.subclass({
                 'Type of damage' : 'Typ av skada',
                 'Add new picture' : 'Lägg till en bild',
                 'Report new damage' : 'Rapportera ny skada',
+                'Report Damage' : 'Rapportera skada',
                 'Survey reported successfully' : 'Kontrollbesiktningen har rapporterats',
-                'No new damage' : 'Inga nya skador',
+                'No New Damage' : 'Inga nya skador',
                 'Damage Information' : 'Information om skada',
                 'Existing Damage(s)': 'Befintliga Skador',
                 'Change Password': 'Ändra Lösenord',
@@ -112,10 +119,10 @@ var Language = Stapes.subclass({
                 'Continue,Cancel' : 'Fortsätt,Avbryt',
                 'Confirm,Cancel' : 'Bekräfta,Avbryt',
                 'Select One' : 'Välj',  
-                'Go Back' : 'Tillbaka',                                 
+                'Go Back' : 'Tillbaka',
                 'Back' : 'Tillbaka',
                 'Picture' : 'Foton',
-                'Save' : 'Spara',            
+                'Save' : 'Spara',
                 'Contact' : 'Kontakt',
                 'Survey' : 'Besiktning',
                 'Settings' : 'Inställningar',
@@ -134,7 +141,8 @@ var Language = Stapes.subclass({
                 'Completed' : 'Slutfört',
                 'of' : 'av',
                 'Sending' : 'Skickar',
-                'Warning' : 'Varning'
+                'Warning' : 'Varning',
+                'Processing' : 'Bearbetning'
         });
         
         this.set('English', {
@@ -144,7 +152,9 @@ var Language = Stapes.subclass({
         	 'D&ouml;rrar' : 'Rear Doors',
         	 'Skyddspl&aring;tar' : 'Cover',
         	 'St&ouml;dbensfot' : 'Landing Legs',
-        	 'Tak' : 'Roof'
+        	 'Tak' : 'Roof',
+        	 'Ja' : 'Yes',
+             'Nej' : 'No'
         });
 
         if (typeof language !== 'undefined') {

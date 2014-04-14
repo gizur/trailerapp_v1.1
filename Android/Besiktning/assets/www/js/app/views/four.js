@@ -43,15 +43,16 @@ var ScreenFourView = Stapes.subclass({
             _wrapper: aWrapper
         });
         
-        if(typeof App.slider_four.reloadSlider === "undefined") {
-            App.slider_four = $('.bxslider-four').bxSlider({
+        if(typeof app.slider_four.reloadSlider === "undefined") {
+            app.slider_four = $('.bxslider-four').bxSlider({
                 infiniteLoop: false,
                 hideControlOnEnd: true,
                 pager: true,
                 pagerSelector: '#pager-four',
                 pagerType: 'short',
                 useCSS: false,
-                swipeThreshold: 10
+                swipeThreshold: 10,
+                adaptiveHeight: true
             });
         }
         
@@ -64,11 +65,58 @@ var ScreenFourView = Stapes.subclass({
             valid = valid && this._wrapper.checkLength($('#four #damageposition option:selected'), 0, this._language.translate('Please select a damage position'), this._language.translate('Error'));
 
             if(valid)
-            valid = valid && this._wrapper.checkLength($('#four #drivercauseddamage option:selected'), 0, this._language.translate('Please select, if damage was caused by driver or not'), this._language.translate('Error'));
-
+            valid = valid && this._wrapper.checkUndefinedValue($('.drivercauseddamage-radio.btn-success').attr('btn-value'), this._language.translate('Please select, if damage was caused by driver or not'), this._language.translate('Error'));
+       
             return valid;
         };
 
+        this.reset = function() {
+        	app.changeInPage = false;
+        	
+        	$('#four #damagetype').val('');
+            $('#four #damageposition').val('');
+            //$('#four #drivercauseddamage').val('');
+            $('.drivercauseddamage-radio').removeClass('btn-success');
+        };
+        
+        this.showPageFive = function(){
+        	$('.page-surveys').hide();
+        	$('#five').show();
+        	
+	    	app.prevPage = 'five';
+	    	app.surveyPage = 'five';
+
+    	    this.reset();
+    	    
+    	    var pageFive = new ScreenFiveView(app._usr, app._lg, app._lang, app._wrapper);
+    	    pageFive.bindEventHandlers();
+    	    pageFive.render();
+
+    	    /**
+    	     * Only once this page is completed logger should be allowed 
+    	     * to send logs to server
+    	     */
+    	    app._lg.appLoadingComplete();
+    	    
+    	    setTimeout(function(){
+    			$('html, body').animate({scrollTop: '0px'}, 1500);
+    	    }, 1000);
+        };
+        
+        this.getLatestDamageIndex = function() {
+        	var latest_damage_index = -1;
+        	var current_tt = JSON.parse(window.localStorage.getItem('current_tt'));
+        	if (window.localStorage.getItem('latest_damage_index') === null) {
+                if (current_tt !== null && current_tt.damages instanceof Array) {
+                	latest_damage_index = current_tt.damages.length - 1;
+                    this._lg.log('DEBUG', '#four$render', ' latest damage index from last index : ' + latest_damage_index);
+                }
+            } else {
+            	latest_damage_index = window.localStorage.getItem('latest_damage_index');
+                this._lg.log('DEBUG', '#four$render', ' latest damage index from cache : ' + latest_damage_index);
+            }
+        	return latest_damage_index;
+        };
     },
     /**
      * Binds events to various elements of the page
@@ -87,10 +135,18 @@ var ScreenFourView = Stapes.subclass({
          * Event Bindings
          * ------------------
          */
+        
+        $('.drivercauseddamage-radio').unbind('click').bind('click', function(e){
+        	e.preventDefault();
+        	$('.drivercauseddamage-radio').removeClass('btn-success');
+        	$(this).addClass('btn-success');
+        }),
 
         /**
          * Click event for saving damage report
          */
+        
+        
 
         $('#four #savedamage').unbind('click').click(function(e) {
 
@@ -102,22 +158,23 @@ var ScreenFourView = Stapes.subclass({
 
             that._lg.log('TRACE', '#four #savedamage', '#four #savedamage click start');
 
-            that._lg.log('TRACE', '#four #savedamage', '#four #damagetype option:selected' + $('#four #damagetype option:selected').text());
+            that._lg.log('TRACE', '#four #savedamage', '#four #damagetype option:selected' + $('#four #damagetype option:selected').val());
 
-            that._lg.log('TRACE', '#four #savedamage', '#four #damageposition option:selected' + $('#four #damageposition option:selected').text());
+            that._lg.log('TRACE', '#four #savedamage', '#four #damageposition option:selected' + $('#four #damageposition option:selected').val());
 
-            that._lg.log('DEBUG', '#four #savedamage', '#four #drivercauseddamage option:selected' + $('#four #drivercauseddamage option:selected').attr('value'));
-            
+            that._lg.log('DEBUG', '#four #savedamage', '#four .drivercauseddamage-radio.btn-success' + $('.drivercauseddamage-radio.btn-success').attr('btn-value'));
             
             if(that.validate()) {
 	            current_tt = JSON.parse(window.localStorage.getItem('current_tt'));
 	
+	            var latest_damage_index = that.getLatestDamageIndex();
+	            
 	            damage = {
 	                'damagetype': escapeHtmlEntities($('#four #damagetype').val()),
 	                'damageposition': escapeHtmlEntities($('#four #damageposition').val()),
-	                'drivercauseddamage': escapeHtmlEntities($('#four #drivercauseddamage').val())
+	                'drivercauseddamage': escapeHtmlEntities($('.drivercauseddamage-radio.btn-success').attr('btn-value'))
 	            };
-	
+	            
 	            documents = [];
 	
 	            $('.bxslider-four img').each(function() {
@@ -134,10 +191,9 @@ var ScreenFourView = Stapes.subclass({
 	                current_tt.damages = [];
 	                current_tt.damages.push(damage);
 	            } else {
-	
-	                that._lg.log('TRACE', '#four #savedamage', '#four current_tt.damages instanceof Array');
-	                if (that._latest_damage_index !== -1) {
-	                    current_tt.damages[that._latest_damage_index] = damage;
+	            	that._lg.log('TRACE', '#four #savedamage', '#four current_tt.damages instanceof Array');
+	                if (latest_damage_index !== -1) {
+	                    current_tt.damages[latest_damage_index] = damage;
 	                } else {
 	                    current_tt.damages.push(damage);
 	                }
@@ -147,8 +203,7 @@ var ScreenFourView = Stapes.subclass({
 	
 	            window.localStorage.setItem('current_tt', JSON.stringify(current_tt));
 	
-	            $.mobile.changePage('#five', {transition: 'none', showLoadMsg: false, reloadPage: false});
-	            //resetFormFour();	            
+	            that.showPageFive();
             }
             
             that._lg.log('TRACE', '#four #savedamage', '#four #savedamage click end');            
@@ -161,34 +216,47 @@ var ScreenFourView = Stapes.subclass({
             e.preventDefault();
 
             var current_tt = JSON.parse(window.localStorage.getItem('current_tt'));
+            var latest_damage_index = that.getLatestDamageIndex();
 
-            if (current_tt !== null && that._latest_damage_index !== -1) {
-
-                that._lg.log('DEBUG', '#four #deletedamage', '#four #deletedamage that._latest_damage_index ' + that._latest_damage_index);
-
-                current_tt.damages.splice(that._latest_damage_index, 1);
-
-                window.localStorage.setItem('current_tt', JSON.stringify(current_tt));
-
-                if (current_tt.damages.length === 0) {
-
-                    that._lg.log('TRACE', '#four #deletedamage', '#four #deletedamage refresh current page ');
-                    
-                    $.mobile.changePage('#five', {transition: 'none', showLoadMsg: false, reloadPage: false});
-                    //resetFormFour();
-                    //$.mobile.changePage('#four', {allowSamePageTransition: true, transition: 'none', showLoadMsg: false, reloadPage: false});
-
-                } else {
-
-                    that._lg.log('TRACE', '#four #deletedamage', '#four #deletedamage redirect to screen five ');
-                    
-                    $.mobile.changePage('#five', {transition: 'none', showLoadMsg: false, reloadPage: false});
-                    //resetFormFour();                    
-                }
-            } else {
-            	$.mobile.changePage('#four', {allowSamePageTransition: true, transition: 'none', showLoadMsg: false, reloadPage: false});
-            }
-
+            // Confirm you want to delete the damage
+            
+            var confirm = function(button){
+            	
+            	if(button === 1){
+		            if (current_tt !== null && typeof current_tt.damages !== "undefined" && latest_damage_index !== -1) {
+		
+		                that._lg.log('DEBUG', '#four #deletedamage', '#four #deletedamage latest_damage_index ' + latest_damage_index);
+		
+		                /**
+		                 * Delete the current damage & save back the current ticket
+		                 * in the local storage
+		                 */
+		                current_tt.damages.splice(latest_damage_index, 1);
+		
+		                window.localStorage.setItem('current_tt', JSON.stringify(current_tt));
+		
+		                if (current_tt.damages.length === 0) {
+		
+		                    that._lg.log('TRACE', '#four #deletedamage', '#four #deletedamage refresh current page ');
+		                    
+		                    that.showPageFive();
+		                } else {
+		
+		                    that._lg.log('TRACE', '#four #deletedamage', '#four #deletedamage redirect to screen five ');
+		                    
+		                    that.showPageFive();
+		                }
+		            } else {
+		            	that.showPageFive();
+		            }
+            	} else {
+            		return false;
+            	}
+            };
+            
+            if (current_tt !== null && typeof current_tt.damages !== "undefined" && latest_damage_index !== -1)
+            	app._wrapper.showConfirm(app._lang.translate("Do you really want to delete the damage")  + '?', confirm, app._lang.translate("Warning"), app._lang.translate("Continue,Cancel"));
+            
             that._lg.log('TRACE', '#four #deletedamage', '#four #deletedamage end');
         });
 
@@ -205,14 +273,15 @@ var ScreenFourView = Stapes.subclass({
 
             var success = function(imageURL) {
             	//Log
-                that._lg.log('DEBUG', '#four #takephoto', '#four #takephoto success' + imageURL);
+                
+            	that._lg.log('DEBUG', '#four #takephoto', '#four #takephoto success' + imageURL);
 
                 if ($('.bxslider-four img').length === 0) {
                     $('.bxslider-four').html('');
                 }
 
                 $('.bxslider-four').prepend('<li><img style="width:100%;height:auto;" src="' + imageURL + '"/></li>');
-                App.slider_four.reloadSlider();
+                app.slider_four.reloadSlider();
                 that._lg.log('DEBUG', '#four #takephoto', '#four #takephoto success $(.bxslider-four).html()' + $('.bxslider-four').html());
             };
 
@@ -228,7 +297,7 @@ var ScreenFourView = Stapes.subclass({
 	            that._wrapper.getPicture(success, fail, {quality: Config.imageQuality,
 	                destinationType: Camera.DestinationType.FILE_URI,
 	                targetWidth: Config.imageTargetWidth,
-	                correctOrientation: false
+	                correctOrientation: true
 	            });
             } catch (err) {
             	that._lg.log('FATAL', '#four #takephoto', 'Fail : ' + JSON.stringify(err));
@@ -264,14 +333,11 @@ var ScreenFourView = Stapes.subclass({
                                 }
                             }
                         }
-
-                        $('#four select#damageposition').selectmenu('refresh');
                     }
                 }
 
             }
 
-            $('#four select#damagetype').selectmenu('refresh');
             that._lg.log('TRACE', '#four select#damagetype', ' end loading dependency');
         });
 
@@ -282,62 +348,49 @@ var ScreenFourView = Stapes.subclass({
 	},
 	
     setValues: function(){
+    	
+    	var that = this;
+    	
     	this._wrapper.clearNavigatorCache();
         this._wrapper.clearNavigatorHistory();
-
-        if (App.changeInPage === false) {
+        	
+        if (app.changeInPage === false) {
         	var current_tt = JSON.parse(window.localStorage.getItem('current_tt'));
         	
         	/**
              * The index of the last damage added
              */
-
-            this._latest_damage_index = -1;
-
-            /**
-             * Check if already present in cache
-             */
-
-            if (window.localStorage.getItem('latest_damage_index') === null) {
-                if (current_tt !== null && current_tt.damages instanceof Array) {
-                    this._latest_damage_index = current_tt.damages.length - 1;
-                    this._lg.log('DEBUG', '#four$render', ' latest damage index from last index : ' + this._latest_damage_index);
-                }
-            } else {
-                this._latest_damage_index = window.localStorage.getItem('latest_damage_index');
-                this._lg.log('DEBUG', '#four$render', ' latest damage index from cache : ' + this._latest_damage_index);
-                window.localStorage.removeItem('latest_damage_index');
-            }
-            
-            if (current_tt !== null && current_tt.damages instanceof Array) {
+        	
+        	var latest_damage_index = this.getLatestDamageIndex();
+        	if (current_tt !== null && current_tt.damages instanceof Array && 
+        			latest_damage_index !== -1) {
 	            
-            	$('#four select#damagetype').attr('value', this.htmlDecode(current_tt.damages[this._latest_damage_index].damagetype));
-	            $('#four select#damagetype').selectmenu('refresh');
+            	$('#four select#damagetype').val(this.htmlDecode(current_tt.damages[latest_damage_index].damagetype));
 	            
 	            $('#four select#damagetype').change();
 	            
-	            $('#four select#damageposition').attr('value', this.htmlDecode(current_tt.damages[this._latest_damage_index].damageposition));
-	            $('#four select#damageposition').selectmenu('refresh');
+	            $('#four select#damageposition').val(this.htmlDecode(current_tt.damages[latest_damage_index].damageposition));
+	          
+	            $('.drivercauseddamage-radio').removeClass('btn-success');
+	           
+	            $('.drivercauseddamage-radio[btn-value=' + this.htmlDecode(current_tt.damages[latest_damage_index].drivercauseddamage) + ']').addClass('btn-success');
 	            
-	            $("#four select#drivercauseddamage").attr('value', this.htmlDecode(current_tt.damages[this._latest_damage_index].drivercauseddamage));
-	            $('#four select#drivercauseddamage').selectmenu('refresh');
-	            
-	            $('.bxslider-four').html("<li><center><div style='height:60px;width:200px;'>" + this._language.translate('No Picture(s) Attached') + "</div></center></li>");
+	            $('.bxslider-four').empty().html("<li>" + this._language.translate('No Picture(s) Attached') + "</li>");
 
 	            /**
 	             * Document pictures enum loading
 	             */
 
-	            if (this._latest_damage_index !== -1 &&
-	                    (current_tt.damages[this._latest_damage_index].documents instanceof Array)) {
-	                if (current_tt.damages[this._latest_damage_index].documents.length > 0) {
+	            if (latest_damage_index !== -1 &&
+	                    (current_tt.damages[latest_damage_index].documents instanceof Array)) {
+	                if (current_tt.damages[latest_damage_index].documents.length > 0) {
 
 	                    $('.bxslider-four').html('');
-	                    for (index in current_tt.damages[this._latest_damage_index].documents) {
+	                    for (index in current_tt.damages[latest_damage_index].documents) {
 
-	                        if (current_tt.damages[this._latest_damage_index].documents.hasOwnProperty(index)) {
-	                            this._lg.log('DEBUG', '#four$render', ' document path ' + current_tt.damages[this._latest_damage_index].documents[index].path);
-	                            $('.bxslider-four').append('<li><img style="width:100%;height:auto;" src="' + current_tt.damages[this._latest_damage_index].documents[index].path + '"/></li>');
+	                        if (current_tt.damages[latest_damage_index].documents.hasOwnProperty(index)) {
+	                            this._lg.log('DEBUG', '#four$render', ' document path ' + current_tt.damages[latest_damage_index].documents[index].path);
+	                            $('.bxslider-four').append('<li><img style="width:100%;height:auto;" src="' + current_tt.damages[latest_damage_index].documents[index].path + '"/></li>');
 	                        }
 	                    }
 	                } else {
@@ -345,20 +398,23 @@ var ScreenFourView = Stapes.subclass({
 	                }
 	            }
 
-	            App.slider_four.reloadSlider();
+	            app.slider_four.reloadSlider();
             } else {
-            	$('.bxslider-four').html("<li><center><div style='height:60px;width:200px;'>" + this._language.translate('No Picture(s) Attached') + "</div></center></li>");
-            	App.slider_four.reloadSlider();
+            	
+            	window.localStorage.setItem('latest_damage_index', -1);
+                
+            	$('.bxslider-four').empty().html("<li>" + this._language.translate('No Picture(s) Attached') + "</li>");
+            	app.slider_four.reloadSlider();
             }
-            
-            App.currentObj = {
-                'damagetype': $('#four #damagetype option:selected').text(),
-                'damageposition': $('#four #damageposition option:selected').text(),
-                'drivercauseddamage': $('#four #drivercauseddamage option:selected').text()
+        	
+            app.currentObj = {
+                'damagetype': $('#four #damagetype option:selected').val(),
+                'damageposition': $('#four #damageposition option:selected').val(),
+                'drivercauseddamage': $('.drivercauseddamage-radio.btn-success').attr('btn-value')
             };
         }
         
-        App.changeInPage = false;
+        app.changeInPage = false;
     },
     /**
      * Render page
@@ -419,8 +475,6 @@ var ScreenFourView = Stapes.subclass({
 
         this._lg.log('DEBUG', '#four$render', 'enum_drivercauseddamage : ' + JSON.stringify(enum_drivercauseddamage));
 
-        $('#four select#drivercauseddamage').html('');
-        $('#four select#drivercauseddamage').append('<option value=""> - ' + this._language.translate('Select One') + ' - </option>');
         for (index in enum_drivercauseddamage) {
             if (enum_drivercauseddamage.hasOwnProperty(index)) {
                 $('#four select#drivercauseddamage').append('<option value="' + enum_drivercauseddamage[index].value + '">' + this._language.translate(enum_drivercauseddamage[index].label) + '</option>');
@@ -429,16 +483,20 @@ var ScreenFourView = Stapes.subclass({
 
         this._lg.log('TRACE', '#four$render', 'end loading values to select menu');
         
-        $('.bxslider-four').html("<li><center><div style='height:60px;width:200px;'>" + this._language.translate('No Picture(s) Attached') + "</div></center></li>");
+        $('.bxslider-four').empty().html("<li>" + this._language.translate('No Picture(s) Attached') + "</li>");
 
-        App.slider_four.reloadSlider();
-        
-        $('#four #damagetype').selectmenu();
-        $('#four #damageposition').selectmenu();
-        $('#four #drivercauseddamage').selectmenu();
-        
-    	$('#four #damagetype').selectmenu('refresh');
-        $('#four #damageposition').selectmenu('refresh');
-        $('#four #drivercauseddamage').selectmenu('refresh');
+        app.slider_four.reloadSlider();
+    }
+});
+
+/*
+ * Static Vars and Methods
+ */
+ScreenFourView.extend({
+	_reset: function(){    	
+    	$('#four #damagetype').val('');
+        $('#four #damageposition').val('');
+        //$('#four #drivercauseddamage').val('');
+        $('.drivercauseddamage-radio').removeClass('btn-success');
     }
 });

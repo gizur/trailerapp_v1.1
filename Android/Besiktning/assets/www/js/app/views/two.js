@@ -34,23 +34,62 @@ var ScreenTwoView = Stapes.subclass({
          * method from outside of here.
          * Arggghh Stapes!!!!
          */
-        if(typeof App.slider_two.reloadSlider === "undefined") {
-            App.slider_two = $('.bxslider-two').bxSlider({
+        if(typeof app.slider_two.reloadSlider === "undefined") {
+            app.slider_two = $('.bxslider-two').bxSlider({
                 infiniteLoop: false,
                 hideControlOnEnd: true,
                 pager: true,
                 pagerSelector: '#pager-two',
                 pagerType: 'short',
                 useCSS: false,
-                swipeThreshold: 10
+                swipeThreshold: 10,
+                adaptiveHeight: true
             });
         }
+        
         this.extend({
             _lg : aLog,
             _language : aLanguage,
             _wrapper: aWrapper
         });
+        
+        this.show = function(){
+        	app.prevPage = 'two';
+        	app.surveyPage = "two";
+        	
 
+            this.bindEventHandlers();
+            this.render();
+            
+            $('.page-surveys').hide();
+        	$('#two').show();
+        	
+        	setTimeout(function(){
+    			$('html, body').animate({scrollTop: '0px'}, 1500);
+        	}, 1000);
+        };
+        
+        this.showPageOne = function(){
+        	$('.page-surveys').hide();
+        	$('#one').show();
+        	
+        	//$('#pages-tab a[href="#survey"]').click();
+        };
+        
+        this.showPageFive = function(){
+        	$('.page-surveys').hide();
+        	$('#five').show();
+        	
+        	//$('#pages-tab a[href="#survey"]').click();
+        };
+        
+        this.reset = function(){
+        	$('#damagetype').val('');
+        	$('#damagetype').val('');
+        	$('.bxslider-two').empty().html("<li>" + 
+                    this._language.translate('No Picture(s) Attached') + 
+                    "</li>");
+        };
     },
 
     /**
@@ -62,8 +101,21 @@ var ScreenTwoView = Stapes.subclass({
     bindEventHandlers : function() {
 
         "use strict";
-  
-    },
+        var that = this;
+        
+        $('#pageTwoBackButton').unbind('click').click(function(e){
+        	app.changeInPage = true;
+        	e.preventDefault();
+        	that.reset();
+        	
+        	var page = $(this).attr('back-page');
+        	
+        	if(page === 'five')
+        		that.showPageFive();
+        	else
+        		that.showPageOne();
+        });
+    },	
 
     /**
      * Render page
@@ -94,15 +146,13 @@ var ScreenTwoView = Stapes.subclass({
 
         $('#two #damagetype').val(tt.damagetype);
         $('#two #damageposition').val(tt.damageposition);
-        
-        $('#two a[data-icon="back"]').attr('onclick', 'App.changeInPage = true;');
 
         /**
          * Load images
          */
-        $('.bxslider-two').empty().html("<li><center><div style='height:60px;'>" + 
+        $('.bxslider-two').empty().html("<li>" + 
                 this._language.translate('No Picture(s) Attached') + 
-        "</div></center></li>");
+        "</li>");
         
         if(tt.files !== undefined)
         if (tt.files.length !== 0) {
@@ -118,22 +168,31 @@ var ScreenTwoView = Stapes.subclass({
                 	var img_id = tt.files[index].id + index;
                 	window.localStorage.setItem(img_id, tt.files[index].path);
                 	 
-                	$('.bxslider-two').append('<li><center><img alt="Loading ...' +
+                	$('.bxslider-two').append('<li><img alt="Loading ...' +
                     	tt.files[index].path + '" id="' + img_id + 
-                        '" style="width:100%;min-height:60px;height:auto;" cache="yes" refresh="360" src="' + tt.files[index].path +
-                        '" onclick="window.localStorage.setItem(\'details_doc_id\', this.id); $.mobile.changePage(\'#three\');"/></center></li>');
+                        '" style="width:100%; height:auto;" cache="yes" refresh="360" src="' + tt.files[index].path +
+                        '" onclick="window.localStorage.setItem(\'details_doc_id\', this.id); ScreenThreeView._render(); ScreenThreeView._show();"/></li>');
                 }
 
             }
 
         } else {
-            $('.bxslider-two').empty().html("<li><center><div style='height:60px;'>" + 
+            $('.bxslider-two').empty().html("<li>" + 
                 this._language.translate('No Picture(s) Attached') + 
-                "</div></center></li>");
+                "</li>");
         }
+        
+        app.currentObj = {};
 
-        App.changeInPage = false;
-        App.slider_two.reloadSlider();
+        app.changeInPage = false;
+        app.slider_two.reloadSlider();
         return false;
     }
+});
+
+ScreenTwoView.extend({
+	_show: function(){
+		$('.page-surveys').hide();
+		$('#two').show();
+	}
 });

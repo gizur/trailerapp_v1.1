@@ -48,27 +48,43 @@ var ScreenFiveView = Stapes.subclass({
 
         }
         
-        if(typeof App.slider_five_a.reloadSlider === "undefined") {
-            App.slider_five_a = $('.bxslider-five-a').bxSlider({
-                infiniteLoop: true,
+        if(typeof app.slider_five_a.reloadSlider === "undefined") {
+            app.slider_five_a = $('.bxslider-five-a').bxSlider({
+                infiniteLoop: false,
                 hideControlOnEnd: true,
                 pager: true,
                 pagerSelector: '#pager-five-a',
                 pagerType: 'short',
                 useCSS: false,
-                swipeThreshold: 10
+                swipeThreshold: 10,
+    		    responsive: false,
+                adaptiveHeight: true,
+    		    onSliderLoad: function(ci) {
+    		    	window.localStorage.setItem('details_tt_id', $( ".bxslider-five-a li:nth-child(" + (ci + 1) + ") a" ).attr('id'));
+    		    },
+    		    onSlideAfter: function(se, oi, ci){
+    		    	window.localStorage.setItem('details_tt_id', $( ".bxslider-five-a li:nth-child(" + (ci + 1) + ") a" ).attr('id'));
+    		    }
             });
         }
         
-        if(typeof App.slider_five_b.reloadSlider === "undefined") {
-            App.slider_five_b = $('.bxslider-five-b').bxSlider({
-                infiniteLoop: true,
+        if(typeof app.slider_five_b.reloadSlider === "undefined") {
+            app.slider_five_b = $('.bxslider-five-b').bxSlider({
+                infiniteLoop: false,
                 hideControlOnEnd: true,
                 pager: true,
                 pagerSelector: '#pager-five-b',
                 pagerType: 'short',
                 useCSS: false,
-                swipeThreshold: 10
+                swipeThreshold: 10,
+    		    responsive: false,
+                adaptiveHeight: true,
+    		    onSliderLoad: function(ci) {
+    		    	window.localStorage.setItem('latest_damage_index', $( ".bxslider-five-b li:nth-child(" + (ci + 1) + ") a" ).attr('id'));
+    		    },
+    		    onSlideAfter: function(se, oi, ci){
+    		    	window.localStorage.setItem('latest_damage_index', $( ".bxslider-five-b li:nth-child(" + (ci + 1) + ") a" ).attr('id'));
+    		    }
             });
         }
         
@@ -80,6 +96,43 @@ var ScreenFiveView = Stapes.subclass({
             _wrapper: aWrapper
         });
 
+        this.showPageOne = function(){
+        	app.surveyPage = "one";
+        	app.prevPage = "one";
+        	
+        	$('.page-surveys').hide();
+        	$('#one').show();
+        	
+        	$('#pages-tab a[href="#survey"]').click();
+        };
+        
+        this.showPageFour = function(){
+        	var pageOne = new ScreenOneView(app._usr,
+					app._lg, app._lang, app._wrapper);
+        	pageOne.showPageFour();
+        };
+        
+        this.resetFormFour = function() {
+        	var pageFour = new ScreenFourView(app._usr, app._lg, app._lang, app._wrapper);
+        	pageFour.reset();
+        };
+        
+        this.resetFormOne = function() {
+        	var pageOne = new ScreenOneView(app._usr,
+					app._lg, app._lang, app._wrapper);
+        	pageOne.reset();
+        };
+        
+        this.resetCurrentTT = function() {
+        	var pageOne = new ScreenOneView(app._usr,
+					app._lg, app._lang, app._wrapper);
+        	pageOne.resetCache();
+        };
+        
+        this.showPageTwo = function(){
+        	var pageTwo = new ScreenTwoView(app._lg, app._lang, app._wrapper);
+            pageTwo.show();
+        };
     },
 
     /**
@@ -104,7 +157,7 @@ var ScreenFiveView = Stapes.subclass({
          * Click event for report all damages
          */  
 
-        $('.bxslider-five-a li a').die('click').live('click', function(e){
+        $('.bxslider-five-a').unbind('click').click(function(e){
             try {
 
                 if ($(this).data('disabled')) {
@@ -118,27 +171,17 @@ var ScreenFiveView = Stapes.subclass({
                 var tt = new TroubleTicket(that._usr, Config.log);
 
                 that._lg.log('TRACE', '.bxslider-five-a li a', '.bxslider-one li a click start');
-                that._lg.log('DEBUG', '.bxslider-five-a li a', " $(this).attr('id') " + $(this).attr('id'));
 
                 // Save the position
 
                 that._tt_list = JSON.parse(window.localStorage.getItem('tt_list'));
-                that._tt_list.position = App.slider_five_a.getCurrentSlide();
+                that._tt_list.position = app.slider_five_a.getCurrentSlide();
+                
                 window.localStorage.setItem('tt_list', JSON.stringify(that._tt_list));
                 
-                var id = $(this).attr('id');
-                window.localStorage.setItem('details_tt_id', id);
-                console.log(JSON.stringify(window.localStorage.getItem(id + '_tt')));
-
-                $('#two a[data-icon="back"]').attr('href', '#five');
+                var id = window.localStorage.getItem('details_tt_id');
                 
-                /**
-                 * Set return point if no internet connection is found
-                 */
-
-                $('#dialog_nointernet a[data-role=button]').attr('href', '#five');
-                
-                $.mobile.changePage('#two');                
+                that.showPageTwo();
                 
             } catch (err) {
 
@@ -146,7 +189,7 @@ var ScreenFiveView = Stapes.subclass({
                  * Uncaught error catching and log it as FATAL
                  */
 
-                that._lg.log('FATAL', '.bxslider-five-a li a', JSON.stringify(err));
+                that._lg.log('FATAL', '.bxslider-five-a li a', err.message + " : " + JSON.stringify(err));
 
             }        
         });
@@ -220,8 +263,6 @@ var ScreenFiveView = Stapes.subclass({
                  * to the previous page.
                  */
 
-                $.mobile.urlHistory.stack = [];
-
                 that._wrapper.clearNavigatorHistory();
 
                 var unsent_files = window.localStorage.getItem('unsent_files');
@@ -238,14 +279,8 @@ var ScreenFiveView = Stapes.subclass({
 
                     that._lg.log('TRACE', '#five #sendalldamages', '#five #sendalldamages success no unsent_files ');
 
-                    /**
-                     * Reset Forms
-                     */
-                    resetFormOne();
-                    cleanCurrentTT();
-                    resetFormFour();
-                    
-                    $('#a_dialog_success_damagereported').click();
+                    $('.modal').modal('hide');
+                    $('#damageReportSuccessDialog').modal('show');
 
                 } else {
 
@@ -253,7 +288,7 @@ var ScreenFiveView = Stapes.subclass({
                      * Attach events for retry and cancel
                      */
 
-                    $('#dialog_success_damagereported_unsentfiles a:contains(Retry)').unbind('click').bind('click', function(e){
+                    $('#unsentFilesRetryYesButton').unbind('click').bind('click', function(e){
 
                         that._lg.log('TRACE', '#five #sendalldamages', '#five #sendalldamages success #dialog_success_damagereported_unsentfiles a:contains(Retry) START ');
                         
@@ -279,15 +314,14 @@ var ScreenFiveView = Stapes.subclass({
                                 );      
 
                             } else if (new_unsent_files.length !== 0) {
-
                                 window.localStorage.setItem('unsent_files', JSON.stringify(new_unsent_files));
 
-                                $('#a_dialog_success_damagereported_unsentfiles').click();
+                                $('.modal').modal('hide');
+                                $('#a_dialog_success_damagereported_unsentfiles').modal("show");
 
                             } else {
-
-                                $('#a_dialog_success_unsentfiles').click();
-
+                            	$('.modal').modal('hide');
+                                $('#a_dialog_success_unsentfiles').modal("show");
                             }
 
                             that._lg.log('TRACE', '#five #sendalldamages', '#five #sendalldamages success #dialog_success_damagereported_unsentfiles a:contains(Retry) successCbMultipleFile END ');                        
@@ -315,9 +349,10 @@ var ScreenFiveView = Stapes.subclass({
 
                                 window.localStorage.setItem('unsent_files', JSON.stringify(new_unsent_files));
 
-                                $('#dialog_success_damagereported_unsentfiles[data-role=content] p span').html(new_unsent_files.length);                                
+                                $('#dialog_success_damagereported_unsentfiles[class="modal-body"] p span').html(new_unsent_files.length);                                
 
-                                $('#a_dialog_success_damagereported_unsentfiles').click();
+                                $('.modal').modal('hide');
+                                $('#a_dialog_success_damagereported_unsentfiles').modal("show");
 
                             }
 
@@ -338,7 +373,7 @@ var ScreenFiveView = Stapes.subclass({
 
                     });
 
-                    $('#dialog_success_damagereported_unsentfiles a:contains(No)').unbind('click').bind('click', function(e){
+                    $('#unsentFilesRetryNoButton').unbind('click').bind('click', function(e){
 
                         that._lg.log('TRACE', '#five #sendalldamages', '#five #sendalldamages success #dialog_success_damagereported_unsentfiles a:contains(No) START ');                    
 
@@ -346,15 +381,19 @@ var ScreenFiveView = Stapes.subclass({
 
                         window.localStorage.removeItem('unsent_files');
 
-                        $.mobile.changePage('#one');
+                        that.resetFormOne();
+                        that.resetFormFour();
+                        
+                    	that.showPageOne();
 
                         that._lg.log('TRACE', '#five #sendalldamages', '#five #sendalldamages success #dialog_success_damagereported_unsentfiles a:contains(No) END ');
 
                     });
 
-                    $('#dialog_success_damagereported_unsentfiles[data-role=content] p span').html(unsent_files.length);
+                    $('#dialog_success_damagereported_unsentfiles[class="modal-body"] p span').empty().html(unsent_files.length);
 
-                    $('#a_dialog_success_damagereported_unsentfiles').click();
+                    $('.modal').modal('hide');
+                    $('#dialog_success_damagereported_unsentfiles').modal('show');
                 }          
 
                 window.localStorage.removeItem('current_tt');
@@ -412,11 +451,13 @@ var ScreenFiveView = Stapes.subclass({
 
                     that._lg.log('TRACE', '#five #sendalldamages', '#five #sendalldamages error launching popup for a_dialog_error_damagereported');
 
-                    $.mobile.urlHistory.stack = [];
-
                     that._wrapper.clearNavigatorHistory();
 
-                    $('#a_dialog_error_damagereported').click();
+                    $('#errorDialogHeader').empty().html(that._language.translate('Error'));
+                    $('#errorDialogBody').empty().html(that._language.translate('Error while reporting damages. Please try again, If the problem persists please contact the Gizur Saas Account holders') + '.');
+                    
+                    $('.modal').modal('hide');
+                    $('#errorDialog').modal("show");
 
                 } else {
 
@@ -432,16 +473,8 @@ var ScreenFiveView = Stapes.subclass({
 
                         that._lg.log('TRACE', '#five #sendalldamages', '#five #sendalldamages error no unsent_files');
 
-                        if(typeof window.retry_count === 'undefined')
-                        	window.retry_count = 0;
-                        
-                        if (window.retry_count < 2) {
-                        	window.retry_count++;
-                        	$('#five #sendalldamages').click();
-                        } else {
-                            delete window.retry_count;
-                        	$('#a_dialog_partialsuccess_damagereported').click();
-                        }
+                        $('.modal').modal('hide');
+                        $('#a_dialog_partialsuccess_damagereported').modal('show');
 
                     } else {
 
@@ -451,7 +484,7 @@ var ScreenFiveView = Stapes.subclass({
                          * Attach events for retry and cancel
                          */
 
-                        $('#dialog_partialsuccess_damagereported_unsentfiles a:contains(Retry)').unbind('click').bind('click', function(e){
+                        $('#partialSuccessRetryYesButton').unbind('click').bind('click', function(e){
 
                             that._lg.log('TRACE', '#five #sendalldamages', '#five #sendalldamages error #dialog_partialsuccess_damagereported_unsentfiles a:contains(Retry) START');
 
@@ -480,11 +513,13 @@ var ScreenFiveView = Stapes.subclass({
 
                                     window.localStorage.setItem('unsent_files', JSON.stringify(new_unsent_files));
 
-                                    $('#a_dialog_partialsuccess_damagereported_unsentfiles').click();
+                                    $('.modal').modal('hide');
+                                    $('#dialog_partialsuccess_damagereported_unsentfiles').modal('show');
 
                                 } else {
 
-                                    $('#a_dialog_success_unsentfiles').click();
+                                	$('.modal').modal('hide');
+                                    $('#dialog_success_unsentfiles').modal("show");
 
                                 }
 
@@ -513,9 +548,10 @@ var ScreenFiveView = Stapes.subclass({
 
                                     window.localStorage.setItem('unsent_files', JSON.stringify(new_unsent_files));
 
-                                    $('#dialog_partialsuccess_damagereported_unsentfiles[data-role=content] p span').html(new_unsent_files.length);                                
+                                    $('#dialog_partialsuccess_damagereported_unsentfiles[class="modal-body"] p span').html(new_unsent_files.length);                                
 
-                                    $('#a_dialog_partialsuccess_damagereported_unsentfiles').click();
+                                    $('.modal').modal('hide');
+                                    $('#dialog_partialsuccess_damagereported_unsentfiles').model("show");
 
                                 }
 
@@ -536,7 +572,7 @@ var ScreenFiveView = Stapes.subclass({
 
                         });
 
-                        $('#dialog_partialsuccess_damagereported_unsentfiles a:contains(No)').unbind('click').bind('click', function(e){
+                        $('#partialSuccessRetryNoButton').unbind('click').bind('click', function(e){
 
                             that._lg.log('TRACE', '#five #sendalldamages', '#five #sendalldamages error #dialog_partialsuccess_damagereported_unsentfiles a:contains(No) START');                        
 
@@ -544,15 +580,16 @@ var ScreenFiveView = Stapes.subclass({
 
                             window.localStorage.removeItem('unsent_files');
 
-                            $.mobile.changePage('#five');
+                            $('.modal').modal('hide');
 
                             that._lg.log('TRACE', '#five #sendalldamages', '#five #sendalldamages error #dialog_partialsuccess_damagereported_unsentfiles a:contains(No) END');                                                
 
                         });
 
-                        $('#dialog_partialsuccess_damagereported_unsentfiles[data-role=content] p span').html(unsent_files.length);
+                        $('#dialog_partialsuccess_damagereported_unsentfiles[class="modal-body"] p span').html(unsent_files.length);
 
-                        $('#a_dialog_partialsuccess_damagereported_unsentfiles').click();
+                        $('.modal').modal('hide');
+                        $('#dialog_partialsuccess_damagereported_unsentfiles').modal('show');
                     
                     }
 
@@ -564,9 +601,9 @@ var ScreenFiveView = Stapes.subclass({
             var status = function(aAttemptCount, aTotalCount){
             	
             	if (typeof window.retry_count === 'undefined')
-            		$('#dialog_damage_sending div[data-role=content]').children().first().html(that._language.translate('Completed') + ' ... ' + aAttemptCount + ' ' + that._language.translate('of') + ' ' + aTotalCount);
+            		$('#damageReportSendingDialogBody p').empty().html(that._language.translate('Completed') + ' ... ' + aAttemptCount + ' ' + that._language.translate('of') + ' ' + aTotalCount);
             	else
-            		$('#dialog_damage_sending div[data-role=content]').children().first().html(that._language.translate('Network Error: Retrying') + ' ' + (window.retry_count) + '/2 ...<br/><br/>' +
+            		$('#damageReportSendingDialogBody p').empty().html(that._language.translate('Network Error: Retrying') + ' ' + (window.retry_count) + '/2 ...<br/><br/>' +
             				that._language.translate('Completed') + ' ... ' + aAttemptCount + ' ' + that._language.translate('of') + ' ' + aTotalCount);
             };
 
@@ -574,8 +611,9 @@ var ScreenFiveView = Stapes.subclass({
              * Show success message
              */
 
-            $('#dialog_damage_sending div[data-role=content]').children().first().html(that._language.translate('Completed') + ' ... 0 ' + that._language.translate('of') + ' ' + ttc.size());
-            $('#a_dialog_damage_sending').click(); 
+            $('.modal').modal('hide');
+            $('#damageReportSendingDialogBody p').empty().html(that._language.translate('Completed') + ' ... 0 ' + that._language.translate('of') + ' ' + ttc.size());
+            $('#damageReportSendingDialog').modal('show');
 
             that._lg.log('TRACE', '#five #sendalldamages', '#five #sendalldamages click end'); 
 
@@ -595,39 +633,39 @@ var ScreenFiveView = Stapes.subclass({
 
             that._lg.log('TRACE', '#five #reportanotherdamage', '#five #savedamage click start');
 
+            if(typeof that._current_tt.damages === "undefined")
+            	that._current_tt.damages = [];
+            
             that._current_tt.damages.push({});
 
             window.localStorage.setItem('current_tt', JSON.stringify(that._current_tt));
+            
+            window.localStorage.removeItem('latest_damage_index');
 
             that.enable();
 
-            $.mobile.changePage('#four', {transition: 'none', showLoadMsg: false, reloadPage: false});  
+            that.showPageFour(); 
 
             that._lg.log('TRACE', '#five #reportanotherdamage', '#five #savedamage click end');   
-        }); 
+        });
 
-        /**
-         * Click event for widget link
-         */   
-
-        $('#five .bxslider-five-b li a').die('click').live('click',function(e){
-
-            if ($(this).data('disabled')) {
-                $(this).removeClass('ui-btn-active');
-                return false;
-            }            
-
-            that._lg.log('TRACE', '#five .bxslider-five-b li a', '#five .bxslider-five-b li a click start');
-
-            e.preventDefault();
-            window.localStorage.setItem('latest_damage_index', $(this).attr('id'));
-
-            that.enable();
+        $('#five .bxslider-five-b').unbind('click').click(function(e){
+        	that.showPageFour();
+        });
+        
+        $('#showSurveyPageOneAndResetBtn').unbind('click').click(function(e){
+        	e.preventDefault();
+        	/**
+             * Reset Forms
+             */
+            that.resetFormOne();
+            that.resetCurrentTT();
+            that.resetFormFour();
             
-            $.mobile.changePage('#four', {transition: 'none', showLoadMsg: false, reloadPage: false});
-
-            that._lg.log('TRACE', '#five .bxslider-five-b li a', '#five .bxslider-five-b li a click end');        
-        });        
+            app.changeInPage = false;
+            app.pageOneLoaded = false;
+        	that.showPageOne();
+        });
   
     },
 
@@ -680,10 +718,12 @@ var ScreenFiveView = Stapes.subclass({
          * Page Inititialize
          * -----------------
          */
+        $('#two #pageTwoBackButton').attr('back-page', 'five');
+        
         this._wrapper.clearNavigatorCache();
         this._wrapper.clearNavigatorHistory();
         
-        this._lg.log('DEBUG', '#five render', ' number of damages ' + this._current_tt.damages.length);        
+        //this._lg.log('DEBUG', '#five render', ' number of damages ' + this._current_tt.damages.length);        
 
         if ( this._current_tt !== null ) {
 
@@ -709,27 +749,26 @@ var ScreenFiveView = Stapes.subclass({
 	            
 	            for (var index in this._current_tt.damages) {
 	                if (this._current_tt.damages.hasOwnProperty(index)){
-	                	html += "<li><center><div style='height:60px;'><a id='" + index + "' href='javascript:void(0);'>" + this._current_tt.damages[index].damageposition + '<br/>' + this._current_tt.damages[index].damagetype + "</a></div></center></li>";
+	                	html += "<li><a id='" + index + "' href='javascript:void(0);'>" + this._current_tt.damages[index].damageposition + '<br/>' + this._current_tt.damages[index].damagetype + "</a></li>";
 	                }
 	            }
             } else {
-            	html = "<li><center><div style='height:60px;'>" + this._language.translate('No Damages Reported') + "</div></center></li>";
+            	html = "<li>" + this._language.translate('No Damages Reported') + "</li>";
             }
-            $('#five .bxslider-five-b').empty().html(html).collapsibleset();
-            App.slider_five_b.reloadSlider();  
+            $('#five .bxslider-five-b').empty().html(html);
+            app.slider_five_b.reloadSlider();  
         } 
 
         var tt_list = JSON.parse(window.localStorage.getItem('tt_list'));
         if (tt_list !== null && this._current_tt !== null && tt_list.html !== '') {
             this._lg.log('DEBUG', '#five render', 'reloading slider for troubleticketlist  to position ' + tt_list.position);        
 
-            $('.bxslider-five-a').html(tt_list.html).collapsibleset();
-            App.slider_five_a.reloadSlider();
-            App.slider_five_a.goToSlide(tt_list.position);
+            $('.bxslider-five-a').html(tt_list.html);
+            app.slider_five_a.reloadSlider();
+            app.slider_five_a.goToSlide(tt_list.position);
         } else {
-            $('#one #troubleticketlist').html("<li><center><div style='height:60px;'>" + this._language.translate('No Damages Reported') + "</div></center></li>");
-            $('#one #troubleticketlist').collapsibleset();
-            App.slider_five_a.reloadSlider();       
+            $('#one #troubleticketlist').html("<li>" + this._language.translate('No Damages Reported') + "</li>");
+            app.slider_five_a.reloadSlider();       
         }
         
         /**
@@ -737,7 +776,7 @@ var ScreenFiveView = Stapes.subclass({
          * verify if user has modified anything
          * on the page.
          */
-        App.changeInPage = false;
-        App.currentObj = {};
+        app.changeInPage = false;
+        app.currentObj = {};
     }
 });

@@ -90,7 +90,7 @@ var User = Stapes.subclass({
                 'id' : '',
                 'username' : '',
                 'password' : '',
-                'authenticated' : '',
+                'authenticated' : false,
                 'refreshTime' : ''
             }); 
         }
@@ -153,7 +153,14 @@ var User = Stapes.subclass({
 
                     that.setAuthenticated(false);
 
-                    $('#a_dialog_error_invalidcredentials').click();
+                    $('.modal').modal('hide');
+                    
+                    $('#errorDialogHeader').empty().html(app._lang.translate('Error'));
+                	$('#errorDialogBody').empty().html(app._lang.translate('Your username and password settings are invalid. Please enter valid settings and try again') + '.');
+                	
+                	$('#errorDialog').modal('show');
+                	
+                    //$('#a_dialog_error_invalidcredentials').click();
                     return;
                 }
 
