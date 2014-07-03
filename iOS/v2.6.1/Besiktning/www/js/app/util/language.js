@@ -1,4 +1,4 @@
-/*jshint forin:true, noarg:true, noempty:true, eqeqeq:true, 
+/*jshint forin:true, noarg:true, noempty:true, eqeqeq:true,
          bitwise:true, strict:true, undef:false, unused:true, 
          curly:true, browser:true, indent:4, maxerr:50 */
 
@@ -142,7 +142,9 @@ var Language = Stapes.subclass({
                 'of' : 'av',
                 'Sending' : 'Skickar',
                 'Warning' : 'Varning',
-                'Processing' : 'Bearbetning'
+                'Processing' : 'Bearbetning',
+                'Unable to submit a damage report.' : 'Kunde inte skicka in skaderapport.',
+                'Failed' : 'Misslyckades'
         });
         
         this.set('en', {
