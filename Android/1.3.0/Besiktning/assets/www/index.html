@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Survey</title>
+	<link rel="stylesheet" href="css/bootstrap.min.css" />
+	<link href="css/jquery.bxslider.css" rel="stylesheet" />
+	<link rel="stylesheet" href="css/index.css" />
+	
+	<!--lib-->
+	<script src="cordova.js"></script>
+	<!-- script src="cordova_plugins.js"></script>  -->
+	
+	<script src="js/lib/jquery-2.0.3.min.js"></script>
+	<script src="js/lib/bootstrap.min.js"></script>
+	<script src="js/lib/jquery.bxslider.js"></script>
+	<script src="js/lib/stapes.min.js"></script>
+	
+	<!--config-->
+	<script src="js/app/config.js"></script>
+	
+	<!--util-->
+	<script src="js/app/util/request.js"></script>
+	<script src="js/app/util/logger.js"></script>
+	<script src="js/app/util/encoding.js"></script>
+	<script src="js/app/util/language.js"></script>
+	<script src="js/app/util/wrapper.js"></script>
+	
+	<!--model-->
+	<script src="js/app/models/asset.js"></script>
+	<script src="js/app/models/assetcollection.js"></script>
+	<script src="js/app/models/damage.js"></script>
+	<script src="js/app/models/doc.js"></script>
+	<script src="js/app/models/doccollection.js"></script>
+	<script src="js/app/models/troubleticket.js"></script>
+	<script src="js/app/models/troubleticketcollection.js"></script>
+	<script src="js/app/models/user.js"></script>
+	
+	<!--view-->
+	<script src="js/app/views/one.js"></script>
+	<script src="js/app/views/two.js"></script>
+	<script src="js/app/views/three.js"></script>
+	<script src="js/app/views/four.js"></script>
+	<script src="js/app/views/five.js"></script>
+	<script src="js/app/views/settings.js"></script>
+	<script src="js/app/views/contact.js"></script>
+	
+	<script src="js/app/index.js"></script>
+</head>
+<body>
+	<div id="splash-box">
+		<div>
+			<img style="display: block; width: 100%; height: auto;"
+				src="img/splash.png" />
+		</div>
+	</div>
+	<div id="page-box" style="display: none;">
+		<div class="tabbable" id="pages-tab">
+			<ul class="nav nav-tabs">
+				<li><a href="#contacts" data-toggle="tab">Contact</a></li>
+				<li><a href="#survey" data-toggle="tab">Survey</a></li>
+				<li><a href="#settings" data-toggle="tab">Settings</a></li>
+			</ul>
+			<div class="tab-content page-content">
+				<div class="tab-pane" id="contacts">
+					<p>Contact</p>
+				</div>
+				<div class="tab-pane" id="survey">
+					<p>Survey</p>
+				</div>
+				<div class="tab-pane active" id="settings">
+					<p>Settings</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Basic Dialog -->
+	<div id="basicDialog" class="modal hide fade" tabindex="-1"
+		data-backdrop="static">
+		<div class="modal-header">
+			<!-- <button type="button" class="close" data-dismiss="modal" aria-hidden="true" data-backdrop="static">×</button>-->
+			<h3 id="basicDialogHeader">Processing</h3>
+		</div>
+		<div class="modal-body" id="basicDialogBody">
+			<p></p>
+		</div>
+	</div>
+	
+	<!-- Basic Dialog -->
+	<div id="basicDialogButton" class="modal hide fade" tabindex="-1"
+		data-backdrop="static">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true" data-backdrop="static">×</button>
+			<h3 id="basicDialogButtonHeader">Processing</h3>
+		</div>
+		<div class="modal-body" id="basicDialogButtonBody">
+			<p></p>
+		</div>
+		<div class="modal-footer">
+			<button class="btn btn-large btn-primary" data-dismiss="modal" aria-hidden="true" data-backdrop="static">Ok</button>
+		</div>
+	</div>
+	
+		<!-- Existing damages success dialog -->
+	<div id="existingSuccessDialog" class="modal hide fade" tabindex="-1"
+		data-backdrop="static">
+		<div class="modal-header">
+			<h3 id="existingSuccessDialogHeader">Success</h3>
+		</div>
+		<div class="modal-body" id="existingSuccessDialogBody">
+			<p>Existing damages loaded successfully.</p>
+		</div>
+		<div class="modal-footer">
+			<button class="btn btn-large btn-primary" data-dismiss="modal" aria-hidden="true" data-backdrop="static"
+				id="showExistingPageAndResetBtn">Ok</button>
+		</div>
+	</div>
+     <!-- End Existing damages success dialog -->
+	
+	<!-- Survey Success Dialog -->
+	<div id="surveySuccessDialog" class="modal hide fade" tabindex="-1"
+		data-backdrop="static">
+		<div class="modal-header">
+			<h3 id="surveySuccessDialogHeader">Success</h3>
+		</div>
+		<div class="modal-body" id="surveySuccessDialogBody">
+			<p>Survey reported successfully.</p>
+		</div>
+		<div class="modal-footer">
+			<button class="btn btn-large btn-primary" data-dismiss="modal" aria-hidden="true" data-backdrop="static"
+				id="showSurveyPageAndResetBtn">Ok</button>
+		</div>
+	</div>
+	
+	<!-- Survey Error Dialog -->
+	<div id="surveyErrorDialog" class="modal hide fade" tabindex="-1"
+		data-backdrop="static">
+		<div class="modal-header">
+			<h3 id="surveyErrorDialogHeader">Failed</h3>
+		</div>
+		<div class="modal-body" id="surveyErrorDialogBody">
+			<p>Unable to submit a damage report</p>
+		</div>
+		<div class="modal-footer">
+			<button class="btn btn-large btn-primary" data-dismiss="modal" aria-hidden="true" data-backdrop="static">Ok</button>
+		</div>
+	</div>
+	
+	<!-- Authentication Dialog -->
+	<div id="authDialog" class="modal hide fade" tabindex="-1"
+		data-backdrop="static">
+		<div class="modal-header">
+			<h3 id="authDialogHeader">Error</h3>
+		</div>
+		<div class="modal-body" id="authDialogBody">
+			<p></p>
+		</div>
+	</div>
+
+	<!-- Auth Success Dialog -->
+	<div id="authSuccessDialog" class="modal hide fade" tabindex="-1"
+		data-backdrop="static">
+		<div class="modal-header">
+			<h3 id="authSuccessDialogHeader">Success</h3>
+		</div>
+		<div class="modal-body" id="authSuccessDialogBody">
+			<p></p>
+		</div>
+		<div class="modal-footer">
+			<button class="btn btn-large btn-primary" data-dismiss="modal" aria-hidden="true" data-backdrop="static"
+				id="showSurveyPageBtn">Ok</button>
+		</div>
+	</div>
+
+	<!-- Error Dialog -->
+	<div id="errorDialog" class="modal hide fade" tabindex="-1"
+		data-backdrop="static">
+		<div class="modal-header">
+			<h3 id="errorDialogHeader">Error</h3>
+		</div>
+		<div class="modal-body" id="errorDialogBody">
+			<p></p>
+		</div>
+		<div class="modal-footer">
+			<button class="btn btn-large btn-primary" data-dismiss="modal" aria-hidden="true" data-backdrop="static">Close</button>
+		</div>
+	</div>
+
+	<!-- Damage Report Success Dialog -->
+	<div id="damageReportSuccessDialog" class="modal hide fade" tabindex="-1"
+		data-backdrop="static">
+		<div class="modal-header">
+			<h3 id="damageReportSuccessDialogHeader">Success</h3>
+		</div>
+		<div class="modal-body" id="damageReportSuccessDialogBody">
+			<p>All Damages have been reported successfully.</p>
+		</div>
+		<div class="modal-footer">
+			<button class="btn btn-large btn-primary" data-dismiss="modal" aria-hidden="true" data-backdrop="static"
+				id="showSurveyPageOneAndResetBtn">Ok</button>
+		</div>
+	</div>
+	
+	<!-- Damage Report Success Dialog -->
+	<div id="damageReportSendingDialog" class="modal hide fade" tabindex="-1"
+		data-backdrop="static">
+		<div class="modal-header">
+			<h3 id="damageReportSendingDialogHeader">Sending ...</h3>
+		</div>
+		<div class="modal-body" id="damageReportSendingDialogBody">
+			<p></p>
+		</div>
+	</div>
+	
+	<div id="dialog_success_damagereported_unsentfiles" class="modal hide fade" tabindex="-1"
+		data-backdrop="static">
+	    <div class="modal-header">
+	        <h3>Success</h3>
+	    </div><!-- /header -->
+	
+	    <div class="modal-body">
+	        <p>All Damages have been reported successfully. Also <span>some</span> pictures have not been sent, would you 
+	        like to retry sending them?</p>
+	        <p>
+	            <button type="button" id="unsentFilesRetryYesButton" class="btn btn-large btn-primary">Retry</button>
+	            <button type="button" id="unsentFilesRetryNoButton" class="btn btn-large">No</button>
+	        </p>
+	    </div><!-- /content -->
+	</div>
+	
+	<div id="dialog_success_unsentfiles" class="modal hide fade" tabindex="-1"
+		data-backdrop="static">
+	    <div class="modal-header">
+	        <h3>Success</h3>
+	    </div><!-- /header -->
+	
+	    <div class="modal-body">
+	        <p> All Pictures are sent.</p>
+	        <p><button type="button" onclick="ScreenOneView._resetAndShow();" class="btn btn-large">Ok</button></p>
+	    </div><!-- /content -->
+	</div>
+	
+	<div id="dialog_partialsuccess_damagereported" class="modal hide fade" tabindex="-1"
+		data-backdrop="static">
+	    <div class="modal-header">
+	        <h3>Success</h3>
+	    </div><!-- /header -->
+	
+	    <div class="modal-body">
+	        <p>Only some damages have been reported successfully. Please try again, If the problem persists please contact the Gizur Saas Account holders.</p>
+	        <p><button type="button" class="close" data-dismiss="modal" class="btn btn-large">Ok</button></p>
+	    </div><!-- /content -->
+	</div>
+	
+	<div id="dialog_partialsuccess_damagereported_unsentfiles" class="modal hide fade" tabindex="-1"
+		data-backdrop="static">
+	    <div class="modal-header">
+	        <h3>Success</h3>
+	    </div><!-- /header -->
+	
+	    <div class="modal-body">
+	        <p>Only some damages have been reported successfully. Also <span>some</span> pictures have not been sent, 
+	        would you like to retry sending them?</p>
+	        <p>
+	            <button type="button" id="partialSuccessRetryYesButton" class="btn btn-large btn-primary">Retry</button>
+	            <button type="button" id="partialSuccessRetryNoButton" class="btn btn-large">No</button>
+	        </p>
+	    </div><!-- /content -->
+	</div>
+	
+	<div id="dialog_changepassword" class="modal hide fade" tabindex="-1"
+		data-backdrop="static">
+	    <div class="modal-header">
+	        <h1>Enter New Password</h1>
+	    </div><!-- /header -->
+	
+	    <div class="modal-body">
+	    	<p id="message" class=""></p>
+	        <p>Enter New Password</p>
+	        <p><input id="newpassword" type="text" maxlength="30"></p>
+	        <p>
+	            <a id="change" class="dialog_changepassword_btn btn btn-large btn-primary">Change</a>
+	            <a id="change_cancel" class="dialog_changepassword_btn btn btn-large btn-primary">Cancel</a>
+	        </p>
+	    </div><!-- /content -->
+	</div>
+
+	<div id="dialog_resetpassword_confirm" class="modal hide fade" tabindex="-1"
+		data-backdrop="static">
+	    <div class="modal-header">
+	        <h1>Forget Password</h1>
+	    </div><!-- /header -->
+	
+	    <div class="modal-body">
+	        <p>Are you sure you want to reset your password? If yes click 'Ok', (you will receive a mail with the new password) else click 'Go Back'.</p>
+	        <p>
+	            <a id="resetpassword" href="#dialog_resetpassword_confirm" class="btn btn-large btn-primary">Ok</a>
+	            <a class="btn btn-large btn-primary" onclick="$('.modal').modal('hide');" data-dismiss="modal">Go Back</a>
+	        </p>                
+	    </div><!-- /content -->
+	</div>
+	<script type="text/javascript">
+		$(document).ready(function() {
+					
+			$('#page-box #settings').load("tmpl/settings.tmpl.htm");
+			$('#page-box #contacts').load("tmpl/contacts.tmpl.htm");
+			$('#page-box #survey').load("tmpl/survey.tmpl.htm");
+			
+			app.initialize();
+			
+			var changepage = function() {
+			    app.changeInPage = false;
+			    
+			    if (app.currentObj !== null) {
+			        
+			    	console.log(JSON.stringify(app.currentObj));
+			        
+			        for (index in app.currentObj) {
+			            if (app.currentObj.hasOwnProperty(index)) {
+			                console.log("Fetching #" + app.prevPage + "#" + index);
+							
+			                var val = $('#' + app.prevPage + " #" + index).val();
+			                
+			                if ($('#' + app.prevPage + " #" + index).is('select'))
+			                    val = $('#' + app.prevPage + " #" + index + " option:selected").val();
+			                else if ($('#' + app.prevPage + " input[name=" + index + "]").is(':radio'))
+			                    val = $('#' + app.prevPage + " input[name=" + index + "]:checked").val();
+							
+			                if(index === "sealed") {
+			                	var se = $('.sealed-radio.btn-success').attr('btn-value');
+			                	val = se ? se : "";
+			                }
+			                
+			                if (val !== app.currentObj[index]) {
+			                    console.log(val + " Not matched " + app.currentObj[index]);
+			                    app.changeInPage = true;
+			                    break;
+			                }
+			            } else {
+			                console.log(index + " does not hasOwnProperty.");
+			            }
+			        }
+			    }
+			}
+			/**
+			 * PREPARE TAB CLICKS
+			 */
+
+			$('#pages-tab a').bind('click', function(e) {
+				e.preventDefault();
+				
+				app.changeInPage = false;
+				
+				console.log('Tab Opened : ' + $(this).attr('href'));
+
+				if (app.currentObj !== null && app.currentObj !== undefined) {
+					var page = $(this).attr('href').split("#")[1];					
+					
+					changepage();
+					
+					var pageOne = new ScreenOneView(app._usr,
+							app._lg, app._lang, app._wrapper);
+				    var pageFour = new ScreenFourView(app._usr, app._lg, app._lang, app._wrapper);
+				    
+				    if (app.changeInPage && page !== app.prevPage) {
+				    	
+				    	var confirm = function(button){
+				    		if(button === 1){
+				    			app.changeInPage = false; 
+				    			//alert(app.prevPage);
+				    			if(app.prevPage === "one") {
+				    				pageOne.reset();
+				    				app.pageOneLoaded = false;
+				    			}
+				    			
+				    			if(app.prevPage === "four") {
+				    				pageFour.reset();
+				    				app.pageFourLoaded = false;
+				    			}
+				    			
+				    			app.currentObj = null;
+						    	
+				    			$('#pages-tab a[href="#' + page + '"]').click();
+				    			return true;
+				    		} else {
+				    			return false;
+				    		}
+				    	};
+				    	
+				    	app._wrapper.showConfirm(app._lang.translate("You have made changes. If you continue, your changes will not be saved."), confirm, app._lang.translate("Warning"), app._lang.translate("Continue,Cancel"));
+				    	return false;
+					}
+				}
+				
+				if ($(this).attr('href') === '#settings') {
+					var pageSettings = new ScreenSettingsView(
+							app._usr, app._lg, app._lang, app._req,
+							app._wrapper);
+
+					pageSettings.render();
+					pageSettings.bindEventHandlers();
+	
+					app._lg.log('TRACE',
+							'gta-page#settings$pageshow',
+							'page loaded');
+	
+					if (app._usr.get('authenticated')
+							&& app.refreshCache) {
+						// Login again
+						app.refreshCache = false;
+						$('#settings_save').click();
+					}					
+				}
+
+				if ($(this).attr('href') === '#survey') {
+					
+					if (!app._usr.get('authenticated')) {
+						$('#pages-tab a[href="#settings"]').tab('show');
+						return false;
+					}
+					
+					try {
+
+						/**
+						 * Environment
+						 */
+						
+						app._lg.log('TRACE',
+								'gta-page#one$pageshow',
+								'page loaded');
+
+						/**
+						 * Check if someone has clicked on survey tab
+						 */
+						if(app.prevPage === "one" || app.prevPage === "four" || app.prevPage === "five") {
+							var current_tt;
+
+					        try {
+					            current_tt = JSON.parse(window.localStorage.getItem('current_tt'));
+					        } catch (e) {
+					            current_tt = null;
+					        }
+					        
+					        if (current_tt !== null) {
+					        	var confirm = function(button){
+						    		if(button === 1){
+						    			app.changeInPage = false;
+						    			
+						    			app.surveyPage = 'one';
+						    			
+						    			ScreenOneView._resetAndShow();
+						    		} else {
+						    			
+						    		}
+						    	};
+						    	
+						    	app._wrapper.showConfirm(app._lang.translate("Your changes will not be saved."), confirm, app._lang.translate("Warning"), app._lang.translate("Confirm,Cancel"));
+						    	return false;
+					        }
+						}
+						
+						var pageOne = new ScreenOneView(app._usr,
+								app._lg, app._lang, app._wrapper);							
+						
+						if (app.surveyPage === 'four') {
+							app.prevPage = 'four';
+							pageOne.showPageFour();
+						} else if (app.surveyPage === 'five') {
+							app.prevPage = 'five';
+							var pageFour = new ScreenFourView(app._usr, app._lg, app._lang, app._wrapper);
+							pageFour.showPageFive();
+						} else {
+							app.prevPage = 'one';
+							app.surveyPage = 'one';
+							
+							if (!app.pageOneLoaded) {
+								pageOne.render();
+								app.pageOneLoaded = true;
+							}
+							pageOne.bindEventHandlers();
+							pageOne.setValues();
+							/**
+							 * Only once this page is completed logger should be allowed 
+							 * to send logs to server
+							 */
+		
+							app._lg.appLoadingComplete();
+						}
+					} catch (err) {
+
+						app._lg.log('FATAL',
+								'gta-page#one$pageshow',
+								err.message + " : "
+										+ JSON.stringify(err));
+
+					}
+				}
+
+				if ($(this).attr('href') === '#contacts') {
+					var pageContact = new ScreenContactView(app._lg, app._wrapper);
+				    pageContact.bindEventHandlers();
+				    pageContact.render();
+				}
+
+			});
+
+			$('#pages-tab a[href="#settings"]').on('shown', function(e) {
+				app.prevPage = 'settings';
+			});
+
+			$('#pages-tab a[href="#contacts"]').on('shown', function(e) {
+				app.prevPage = 'contact';
+			});
+			
+			$('#pages-tab a[href="#survey"]').on('shown', function(e) {
+				
+			});			
+			
+			/**
+             * Change Page to page one and remove 
+             * splash screen from browser history
+             */
+			
+            app._wrapper.clearNavigatorHistory();
+            
+            setTimeout(function(){
+                $('#splash-box').hide();
+        		$('#page-box').show(); 
+        		
+        		app.refreshCache = false;
+        		
+        		if (!app._usr.get('authenticated')) {
+                	//$('#pages-tab a[href="#settings"]').tab('show');
+        			$('#pages-tab a[href="#settings"]').click();
+                } else if(!app._usr.get('refreshTime')) {
+               		app.refreshCache = true;
+               		//$('#pages-tab a[href="#settings"]').tab('show');
+               		$('#pages-tab a[href="#settings"]').click();
+               	} else {
+               		var diff = new Date().getTime() - app._usr.get('refreshTime');
+               		app._lg.log('DEBUG', 'deviceready', 'Last cache refresh time : ' + app._usr.get('refreshTime'));
+               		app._lg.log('DEBUG', 'deviceready', "Cache time differance : " + diff + " milliseconds.");
+               		
+               		if (diff > Config.cacheRefreshTime) {
+               			app.refreshCache = true;
+               			//$('#pages-tab a[href="#settings"]').tab('show');
+               			$('#pages-tab a[href="#settings"]').click();
+               		} else {
+               			//$('#pages-tab a[href="#survey"]').tab('show');
+               			$('#pages-tab a[href="#survey"]').click();
+               		}
+               	}
+            }, 5000);   		
+		});
+	</script>
+</body>
+</html>
