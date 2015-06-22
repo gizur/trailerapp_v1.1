@@ -1,0 +1,188 @@
+<div class="page-tmpl">
+	<form class="form-horizontal" id="surveyform">
+		<fieldset>
+			<div id="one" class="page-surveys span12">
+				<div class="control-group">
+					<label for="trailertype" class="control-label">Trailer type :</label>
+					<div class="controls">
+						<select id="trailertype" name="trailertype">
+						</select>
+					</div>
+				</div>
+				<div class="control-group">
+					<label for="trailerid" class="control-label">Trailer ID :</label>
+					<div class="controls">
+						<select id="trailerid" name="trailerid">
+						</select>
+					</div>
+				</div>
+				<div class="span12 text-center" style="border: none;">
+					<h3>Existing Damage(s)</h3>
+					
+					<div class="span12">
+						<div style="max-width: 280px; margin: 0 auto;">
+							<ul id="troubleticketlist" class="bxslider-one">
+							<li>No Damages Reported</li></ul>
+							<div id='pager-one' style='text-align: right;'></div>
+						</div>	
+					</div>
+				</div>			
+				
+				<div class="control-group">
+					<label for="place" class="control-label">Place :</label>
+					<div class="controls">
+						<select id="place" name="place">
+						</select>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">Sealed :</label>
+					<div class="controls">
+						<div class="btn-group" id="sealed-btns">
+						    <button type="button" id="radio1" btn-value="Ja" class="sealed-radio btn btn-large">Yes</button>
+						    <button type="button" id="radio2" btn-value="Nej" class="sealed-radio btn btn-large">No</button>
+						</div>
+					</div>
+				</div>
+				<div class="control-group">
+					<div class="text-center">
+						<button type="button" class="btn btn-success btn-large"
+							id="reportdamage" style="margin-bottom: 5px;">Report New Damage</button>
+						<button type="button"
+							class="btn btn-success btn-large"
+							id="reportsurvey" style="margin-bottom: 5px;">No New Damage</button>
+					</div>
+				</div>
+			</div>
+			
+			<div id="four" class="page-surveys span12" style="display: none;">
+				<div class="control-group">
+					<label for="damagetype" class="control-label">Type of damage :</label>
+					<div class="controls"> 
+						<select id="damagetype" name="damagetype">
+						</select>
+					</div>
+				</div>
+				<div class="control-group">
+					<label for="damageposition" class="control-label">Position :</label>
+					<div class="controls">
+						<select id="damageposition" name="damageposition">
+						</select>
+					</div>
+				</div>
+				<div class="span12 text-center" style="margin-bottom: 10px;">
+					<h3>Picture</h3>
+					<a id="takephoto" href="javascript:void(0);" class="btn btn-primary btn-large" data-role="button">Add new picture</a>
+					<div class="span12" style="margin-top: 10px;">
+						<div style="max-width: 280px; margin: 0 auto;">
+							<ul class="bxslider-four">
+							<li>No Picture(s) Attached</li>
+					
+					        </ul>   
+					        <div id='pager-four' style='text-align: right;'></div>
+			        	</div>
+			        </div>
+				</div>
+							
+				        
+				<div class="control-group">
+				<label for="drivercauseddamage" class="control-label">I caused the damage :</label>
+					<div class="controls">
+					<div class="btn-group" id="drivercauseddamage-btns">
+						    <button type="button" id="radio1" btn-value="Yes" class="drivercauseddamage-radio btn btn-large">Yes</button>
+						    <button type="button" id="radio2" btn-value="No" class="drivercauseddamage-radio btn btn-large">No</button>
+						</div>
+						<!-- <select id="drivercauseddamage" name="drivercauseddamage">
+					        	
+							<option value="No"></option>
+							<option value="Yes"></option>
+						</select> -->
+					</div>
+				</div>
+				<div class="control-group">
+					<div class="text-center">
+						<a id="savedamage" class="btn btn-success btn-large" href="javascript:void(0);"
+							data-role="button">Save</a>
+						<a id="deletedamage" class="btn btn-success btn-large" href="javascript:void(0);"
+						data-role="button">Delete</a>
+					</div>
+				</div>
+			</div>
+			
+			<div id="five" class="page-surveys span12" style="display: none;">
+				<div class="span12 text-center" style="margin-bottom: 10px;">
+					<h3>Existing Damage(s)</h3>
+						
+					<div class="span12">
+						<div style="max-width: 280px; margin: 0 auto;">
+				            <ul class="bxslider-five-a">
+				                <li>No Damages Reported</li>
+				            </ul>	
+				        	<div id='pager-five-a' style='text-align: right;'></div>
+			        	</div>
+			        </div>
+		        </div>
+		        <div class="span12 text-center" style="margin-bottom: 10px;">
+			        <h3>New found damage</h3>		        	
+		        	<button type="button" id="reportanotherdamage" class="btn btn-primary btn-large">Add new damage</button>		        	
+		        	<div class="span12" style="margin-top: 10px;">
+						<div style="max-width: 280px; margin: 0 auto;">
+							<ul class="bxslider-five-b">
+				                <li>No Damages Reported</li>
+				            </ul>	
+				        	<div id='pager-five-b' style='text-align: right;'></div>
+			        	</div>
+			        </div>
+		        </div>
+		        <div class="control-group">
+			        <div class="text-center">
+						<button type="button" id="sendalldamages" class="btn btn-success btn-large">Send damage report</button>
+					</div>
+				</div>
+			</div>
+			
+		 <div id="viewMoreDamages" style="display:none;">
+			  <div class="text-right"><button type="button" class="btn btn-primary btn-sm" id="pageDamageListBack" back-page="one">Back</button></div>
+			 <h4>All Dmages of </h4>
+                  <ul id="dmagesList" >
+                      <li></li>
+                   </ul>
+		  </div>
+			
+			<div id="two" class="page-surveys" style="display: none;">
+				<div class="text-right"><button type="button" class="btn btn-primary btn-large" id="pageTwoBackButton" back-page="one">Back</button></div>
+		        <div class="span12 text-center" style="margin-bottom: 10px;"><h3>Damage Information</h3></div>
+		        <div class="control-group">
+					<label for="damagetype" class="control-label"> Type of damage : </label>
+					<div class="controls">
+						<input name="" id="damagetype" placeholder="" value="" type="text" readonly="readonly">
+					</div>
+				</div>
+				<div class="control-group">
+					<label for="damageposition" class="control-label"> Position : </label>
+					<div class="controls">
+						<input name="" id="damageposition" placeholder="" value="" type="text" readonly="readonly">
+					</div>
+				</div>
+				<div class="span12 text-center" style="margin-bottom: 10px;">
+					<h3>Picture</h3>
+					<div class="span12">
+						<div style="max-width: 280px; margin: 0 auto;">
+					        <ul class="bxslider-two">
+					                <li>No Picture(s) Attached</li>
+					        </ul>	
+					        <div id='pager-two' style='text-align: right;'></div>
+			        	</div>
+			        </div>
+		        </div>
+			</div>
+			<div id="three" class="page-surveys" style="display: none;">
+				<div class="text-right"><button type="button" class="btn btn-primary btn-large" id="pageThreeBackButton" onclick="ScreenThreeView._back();">Back</button></div>
+		        <div class="span12 text-center" style="margin-bottom: 10px;">
+			        <h3>Picture</h3>
+			        <div><img src=""/></div>
+			    </div>		        
+			</div>
+		</fieldset>
+	</form>
+</div>
