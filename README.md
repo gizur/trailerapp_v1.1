@@ -1,4 +1,4 @@
-Trailer Application 
+Trailer Application
 ===================
 
 
@@ -31,8 +31,8 @@ Start the VNC server:
 vncserver
 ```
 
-Now connect with a VNC client (I'm using Chicken iof the VNC on OSX). Run 'ifconfig' to see the available interfaces. 
-I was able to connect in the 192.168.XXX.XXX interface. 
+Now connect with a VNC client (I'm using Chicken iof the VNC on OSX). Run 'ifconfig' to see the available interfaces.
+I was able to connect in the 192.168.XXX.XXX interface.
 
 
 ```
@@ -59,4 +59,3 @@ git clone https://github.com/gizur/trailerapp_v1.1.git
 
 # To create simulator go to http://developer.android.com/training/basics/firstapp/running-app.html
 ```
-
